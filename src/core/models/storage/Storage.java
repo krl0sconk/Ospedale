@@ -28,11 +28,12 @@ public class Storage {
     private ArrayList<User> users;
     private ArrayList<Appointment> apps;
     private ArrayList<Hospitalization> hosps;
-    private ArrayList<Prescription> pres;
 
     // Metodos Storage
     private Storage() {
         this.users = new ArrayList<>();
+        this.apps = new ArrayList<>();
+        this.hosps = new ArrayList<>();
     }
 
     public static Storage getInstance() {
