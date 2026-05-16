@@ -10,6 +10,7 @@ import core.models.enums.Specialty;
 import core.models.storage.Storage;
 import core.models.user.Doctor;
 import core.models.user.Patient;
+import core.models.user.User;
 import java.time.LocalDate;
 
 /**
@@ -53,20 +54,21 @@ public class UserController {
     }
 
     public static boolean isValidLicence(String licence) {
-        if (!licence.matches("L-\\d{10}MTL")) {
+        if (!licence.matches("L-\\d{10} MTL")) {
             return false;
         }
         return true;
     }
-    
-    public static boolean isValidOffice(String office){
-            if (!office.matches("O-\\d{3}")) {
+
+    public static boolean isValidOffice(String office) {
+        if (!office.matches("O-\\d{3}")) {
             return false;
         }
         return true;
     }
 
     //Metodos
+    //Pacientes
     public static Response registerPatient(String firstname, String lastname, long id, boolean gender, String birthdate, String address, long phone, String email, String username, String password, String passwordConfirmation) {
         try {
             Storage storage = Storage.getInstance();
@@ -99,6 +101,7 @@ public class UserController {
             if (!storage.addUser(new Patient(id, username, firstname, lastname, password, email, LocalDate.parse(birthdate), gender, phone, address))) {
                 return new Response("A Patient with that id already exists", Status.BAD_REQUEST);
             }
+
             return new Response("Patient registered succesfully.", Status.CREATED);
 
         } catch (Exception e) {
@@ -106,6 +109,44 @@ public class UserController {
         }
     }
 
+    public static Response updatePatient(String firstname, String lastname, long id, boolean gender, String birthdate, String address, long phone, String email, String username, String password, String passwordConfirmation) {
+        try {
+            Storage storage = Storage.getInstance();
+
+            if (firstname.trim().equals("") || lastname.trim().equals("") || address.trim().equals("")) {
+                return new Response("All fields are required", Status.BAD_REQUEST);
+            }
+
+            if (!isValidId(id) || storage.getUserById(id) == null) {
+                return new Response("Invalid id.", Status.BAD_REQUEST);
+            }
+            if (!isValidEmail(email)) {
+                return new Response("Invalid email.", Status.BAD_REQUEST);
+            }
+            if (!isValidPhone(phone)) {
+                return new Response("Invalid phone.", Status.BAD_REQUEST);
+            }
+            if (!isValidDate(birthdate)) {
+                return new Response("Invalid date.", Status.BAD_REQUEST);
+            }
+
+            if (storage.getUserByUsername(username) != null) {
+                return new Response("Username already exists.", Status.BAD_REQUEST);
+            }
+
+            if (!password.equals(passwordConfirmation)) {
+                return new Response("Passwords do not match.", Status.BAD_REQUEST);
+            }
+            Patient newPatient = new Patient(id, username, firstname, lastname, password, email, LocalDate.parse(birthdate), gender, phone, address);
+            storage.getUserById(id) = newPatient;
+            return new Response("Patient updated succesfully.", Status.CREATED);
+
+        } catch (Exception e) {
+            return new Response("Unexpected error.", Status.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    //Doctores
     public static Response registerDoctor(String firstname, String lastname, long id, String username, String password, String passwordConfirmation, String licenceNumber, Specialty specialty, String assignedOffice) {
         try {
             Storage storage = Storage.getInstance();
