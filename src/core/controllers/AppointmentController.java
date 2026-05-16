@@ -41,12 +41,12 @@ public class AppointmentController {
         return true;
     }
 
-    private static boolean checkDisposnibility(long doctorId, String hour, String date) {
+    private static boolean checkDisponibility(long doctorId, String hour, String date) {
         Storage storage = Storage.getInstance();
         Doctor doctor = (Doctor) storage.getUserById(doctorId);
 
         for (Appointment appointment : storage.getAppointments()) {
-            if (appointment.getDoctor().equals(doctor) && !(appointment.getStatus().equals(AppointmentStatus.CANCELED)))) {
+            if (appointment.getDoctor().equals(doctor) && !(appointment.getStatus().equals(AppointmentStatus.CANCELED))) {
                 if (appointment.getDatetime().equals(LocalDateTime.of(LocalDate.parse(date), LocalTime.parse(hour)))) {
                     return false;
                 }
@@ -70,6 +70,10 @@ public class AppointmentController {
             }
             if (storage.getUserById(doctorId) == null || !(storage.getUserById(doctorId) instanceof Doctor)) {
                 return new Response("Invalid Doctor id.", Status.BAD_REQUEST);
+            }
+            
+            if (!checkDisponibility(doctorId, hour, date)) {
+                return new Response("Doctor not available.", Status.BAD_REQUEST);
             }
 
         } catch (Exception e) {
