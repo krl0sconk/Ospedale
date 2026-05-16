@@ -15,7 +15,8 @@ import java.util.HashMap;
  * @author krl0s
  */
 public class LoginController {
-
+    
+    //Metodos
     public static Response loginUser(String username, String password) {
         try {
             Storage storage = Storage.getInstance();
