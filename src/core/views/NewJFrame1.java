@@ -59,8 +59,8 @@ public class NewJFrame1 extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        panelRound1 = new core.views.PanelRound();
-        panelRound2 = new core.views.PanelRound();
+        panelRound1 = new core.views.utils.PanelRound();
+        panelRound2 = new core.views.utils.PanelRound();
         jButton1 = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jButton7 = new javax.swing.JButton();
@@ -977,7 +977,7 @@ public class NewJFrame1 extends javax.swing.JFrame {
     private javax.swing.JTextField jTextField7;
     private javax.swing.JTextField jTextField8;
     private javax.swing.JTextField jTextField9;
-    private core.views.PanelRound panelRound1;
-    private core.views.PanelRound panelRound2;
+    private core.views.utils.PanelRound panelRound1;
+    private core.views.utils.PanelRound panelRound2;
     // End of variables declaration//GEN-END:variables
 }
