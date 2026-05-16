@@ -2,8 +2,12 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package packagee;
+package core.models;
 
+import core.models.enums.Specialty;
+import core.models.enums.AppointmentStatus;
+import core.models.user.Patient;
+import core.models.user.Doctor;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
