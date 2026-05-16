@@ -160,6 +160,9 @@ public class UserController {
             if (!isValidLicence(licenceNumber)) {
                 return new Response("Invalid licence.", Status.BAD_REQUEST);
             }
+            if (!isValidOffice(assignedOffice)) {
+                return new Response("Invalid Office.", Status.BAD_REQUEST);
+            }
 
             if (storage.getUserByUsername(username) != null) {
                 return new Response("Username already exists.", Status.BAD_REQUEST);
@@ -178,6 +181,7 @@ public class UserController {
             return new Response("Unexpected error.", Status.INTERNAL_SERVER_ERROR);
         }
     }
+
     public static Response updateDoctor(String firstname, String lastname, long id, String username, String password, String passwordConfirmation, String licenceNumber, Specialty specialty, String assignedOffice) {
         try {
             Storage storage = Storage.getInstance();
@@ -186,11 +190,14 @@ public class UserController {
                 return new Response("All fields are required", Status.BAD_REQUEST);
             }
 
-            if (!isValidId(id)) {
+            if (!isValidId(id) || storage.getUserById(id) == null) {
                 return new Response("Invalid id.", Status.BAD_REQUEST);
             }
             if (!isValidLicence(licenceNumber)) {
                 return new Response("Invalid licence.", Status.BAD_REQUEST);
+            }
+            if (!isValidOffice(assignedOffice)) {
+                return new Response("Invalid Office.", Status.BAD_REQUEST);
             }
 
             if (storage.getUserByUsername(username) != null && storage.getUserById(id) != storage.getUserByUsername(username)) {
