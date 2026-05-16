@@ -78,8 +78,8 @@ public class Storage {
     public ArrayList<Patient> getPatients() {
         ArrayList<Patient> patients = new ArrayList<>();
         for (User user : users) {
-            if (user instanceof Patient patient) {
-                patients.add(patient);
+            if (user instanceof Patient) {
+                patients.add((Patient) user); // cast manual
             }
         }
         return patients;
@@ -88,8 +88,8 @@ public class Storage {
     public ArrayList<Doctor> getDoctors() {
         ArrayList<Doctor> doctors = new ArrayList<>();
         for (User user : users) {
-            if (user instanceof Doctor doctor) {
-                doctors.add(doctor);
+            if (user instanceof Doctor ) {
+                doctors.add((Doctor)user);
             }
         }
         return doctors;
@@ -98,8 +98,8 @@ public class Storage {
     public ArrayList<Administrator> getAdministrators() {
         ArrayList<Administrator> admins = new ArrayList<>();
         for (User user : users) {
-            if (user instanceof Administrator admin) {
-                admins.add(admin);
+            if (user instanceof Administrator ) {
+                admins.add((Administrator)user);
             }
         }
         return admins;
