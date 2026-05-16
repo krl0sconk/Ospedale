@@ -8,6 +8,7 @@ import core.controllers.utils.Response;
 import core.controllers.utils.Status;
 import core.models.storage.Storage;
 import core.models.user.User;
+import java.util.HashMap;
 
 /**
  *
@@ -34,8 +35,8 @@ public class LoginController {
                     return new Response("Password incorrect", Status.BAD_REQUEST);
                 }
                 
-                //TODO: Serializacion
-                return new Response("Password correct", Status.OK);
+                //TODO: Serializacion (Migue)
+                return new Response("Password correct", Status.OK, user.serialize());
             } catch (Exception e) {
                 return new Response("Username not associated to any user.", Status.NOT_FOUND);
             }

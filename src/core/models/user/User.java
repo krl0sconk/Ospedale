@@ -4,6 +4,8 @@
  */
 package core.models.user;
 
+import java.util.HashMap;
+
 /**
  *
  * @author edangulo
@@ -58,6 +60,10 @@ public abstract class User {
 
     public String getPassword() {
         return password;
+    }
+
+    public HashMap<String, Object> serialize() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
     
 }
