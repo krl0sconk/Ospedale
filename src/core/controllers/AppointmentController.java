@@ -7,11 +7,13 @@ package core.controllers;
 import core.controllers.utils.Response;
 import core.controllers.utils.Status;
 import core.models.Appointment;
+import core.models.enums.AppointmentStatus;
 import core.models.enums.Specialty;
 import core.models.storage.Storage;
 import core.models.user.Doctor;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 /**
  *
@@ -39,13 +41,15 @@ public class AppointmentController {
         return true;
     }
 
-    private static boolean checkDisponibility(long doctorId, String hour, String date) {
+    private static boolean checkDisposnibility(long doctorId, String hour, String date) {
         Storage storage = Storage.getInstance();
         Doctor doctor = (Doctor) storage.getUserById(doctorId);
-        
-        for (Appointment appointment : doctor.getAppointments()) {
-            if (appointment.getDatetime() == LocalDateTime.parse(date+hour) &&) {
-                return false;
+
+        for (Appointment appointment : storage.getAppointments()) {
+            if (appointment.getDoctor().equals(doctor) && !(appointment.getStatus().equals(AppointmentStatus.CANCELED)))) {
+                if (appointment.getDatetime().equals(LocalDateTime.of(LocalDate.parse(date), LocalTime.parse(hour)))) {
+                    return false;
+                }
             }
         }
         return true;
