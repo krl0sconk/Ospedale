@@ -130,16 +130,15 @@ public class UserController {
                 return new Response("Invalid date.", Status.BAD_REQUEST);
             }
 
-            if (storage.getUserByUsername(username) != null) {
+            if (storage.getUserByUsername(username) != null && storage.getUserById(id) != storage.getUserByUsername(username)) {
                 return new Response("Username already exists.", Status.BAD_REQUEST);
             }
 
             if (!password.equals(passwordConfirmation)) {
                 return new Response("Passwords do not match.", Status.BAD_REQUEST);
             }
-            Patient newPatient = new Patient(id, username, firstname, lastname, password, email, LocalDate.parse(birthdate), gender, phone, address);
-            storage.getUserById(id) = newPatient;
-            return new Response("Patient updated succesfully.", Status.CREATED);
+            storage.updatePatient(id, username, firstname, lastname, password, email, LocalDate.parse(birthdate), gender, phone, address);
+            return new Response("Patient updated succesfully.", Status.OK);
 
         } catch (Exception e) {
             return new Response("Unexpected error.", Status.INTERNAL_SERVER_ERROR);
@@ -174,6 +173,36 @@ public class UserController {
                 return new Response("A Doctor with that id already exists", Status.BAD_REQUEST);
             }
             return new Response("Doctor registered succesfully.", Status.CREATED);
+
+        } catch (Exception e) {
+            return new Response("Unexpected error.", Status.INTERNAL_SERVER_ERROR);
+        }
+    }
+    public static Response updateDoctor(String firstname, String lastname, long id, String username, String password, String passwordConfirmation, String licenceNumber, Specialty specialty, String assignedOffice) {
+        try {
+            Storage storage = Storage.getInstance();
+
+            if (firstname.trim().equals("") || lastname.trim().equals("")) {
+                return new Response("All fields are required", Status.BAD_REQUEST);
+            }
+
+            if (!isValidId(id)) {
+                return new Response("Invalid id.", Status.BAD_REQUEST);
+            }
+            if (!isValidLicence(licenceNumber)) {
+                return new Response("Invalid licence.", Status.BAD_REQUEST);
+            }
+
+            if (storage.getUserByUsername(username) != null && storage.getUserById(id) != storage.getUserByUsername(username)) {
+                return new Response("Username already exists.", Status.BAD_REQUEST);
+            }
+
+            if (!password.equals(passwordConfirmation)) {
+                return new Response("Passwords do not match.", Status.BAD_REQUEST);
+            }
+
+            storage.updateDoctor(id, username, firstname, lastname, password, specialty, licenceNumber, assignedOffice);
+            return new Response("Doctor updated succesfully.", Status.OK);
 
         } catch (Exception e) {
             return new Response("Unexpected error.", Status.INTERNAL_SERVER_ERROR);
