@@ -32,7 +32,7 @@ public class UserController {
     }
 
     private static boolean isValidPhone(long phone) {
-        if (phone < 0 || String.valueOf(Math.abs(phone)).length() != 10) {
+        if (phone <= 0 || String.valueOf(Math.abs(phone)).length() != 10) {
             return false;
         }
         return true;
@@ -43,7 +43,7 @@ public class UserController {
             return false;
         }
         try {
-            LocalDate.parse(date); 
+            LocalDate.parse(date);
             return true;
         } catch (Exception e) {
             return false;
@@ -71,12 +71,16 @@ public class UserController {
             if (!isValidDate(birthdate)) {
                 return new Response("Invalid date.", Status.BAD_REQUEST);
             }
-            
+
+            if (storage.getUserByUsername(username) != null) {
+                return new Response("Username already exists.", Status.BAD_REQUEST);
+            }
+
             if (!password.equals(passwordConfirmation)) {
                 return new Response("Passwords do not match.", Status.BAD_REQUEST);
             }
-            
-            if (!storage.addUser(new Patient(id, username, firstname, lastname, password, email, LocalDate.parse(birthdate), gender,phone, address))) {
+
+            if (!storage.addUser(new Patient(id, username, firstname, lastname, password, email, LocalDate.parse(birthdate), gender, phone, address))) {
                 return new Response("A Patient with that id already exists", Status.BAD_REQUEST);
             }
             return new Response("Patient registered succesfully.", Status.CREATED);
