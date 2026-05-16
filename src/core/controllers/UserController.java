@@ -6,7 +6,9 @@ package core.controllers;
 
 import core.controllers.utils.Response;
 import core.controllers.utils.Status;
+import core.models.enums.Specialty;
 import core.models.storage.Storage;
+import core.models.user.Doctor;
 import core.models.user.Patient;
 import java.time.LocalDate;
 
@@ -50,6 +52,20 @@ public class UserController {
         }
     }
 
+    public static boolean isValidLicence(String licence) {
+        if (!licence.matches("L-\\d{10}MTL")) {
+            return false;
+        }
+        return true;
+    }
+    
+    public static boolean isValidOffice(String office){
+            if (!office.matches("O-\\d{3}")) {
+            return false;
+        }
+        return true;
+    }
+
     //Metodos
     public static Response registerPatient(String firstname, String lastname, long id, boolean gender, String birthdate, String address, long phone, String email, String username, String password, String passwordConfirmation) {
         try {
@@ -84,6 +100,39 @@ public class UserController {
                 return new Response("A Patient with that id already exists", Status.BAD_REQUEST);
             }
             return new Response("Patient registered succesfully.", Status.CREATED);
+
+        } catch (Exception e) {
+            return new Response("Unexpected error.", Status.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public static Response registerDoctor(String firstname, String lastname, long id, String username, String password, String passwordConfirmation, String licenceNumber, Specialty specialty, String assignedOffice) {
+        try {
+            Storage storage = Storage.getInstance();
+
+            if (firstname.trim().equals("") || lastname.trim().equals("")) {
+                return new Response("All fields are required", Status.BAD_REQUEST);
+            }
+
+            if (!isValidId(id)) {
+                return new Response("Invalid id.", Status.BAD_REQUEST);
+            }
+            if (!isValidLicence(licenceNumber)) {
+                return new Response("Invalid licence.", Status.BAD_REQUEST);
+            }
+
+            if (storage.getUserByUsername(username) != null) {
+                return new Response("Username already exists.", Status.BAD_REQUEST);
+            }
+
+            if (!password.equals(passwordConfirmation)) {
+                return new Response("Passwords do not match.", Status.BAD_REQUEST);
+            }
+
+            if (!storage.addUser(new Doctor(id, username, firstname, lastname, password, specialty, licenceNumber, assignedOffice))) {
+                return new Response("A Doctor with that id already exists", Status.BAD_REQUEST);
+            }
+            return new Response("Doctor registered succesfully.", Status.CREATED);
 
         } catch (Exception e) {
             return new Response("Unexpected error.", Status.INTERNAL_SERVER_ERROR);
