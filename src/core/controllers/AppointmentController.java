@@ -26,13 +26,13 @@ import java.time.LocalTime;
 public class AppointmentController {
 
     //Metodos internos
-    private static boolean checkDisponibility(long doctorId, String hour, String date) {
+    private static boolean checkDisponibility(long doctorId, LocalTime hour, LocalDate date) {
         Storage storage = Storage.getInstance();
         Doctor doctor = (Doctor) storage.getUserById(doctorId);
 
         for (Appointment appointment : storage.getAppointments()) {
             if (appointment.getDoctor().equals(doctor) && !(appointment.getStatus().equals(AppointmentStatus.CANCELED))) {
-                if (appointment.getDatetime().equals(LocalDateTime.of(LocalDate.parse(date), LocalTime.parse(hour)))) {
+                if (appointment.getDatetime().equals(LocalDateTime.of(date, hour))) {
                     return false;
                 }
             }
@@ -75,7 +75,7 @@ public class AppointmentController {
                     return new Response("Invalid Doctor id.", Status.BAD_REQUEST);
                 }
 
-                if (!checkDisponibility(doctorId, hour, date)) {
+                if (!checkDisponibility(doctorId, LocalTime.parse(hour), LocalDate.parse(date))) {
                     return new Response("Doctor not available.", Status.BAD_REQUEST);
                 }
                 doctor = (Doctor) storage.getUserById(doctorId);
@@ -85,7 +85,7 @@ public class AppointmentController {
                 type = true;
             } else {
                 for (Doctor doc : storage.getDoctors()) {
-                    if (doc.getSpecialty() == specialty && checkDisponibility(doc.getId(), hour, date)) {
+                    if (doc.getSpecialty() == specialty && checkDisponibility(doc.getId(), LocalTime.parse(hour), LocalDate.parse(date))) {
                         doctor = doc;
                         break;
                     }
@@ -158,7 +158,7 @@ public class AppointmentController {
                 if (!Validator.isValidHour(newHour)) {
                     return new Response("Hour invalid.", Status.BAD_REQUEST);
                 }
-                if (!checkDisponibility(appointment.getDoctor().getId(), newHour, appointment.getDatetime().toLocalDate().toString())) {
+                if (!checkDisponibility(appointment.getDoctor().getId(), LocalTime.parse(newHour), appointment.getDatetime().toLocalDate())) {
                     return new Response("No disponibility.", Status.BAD_REQUEST);
                 }
                 LocalDateTime newDatetime = LocalDateTime.of(appointment.getDatetime().toLocalDate(), LocalTime.parse(newHour));
