@@ -149,5 +149,25 @@ public class AppointmentController {
             return new Response("Unexpected Error.", Status.INTERNAL_SERVER_ERROR);
         }
     }
+    public static Response rescheduleAppointment(String appointmentId, String newHour, String reason, long doctorId) {
+        try {
+            Appointment appointment = findAppointment(appointmentId);
+            if (appointment.getStatus().equals(AppointmentStatus.PENDING)) {
+                if (!Validator.isValidHour(newHour)) {
+                    return new Response("Hour invalid.", Status.BAD_REQUEST);
+                }
+                if (!checkDisponibility(appointment.getDoctor().getId(), newHour, appointment.getDatetime().toLocalDate().toString())) {
+                    return new  Response("No disponibility.", Status.BAD_REQUEST);
+                }
+                appointment.setReason(appointment.getReason()+" RESCHEDULED:"+reason);
+                return new Response("Appointment rescheduled.", Status.OK);
+            }
+            return new Response("Appointment cannot be rescheduled in its current state.", Status.BAD_REQUEST);
+        } catch (AppointmentNotFoundException e) {
+            return new Response(e.getMessage(), Status.NOT_FOUND);
+        } catch (Exception e) {
+            return new Response("Unexpected Error.", Status.INTERNAL_SERVER_ERROR);
+        }
+    }
 
 }
