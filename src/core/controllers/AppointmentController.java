@@ -23,8 +23,6 @@ import java.time.LocalTime;
  */
 public class AppointmentController {
 
-    
-
     private static boolean checkDisponibility(long doctorId, String hour, String date) {
         Storage storage = Storage.getInstance();
         Doctor doctor = (Doctor) storage.getUserById(doctorId);
@@ -58,13 +56,14 @@ public class AppointmentController {
                 if (storage.getUserById(doctorId) == null || !(storage.getUserById(doctorId) instanceof Doctor)) {
                     return new Response("Invalid Doctor id.", Status.BAD_REQUEST);
                 }
-                if (doctor.getSpecialty() != specialty) {
-                    return new Response("Specialty does not match doctor's specialty.", Status.BAD_REQUEST);
-                }
+
                 if (!checkDisponibility(doctorId, hour, date)) {
                     return new Response("Doctor not available.", Status.BAD_REQUEST);
                 }
                 doctor = (Doctor) storage.getUserById(doctorId);
+                if (doctor.getSpecialty() != specialty) {
+                    return new Response("Specialty does not match doctor's specialty.", Status.BAD_REQUEST);
+                }
                 type = true;
             } else {
                 for (Doctor doc : storage.getDoctors()) {
