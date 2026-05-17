@@ -171,7 +171,7 @@ public class UserController {
         try {
             HashMap<String, Object> data = new HashMap<>();
             data.put("list", Serializer.serializeList(Storage.getInstance().getPatients()));
-            return new Response("Returned patients.", Status.OK);
+            return new Response("Returned patients.", Status.OK, data);
         } catch (Exception e) {
             return new Response("Unexpected error.", Status.INTERNAL_SERVER_ERROR);
         }
@@ -181,7 +181,7 @@ public class UserController {
         try {
             HashMap<String, Object> data = new HashMap<>();
             data.put("list", Serializer.serializeList(Storage.getInstance().getDoctors()));
-            return new Response("Returned doctors.", Status.OK);
+            return new Response("Returned doctors.", Status.OK, data);
         } catch (Exception e) {
             return new Response("Unexpected error.", Status.INTERNAL_SERVER_ERROR);
         }
