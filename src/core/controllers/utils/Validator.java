@@ -32,7 +32,7 @@ public class Validator {
     }
     
     public static boolean isValidId(long id) {
-        if (id < 0 || String.valueOf(Math.abs(id)).length() != 12) {
+        if (id <= 0 || String.valueOf(id).length() != 12) {
             return false;
         }
         return true;

@@ -59,8 +59,7 @@ public class HospitalizationController {
         }
     }
 
-    //Metodos
-    public static Response requestHospitalization(long patientId, long doctorId, String date, String reason, RoomType roomType, String observations) {
+    private static Response createHospitalization(long patientId, long doctorId, String date, String reason, RoomType roomType, String observations, HospitalizationStatus status) {
         try {
             Storage storage = Storage.getInstance();
             User patient = storage.getUserById(patientId);
@@ -81,7 +80,7 @@ public class HospitalizationController {
             }
 
             String hospitalizationId = generateHospitalizationId(patientId);
-            Hospitalization hospitalization = new Hospitalization(hospitalizationId, (Patient) patient, (Doctor) doctor, LocalDate.parse(date), reason, roomType, observations);
+            Hospitalization hospitalization = new Hospitalization(hospitalizationId, (Patient) patient, (Doctor) doctor, LocalDate.parse(date), reason, roomType, observations, status);
             storage.addHospitalization(hospitalization);
             return new Response("Hospitalization requested", Status.CREATED);
         } catch (Exception e) {
@@ -89,34 +88,14 @@ public class HospitalizationController {
 
         }
     }
+
+    //Metodos
+    public static Response requestHospitalization(long patientId, long doctorId, String date, String reason, RoomType roomType, String observations) {
+            return createHospitalization(patientId, doctorId, date, reason, roomType, observations, HospitalizationStatus.REQUESTED);
+    }
+
     public static Response requestHospitalizationOngoing(long patientId, long doctorId, String date, String reason, RoomType roomType, String observations) {
-        try {
-            Storage storage = Storage.getInstance();
-            User patient = storage.getUserById(patientId);
-            if (patient == null || !(patient instanceof Patient)) {
-                return new Response("Invalid Patient id.", Status.BAD_REQUEST);
-            }
-            if (!Validator.isValidDate(date)) {
-                return new Response("Invalid date.", Status.BAD_REQUEST);
-            }
-
-            User doctor = storage.getUserById(doctorId);
-            if (doctor == null || !(doctor instanceof Doctor)) {
-                return new Response("Invalid Doctor id.", Status.BAD_REQUEST);
-            }
-
-            if (reason.trim().equals("")) {
-                return new Response("Reason must be declared.", Status.BAD_REQUEST);
-            }
-
-            String hospitalizationId = generateHospitalizationId(patientId);
-            Hospitalization hospitalization = new Hospitalization(hospitalizationId, (Patient) patient, (Doctor) doctor, LocalDate.parse(date), reason, roomType, observations, HospitalizationStatus.ONGOING);
-            storage.addHospitalization(hospitalization);
-            return new Response("Hospitalization requested", Status.CREATED);
-        } catch (Exception e) {
-            return new Response("Unexpected error", Status.INTERNAL_SERVER_ERROR);
-
-        }
+        return createHospitalization(patientId, doctorId, date, reason, roomType, observations, HospitalizationStatus.ONGOING);
     }
 
     public static Response approveHospitalization(String hospitalizationId) {

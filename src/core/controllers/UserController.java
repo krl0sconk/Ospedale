@@ -150,7 +150,7 @@ public class UserController {
                 return validation;
             }
             if (storage.getUserById(id) == null) {
-                return new Response("Patient not found.", Status.NOT_FOUND);
+                return new Response("Doctor not found.", Status.NOT_FOUND);
             }
             if (!Validator.isValidLicence(licenceNumber)) {
                 return new Response("Invalid licence.", Status.BAD_REQUEST);
