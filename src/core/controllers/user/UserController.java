@@ -10,7 +10,6 @@ import core.controllers.utils.Status;
 import core.controllers.utils.Validator;
 import core.models.enums.Specialty;
 import core.models.storage.IStorage;
-import core.models.storage.Storage;
 import core.models.user.Doctor;
 import core.models.user.Patient;
 import core.models.user.User;
@@ -177,7 +176,7 @@ public class UserController implements IUserController{
     public Response getPatients() {
         try {
             HashMap<String, Object> data = new HashMap<>();
-            data.put("list", Serializer.serializeList(Storage.getInstance().getPatients()));
+            data.put("list", Serializer.serializeList(this.storage.getPatients()));
             return new Response("Returned patients.", Status.OK, data);
         } catch (Exception e) {
             return new Response("Unexpected error.", Status.INTERNAL_SERVER_ERROR);
@@ -188,7 +187,7 @@ public class UserController implements IUserController{
     public Response getDoctors() {
         try {
             HashMap<String, Object> data = new HashMap<>();
-            data.put("list", Serializer.serializeList(Storage.getInstance().getDoctors()));
+            data.put("list", Serializer.serializeList(this.storage.getDoctors()));
             return new Response("Returned doctors.", Status.OK, data);
         } catch (Exception e) {
             return new Response("Unexpected error.", Status.INTERNAL_SERVER_ERROR);
