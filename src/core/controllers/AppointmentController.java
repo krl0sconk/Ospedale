@@ -70,23 +70,33 @@ public class AppointmentController {
             if (!isValidHour(hour)) {
                 return new Response("Invalid hour.", Status.BAD_REQUEST);
             }
+            Doctor doctor = null;
             if (doctorId != 0) {
                 if (storage.getUserById(doctorId) == null || !(storage.getUserById(doctorId) instanceof Doctor)) {
                     return new Response("Invalid Doctor id.", Status.BAD_REQUEST);
                 }
+                if (!checkDisponibility(doctorId, hour, date)) {
+                    return new Response("Doctor not available.", Status.BAD_REQUEST);
+                }
+                doctor = (Doctor) storage.getUserById(doctorId);
                 type = true;
+            } else {
+                for (Doctor doc : storage.getDoctors()) {
+                    if (doc.getSpecialty() == specialty && checkDisponibility(doc.getId(), hour, date)) {
+                        doctor = doc;
+                        break;
+                    }
+                }
+                if (doctor == null) {
+                    return new Response("No available doctor for that specialty.", Status.BAD_REQUEST);
+                }
             }
-            if (!checkDisponibility(doctorId, hour, date)) {
-                return new Response("Doctor not available.", Status.BAD_REQUEST);
-            }
-
             long count = storage.getAppointments().stream()
                     .filter(a -> a.getPatient().getId() == patientId)
                     .count();
             String appointmentId = String.format("A-%d-%04d", patientId, count);
 
             Patient patient = (Patient) storage.getUserById(patientId);
-            Doctor doctor = (Doctor) storage.getUserById(doctorId);
 
             LocalDateTime datetime = LocalDateTime.of(LocalDate.parse(date), LocalTime.parse(hour));
             storage.addAppointment(new Appointment(appointmentId, patient, doctor, specialty, datetime, reason, type));
