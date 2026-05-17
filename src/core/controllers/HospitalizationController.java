@@ -88,24 +88,14 @@ public class HospitalizationController {
     }
 
     public static Response approveHospitalization(String hospitalizationId) {
-        try {
-            return changeStatus(hospitalizationId, HospitalizationStatus.REQUESTED, true,  HospitalizationStatus.ONGOING, "Hospitalization approved.", "Hospitalization cannot be approved in its current state.");
-        } catch (Exception e) {
-            return new Response("Unexpected error", Status.INTERNAL_SERVER_ERROR);
-        }
+        return changeStatus(hospitalizationId, HospitalizationStatus.REQUESTED, true, HospitalizationStatus.ONGOING, "Hospitalization approved.", "Hospitalization cannot be approved in its current state.");
     }
+
     public static Response denyHospitalization(String hospitalizationId) {
-        try {
-            return changeStatus(hospitalizationId, HospitalizationStatus.REQUESTED, true,  HospitalizationStatus.CANCELED, "Hospitalization denied.", "Hospitalization cannot be denied in its current state.");
-        } catch (Exception e) {
-            return new Response("Unexpected error", Status.INTERNAL_SERVER_ERROR);
-        }
+        return changeStatus(hospitalizationId, HospitalizationStatus.REQUESTED, true, HospitalizationStatus.CANCELED, "Hospitalization denied.", "Hospitalization cannot be denied in its current state.");
     }
+
     public static Response cancelHospitalization(String hospitalizationId) {
-        try {
-            return changeStatus(hospitalizationId, HospitalizationStatus.ONGOING, false,  HospitalizationStatus.CANCELED, "Hospitalization canceled.", "Hospitalization cannot be canceled in its current state.");
-        } catch (Exception e) {
-            return new Response("Unexpected error", Status.INTERNAL_SERVER_ERROR);
-        }
+        return changeStatus(hospitalizationId, HospitalizationStatus.ONGOING, false, HospitalizationStatus.CANCELED, "Hospitalization canceled.", "Hospitalization cannot be canceled in its current state.");
     }
 }
