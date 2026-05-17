@@ -56,6 +56,25 @@ public class AppointmentController {
         return appointment;
     }
 
+    private static Response changeStatus(String appointmentId, AppointmentStatus requiredStatus, boolean mustMatch, AppointmentStatus newStatus, String successMsg, String errorMsg) {
+        try {
+            Appointment appointment = findAppointment(appointmentId);
+
+            boolean conditionMet = mustMatch ? appointment.getStatus().equals(requiredStatus) : !appointment.getStatus().equals(requiredStatus);
+
+            if (conditionMet) {
+                appointment.setStatus(newStatus);
+                return new Response(successMsg, Status.OK);
+            }
+            return new Response(errorMsg, Status.BAD_REQUEST);
+
+        } catch (AppointmentNotFoundException e) {
+            return new Response(e.getMessage(), Status.NOT_FOUND);
+        } catch (Exception e) {
+            return new Response("Unexpected Error.", Status.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     //Metodos
     public static Response requestAppointment(long patientId, long doctorId, Specialty specialty, String reason, String date, String hour) {
         try {
@@ -109,48 +128,15 @@ public class AppointmentController {
     }
 
     public static Response acceptAppointment(String appointmentId) {
-        try {
-            Appointment appointment = findAppointment(appointmentId);
-            if (appointment.getStatus().equals(AppointmentStatus.REQUESTED)) {
-                appointment.setStatus(AppointmentStatus.PENDING);
-                return new Response("Appointment accepted.", Status.OK);
-            }
-            return new Response("Appointment cannot be accepted in its current state.", Status.BAD_REQUEST);
-        } catch (AppointmentNotFoundException e) {
-            return new Response(e.getMessage(), Status.NOT_FOUND);
-        } catch (Exception e) {
-            return new Response("Unexpected Error.", Status.INTERNAL_SERVER_ERROR);
-        }
+        return changeStatus(appointmentId, AppointmentStatus.REQUESTED, true, AppointmentStatus.PENDING, "Appointment accepted.", "Appointment cannot be accepted in its current state.");
     }
 
     public static Response completeAppointment(String appointmentId) {
-        try {
-            Appointment appointment = findAppointment(appointmentId);
-            if (appointment.getStatus().equals(AppointmentStatus.PENDING)) {
-                appointment.setStatus(AppointmentStatus.COMPLETED);
-                return new Response("Appointment completed.", Status.OK);
-            }
-            return new Response("Appointment cannot be completed in its current state.", Status.BAD_REQUEST);
-        } catch (AppointmentNotFoundException e) {
-            return new Response(e.getMessage(), Status.NOT_FOUND);
-        } catch (Exception e) {
-            return new Response("Unexpected Error.", Status.INTERNAL_SERVER_ERROR);
-        }
+        return changeStatus(appointmentId, AppointmentStatus.PENDING, true, AppointmentStatus.COMPLETED, "Appointment completed.", "Appointment cannot be completed in its current state.");
     }
 
     public static Response cancelAppointment(String appointmentId) {
-        try {
-            Appointment appointment = findAppointment(appointmentId);
-            if (!appointment.getStatus().equals(AppointmentStatus.COMPLETED)) {
-                appointment.setStatus(AppointmentStatus.CANCELED);
-                return new Response("Appointment canceled.", Status.OK);
-            }
-            return new Response("Appointment cannot be canceled in its current state.", Status.BAD_REQUEST);
-        } catch (AppointmentNotFoundException e) {
-            return new Response(e.getMessage(), Status.NOT_FOUND);
-        } catch (Exception e) {
-            return new Response("Unexpected Error.", Status.INTERNAL_SERVER_ERROR);
-        }
+        return changeStatus(appointmentId, AppointmentStatus.COMPLETED, false, AppointmentStatus.CANCELED, "Appointment canceled.", "Appointment cannot be canceled in its current state.");
     }
 
     public static Response rescheduleAppointment(String appointmentId, String newHour, String reason) {
