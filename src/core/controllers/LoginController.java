@@ -31,7 +31,7 @@ public class LoginController {
 
             try {
                 User user = storage.getUserByUsername(username);
-
+                if (user == null) return new Response("User not found.", Status.NOT_FOUND);
                 if (!user.getPassword().equals(password.trim())) {
                     return new Response("Password incorrect", Status.BAD_REQUEST);
                 }
