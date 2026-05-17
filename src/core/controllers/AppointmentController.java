@@ -15,6 +15,7 @@ import core.models.enums.Specialty;
 import core.models.storage.Storage;
 import core.models.user.Doctor;
 import core.models.user.Patient;
+import core.models.user.User;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -71,14 +72,15 @@ public class AppointmentController {
             }
             Doctor doctor = null;
             if (doctorId != 0) {
-                if (storage.getUserById(doctorId) == null || !(storage.getUserById(doctorId) instanceof Doctor)) {
+                User u = storage.getUserById(doctorId);
+                if (u == null || !(u instanceof Doctor)) {
                     return new Response("Invalid Doctor id.", Status.BAD_REQUEST);
                 }
+                doctor = (Doctor) u;
 
                 if (!checkDisponibility(doctorId, LocalTime.parse(hour), LocalDate.parse(date))) {
                     return new Response("Doctor not available.", Status.BAD_REQUEST);
                 }
-                doctor = (Doctor) storage.getUserById(doctorId);
                 if (doctor.getSpecialty() != specialty) {
                     return new Response("Specialty does not match doctor's specialty.", Status.BAD_REQUEST);
                 }
