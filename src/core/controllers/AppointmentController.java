@@ -22,11 +22,10 @@ import java.time.LocalTime;
  * @author krl0s
  */
 public class AppointmentController {
-    
-    static Storage storage = Storage.getInstance();
+
     //Metodos internos
     private static boolean checkDisponibility(long doctorId, String hour, String date) {
-        
+        Storage storage = Storage.getInstance();
         Doctor doctor = (Doctor) storage.getUserById(doctorId);
 
         for (Appointment appointment : storage.getAppointments()) {
@@ -49,6 +48,7 @@ public class AppointmentController {
     //Metodos
     public static Response requestAppointment(long patientId, long doctorId, Specialty specialty, String reason, String date, String hour) {
         try {
+            Storage storage = Storage.getInstance();
             boolean type = false;
             if (storage.getUserById(patientId) == null) {
                 return new Response("Invalid Patient id.", Status.BAD_REQUEST);
@@ -98,17 +98,18 @@ public class AppointmentController {
 
     public static Response acceptAppointment(String appointmentId) {
         try {
+            Storage storage = Storage.getInstance();
             Appointment appointment = storage.getAppointmentById(appointmentId);
-            if(appointment == null){
-            return new Response("Appointment not found.", Status.NOT_FOUND);
+            if (appointment == null) {
+                return new Response("Appointment not found.", Status.NOT_FOUND);
             }
             if (appointment.getStatus().equals(AppointmentStatus.REQUESTED)) {
                 appointment.setStatus(AppointmentStatus.PENDING);
                 return new Response("Appointment accepted.", Status.OK);
             }
+            return new Response("Appointment cannot be accepted in its current state.", Status.BAD_REQUEST);
         } catch (Exception e) {
             return new Response("Unexpected Error.", Status.INTERNAL_SERVER_ERROR);
         }
-        return null;
     }
 }
