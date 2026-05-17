@@ -4,7 +4,7 @@
  */
 package core.controllers.hospitalization;
 
-import core.controllers.utils.HospitalizationNotFoundException;
+import core.controllers.hospitalization.utils.HospitalizationNotFoundException;
 import core.controllers.utils.Response;
 import core.controllers.utils.Serializer;
 import core.controllers.utils.Status;

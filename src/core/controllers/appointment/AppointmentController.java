@@ -4,7 +4,7 @@
  */
 package core.controllers.appointment;
 
-import core.controllers.utils.AppointmentNotFoundException;
+import core.controllers.appointment.utils.AppointmentNotFoundException;
 import core.controllers.utils.Response;
 import core.controllers.utils.Serializer;
 import core.controllers.utils.Status;
