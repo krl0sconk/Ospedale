@@ -5,6 +5,7 @@
 package core.controllers;
 
 import core.controllers.utils.Response;
+import core.controllers.utils.Serializer;
 import core.controllers.utils.Status;
 import core.controllers.utils.Validator;
 import core.models.enums.Specialty;
@@ -13,6 +14,7 @@ import core.models.user.Doctor;
 import core.models.user.Patient;
 import core.models.user.User;
 import java.time.LocalDate;
+import java.util.HashMap;
 
 /**
  *
@@ -160,6 +162,26 @@ public class UserController {
             storage.updateDoctor(id, username, firstname, lastname, password, specialty, licenceNumber, assignedOffice);
             return new Response("Doctor updated succesfully.", Status.OK);
 
+        } catch (Exception e) {
+            return new Response("Unexpected error.", Status.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public static Response getPatients() {
+        try {
+            HashMap<String, Object> data = new HashMap<>();
+            data.put("list", Serializer.serializeList(Storage.getInstance().getPatients()));
+            return new Response("Returned patients.", Status.OK);
+        } catch (Exception e) {
+            return new Response("Unexpected error.", Status.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public static Response getDoctors() {
+        try {
+            HashMap<String, Object> data = new HashMap<>();
+            data.put("list", Serializer.serializeList(Storage.getInstance().getDoctors()));
+            return new Response("Returned doctors.", Status.OK);
         } catch (Exception e) {
             return new Response("Unexpected error.", Status.INTERNAL_SERVER_ERROR);
         }
