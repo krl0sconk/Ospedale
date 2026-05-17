@@ -84,6 +84,9 @@ public class UserController {
             if (validation != null) {
                 return validation;
             }
+            if (storage.getUserById(id) == null) {
+                return new Response("Patient not found.", Status.NOT_FOUND);
+            }
             if (!Validator.isValidEmail(email)) {
                 return new Response("Invalid email.", Status.BAD_REQUEST);
             }
@@ -143,6 +146,9 @@ public class UserController {
             Response validation = validateCommonFields(id, username, password, passwordConfirmation, storage);
             if (validation != null) {
                 return validation;
+            }
+            if (storage.getUserById(id) == null) {
+                return new Response("Patient not found.", Status.NOT_FOUND);
             }
             if (!Validator.isValidLicence(licenceNumber)) {
                 return new Response("Invalid licence.", Status.BAD_REQUEST);
