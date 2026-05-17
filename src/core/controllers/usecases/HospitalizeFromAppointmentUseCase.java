@@ -5,7 +5,7 @@
 package core.controllers.usecases;
 
 import core.controllers.appointment.AppointmentController;
-import core.controllers.HospitalizationController;
+import core.controllers.hospitalization.HospitalizationController;
 import core.controllers.utils.Response;
 import core.controllers.utils.Status;
 import core.models.Appointment;

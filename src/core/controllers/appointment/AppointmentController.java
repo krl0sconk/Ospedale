@@ -48,7 +48,7 @@ public class AppointmentController implements IAppointmentController{
     }
 
     private String generateAppointmentId(long patientId) {
-        long count = Storage.getInstance().getAppointments().stream().filter(a -> a.getPatient().getId() == patientId).count();
+        long count = this.storage.getAppointments().stream().filter(a -> a.getPatient().getId() == patientId).count();
         return String.format("A-%d-%04d", patientId, count);
     }
 
