@@ -13,7 +13,6 @@ import core.models.Hospitalization;
 import core.models.enums.HospitalizationStatus;
 import core.models.enums.RoomType;
 import core.models.storage.IStorage;
-import core.models.storage.Storage;
 import core.models.user.Doctor;
 import core.models.user.Patient;
 import core.models.user.User;
