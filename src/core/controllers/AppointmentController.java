@@ -182,12 +182,11 @@ public class AppointmentController {
             }
             Prescription pre = new Prescription(appointment, medicationName, dose, administrationRoute, treatmentDuration, additionalInstructions, frecuency);
             appointment.addPrescription(pre);
+            return new Response("Medication prescribed.", Status.CREATED);
         } catch (AppointmentNotFoundException e) {
             return new Response(e.getMessage(), Status.NOT_FOUND);
         } catch (Exception e) {
             return new Response("Unexpected Error.", Status.INTERNAL_SERVER_ERROR);
         }
-        return null;
     }
-
 }
