@@ -112,4 +112,38 @@ public class AppointmentController {
             return new Response("Unexpected Error.", Status.INTERNAL_SERVER_ERROR);
         }
     }
+    public static Response completeAppointment(String appointmentId) {
+        try {
+            Storage storage = Storage.getInstance();
+            Appointment appointment = storage.getAppointmentById(appointmentId);
+            if (appointment == null) {
+                return new Response("Appointment not found.", Status.NOT_FOUND);
+            }
+            if (appointment.getStatus().equals(AppointmentStatus.PENDING)) {
+                appointment.setStatus(AppointmentStatus.COMPLETED);
+                return new Response("Appointment completed.", Status.OK);
+            }
+            return new Response("Appointment cannot be completed in its current state.", Status.BAD_REQUEST);
+        } catch (Exception e) {
+            return new Response("Unexpected Error.", Status.INTERNAL_SERVER_ERROR);
+        }
+    }
+    public static Response cancelAppointment(String appointmentId) {
+        try {
+            Storage storage = Storage.getInstance();
+            Appointment appointment = storage.getAppointmentById(appointmentId);
+            if (appointment == null) {
+                return new Response("Appointment not found.", Status.NOT_FOUND);
+            }
+            if (!appointment.getStatus().equals(AppointmentStatus.COMPLETED)) {
+                appointment.setStatus(AppointmentStatus.CANCELED);
+                return new Response("Appointment canceled.", Status.OK);
+            }
+            return new Response("Appointment cannot be canceled in its current state.", Status.BAD_REQUEST);
+        } catch (Exception e) {
+            return new Response("Unexpected Error.", Status.INTERNAL_SERVER_ERROR);
+        }
+    }
+    
+    
 }
