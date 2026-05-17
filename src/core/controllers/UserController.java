@@ -20,6 +20,23 @@ import java.time.LocalDate;
  */
 public class UserController {
 
+    //Metodos internos
+    private static Response validateCommonFields(long id, String username, String password, String confirmation, Storage storage) {
+        if (!Validator.isValidId(id)) {
+            return new Response("Invalid id.", Status.BAD_REQUEST);
+        }
+
+        User existingUsername = storage.getUserByUsername(username);
+        if (existingUsername != null && storage.getUserById(id) != existingUsername) {
+            return new Response("Username already exists.", Status.BAD_REQUEST);
+        }
+
+        if (!password.equals(confirmation)) {
+            return new Response("Passwords do not match.", Status.BAD_REQUEST);
+        }
+        return null;
+    }
+
     //Metodos
     //Pacientes
     public static Response registerPatient(String firstname, String lastname, long id, boolean gender, String birthdate, String address, long phone, String email, String username, String password, String passwordConfirmation) {
@@ -30,8 +47,9 @@ public class UserController {
                 return new Response("All fields are required", Status.BAD_REQUEST);
             }
 
-            if (!Validator.isValidId(id)) {
-                return new Response("Invalid id.", Status.BAD_REQUEST);
+            Response validation = validateCommonFields(id, username, password, passwordConfirmation, storage);
+            if (validation != null) {
+                return validation;
             }
             if (!Validator.isValidEmail(email)) {
                 return new Response("Invalid email.", Status.BAD_REQUEST);
@@ -41,14 +59,6 @@ public class UserController {
             }
             if (!Validator.isValidDate(birthdate)) {
                 return new Response("Invalid date.", Status.BAD_REQUEST);
-            }
-
-            if (storage.getUserByUsername(username) != null) {
-                return new Response("Username already exists.", Status.BAD_REQUEST);
-            }
-
-            if (!password.equals(passwordConfirmation)) {
-                return new Response("Passwords do not match.", Status.BAD_REQUEST);
             }
 
             if (!storage.addUser(new Patient(id, username, firstname, lastname, password, email, LocalDate.parse(birthdate), gender, phone, address))) {
@@ -70,8 +80,9 @@ public class UserController {
                 return new Response("All fields are required", Status.BAD_REQUEST);
             }
 
-            if (!Validator.isValidId(id) || storage.getUserById(id) == null) {
-                return new Response("Invalid id.", Status.BAD_REQUEST);
+            Response validation = validateCommonFields(id, username, password, passwordConfirmation, storage);
+            if (validation != null) {
+                return validation;
             }
             if (!Validator.isValidEmail(email)) {
                 return new Response("Invalid email.", Status.BAD_REQUEST);
@@ -83,13 +94,6 @@ public class UserController {
                 return new Response("Invalid date.", Status.BAD_REQUEST);
             }
 
-            if (storage.getUserByUsername(username) != null && storage.getUserById(id) != storage.getUserByUsername(username)) {
-                return new Response("Username already exists.", Status.BAD_REQUEST);
-            }
-
-            if (!password.equals(passwordConfirmation)) {
-                return new Response("Passwords do not match.", Status.BAD_REQUEST);
-            }
             storage.updatePatient(id, username, firstname, lastname, password, email, LocalDate.parse(birthdate), gender, phone, address);
             return new Response("Patient updated succesfully.", Status.OK);
 
@@ -107,22 +111,15 @@ public class UserController {
                 return new Response("All fields are required", Status.BAD_REQUEST);
             }
 
-            if (!Validator.isValidId(id)) {
-                return new Response("Invalid id.", Status.BAD_REQUEST);
+            Response validation = validateCommonFields(id, username, password, passwordConfirmation, storage);
+            if (validation != null) {
+                return validation;
             }
             if (!Validator.isValidLicence(licenceNumber)) {
                 return new Response("Invalid licence.", Status.BAD_REQUEST);
             }
             if (!Validator.isValidOffice(assignedOffice)) {
                 return new Response("Invalid Office.", Status.BAD_REQUEST);
-            }
-
-            if (storage.getUserByUsername(username) != null) {
-                return new Response("Username already exists.", Status.BAD_REQUEST);
-            }
-
-            if (!password.equals(passwordConfirmation)) {
-                return new Response("Passwords do not match.", Status.BAD_REQUEST);
             }
 
             if (!storage.addUser(new Doctor(id, username, firstname, lastname, password, specialty, licenceNumber, assignedOffice))) {
@@ -143,22 +140,15 @@ public class UserController {
                 return new Response("All fields are required", Status.BAD_REQUEST);
             }
 
-            if (!Validator.isValidId(id) || storage.getUserById(id) == null) {
-                return new Response("Invalid id.", Status.BAD_REQUEST);
+            Response validation = validateCommonFields(id, username, password, passwordConfirmation, storage);
+            if (validation != null) {
+                return validation;
             }
             if (!Validator.isValidLicence(licenceNumber)) {
                 return new Response("Invalid licence.", Status.BAD_REQUEST);
             }
             if (!Validator.isValidOffice(assignedOffice)) {
                 return new Response("Invalid Office.", Status.BAD_REQUEST);
-            }
-
-            if (storage.getUserByUsername(username) != null && storage.getUserById(id) != storage.getUserByUsername(username)) {
-                return new Response("Username already exists.", Status.BAD_REQUEST);
-            }
-
-            if (!password.equals(passwordConfirmation)) {
-                return new Response("Passwords do not match.", Status.BAD_REQUEST);
             }
 
             storage.updateDoctor(id, username, firstname, lastname, password, specialty, licenceNumber, assignedOffice);

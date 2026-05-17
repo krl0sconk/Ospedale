@@ -29,18 +29,16 @@ public class LoginController {
                 return new Response("Password must not be empty.", Status.BAD_REQUEST);
             }
 
-            try {
-                User user = storage.getUserByUsername(username);
-                if (user == null) return new Response("User not found.", Status.NOT_FOUND);
-                if (!user.getPassword().equals(password.trim())) {
-                    return new Response("Password incorrect", Status.BAD_REQUEST);
-                }
-
-                //TODO: Serializacion (Migue)
-                return new Response("Password correct", Status.OK, user.serialize());
-            } catch (Exception e) {
-                return new Response("Username not associated to any user.", Status.NOT_FOUND);
+            User user = storage.getUserByUsername(username);
+            if (user == null) {
+                return new Response("User not found.", Status.NOT_FOUND);
             }
+            if (!user.getPassword().equals(password.trim())) {
+                return new Response("Password incorrect", Status.BAD_REQUEST);
+            }
+
+            //TODO: Serializacion (Migue)
+            return new Response("Loged in.", Status.OK, user.serialize());
 
         } catch (Exception e) {
             return new Response("Unexpected error", Status.INTERNAL_SERVER_ERROR);
