@@ -19,7 +19,7 @@ import core.models.storage.Storage;
 public class HospitalizationController {
 
     //Metodos internos
-    private static Hospitalization findAppointment(String hospitalizationId) throws HospitalizationNotFoundException {
+    private static Hospitalization findHospitalization(String hospitalizationId) throws HospitalizationNotFoundException {
         Hospitalization hospitalization = Storage.getInstance().getHospitalizationById(hospitalizationId);
         if (hospitalization == null) {
             throw new HospitalizationNotFoundException("Hospitalization not found.");
@@ -27,14 +27,14 @@ public class HospitalizationController {
         return hospitalization;
     }
 
-    private static String generateAppointmentId(long patientId) {
+    private static String generateHospitalizationId(long patientId) {
         long count = Storage.getInstance().getHospitalizations().stream().filter(a -> a.getPatient().getId() == patientId).count();
         return String.format("H-%d-%04d", patientId, count);
     }
     
         private static Response changeStatus(String hospitalizationId, HospitalizationStatus requiredStatus, boolean mustMatch, HospitalizationStatus newStatus, String successMsg, String errorMsg) {
         try {
-            Hospitalization hospitalization = findAppointment(hospitalizationId);
+            Hospitalization hospitalization = findHospitalization(hospitalizationId);
 
             boolean conditionMet = mustMatch ? hospitalization.getStatus().equals(requiredStatus) : !hospitalization.getStatus().equals(requiredStatus);
 
@@ -55,7 +55,7 @@ public class HospitalizationController {
     public static Response requestHospitalization(long patientId, long doctorId, String date, String reason, RoomType roomType, String observations) {
         try {
             Storage storage = Storage.getInstance();
-
+            
         } catch (Exception e) {
             return new Response("Unexpected error", Status.INTERNAL_SERVER_ERROR);
 
