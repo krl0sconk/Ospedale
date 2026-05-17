@@ -65,6 +65,10 @@ public class Hospitalization {
     public HospitalizationStatus getStatus() {
         return status;
     }
+
+    public LocalDate getDate() {
+        return date;
+    }
     
     
     

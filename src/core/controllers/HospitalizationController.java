@@ -6,6 +6,7 @@ package core.controllers;
 
 import core.controllers.utils.HospitalizationNotFoundException;
 import core.controllers.utils.Response;
+import core.controllers.utils.Serializer;
 import core.controllers.utils.Status;
 import core.controllers.utils.Validator;
 import core.models.Hospitalization;
@@ -16,6 +17,8 @@ import core.models.user.Doctor;
 import core.models.user.Patient;
 import core.models.user.User;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  *
@@ -97,5 +100,22 @@ public class HospitalizationController {
 
     public static Response cancelHospitalization(String hospitalizationId) {
         return changeStatus(hospitalizationId, HospitalizationStatus.ONGOING, false, HospitalizationStatus.CANCELED, "Hospitalization canceled.", "Hospitalization cannot be canceled in its current state.");
+    }
+
+    public static Response getPatientHospitalizations(long patientId) {
+        try {
+            ArrayList<Hospitalization> result = new ArrayList<>();
+            for (Hospitalization h : Storage.getInstance().getHospitalizations()) {
+                if (h.getPatient().getId() == patientId) {
+                    result.add(h);
+                }
+            }
+            result.sort((a, b) -> b.getDate().compareTo(a.getDate()));
+            HashMap<String, Object> data = new HashMap<>();
+            data.put("list", Serializer.serializeList(result));
+            return new Response("Returned patient hospitalizations.", Status.OK, data);
+        } catch (Exception e) {
+            return new Response("Unexpected Error.", Status.INTERNAL_SERVER_ERROR);
+        }
     }
 }
