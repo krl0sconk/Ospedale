@@ -7,10 +7,12 @@ package core.models.storage;
 import core.models.Appointment;
 import core.models.Hospitalization;
 import core.models.Prescription;
+import core.models.enums.Specialty;
 import core.models.user.Administrator;
 import core.models.user.Doctor;
 import core.models.user.Patient;
 import core.models.user.User;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 /**
@@ -149,5 +151,13 @@ public class Storage {
         }
         //TODO: Error? x4
         return null;
+    }
+
+    public void updatePatient(long id, String username, String firstname, String lastname, String password, String email, LocalDate parse, boolean gender, long phone, String address) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    public void updateDoctor(long id, String username, String firstname, String lastname, String password, Specialty specialty, String licenceNumber, String assignedOffice) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }

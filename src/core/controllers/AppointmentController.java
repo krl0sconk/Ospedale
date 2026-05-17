@@ -11,6 +11,7 @@ import core.models.enums.AppointmentStatus;
 import core.models.enums.Specialty;
 import core.models.storage.Storage;
 import core.models.user.Doctor;
+import core.models.user.Patient;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -56,9 +57,10 @@ public class AppointmentController {
     }
 
     //Metodos
-    public static Response requestAppointment(long patientId, long doctorId, Specialty specialty, String date, String hour) {
+    public static Response requestAppointment(long patientId, long doctorId, Specialty specialty, String reason, String date, String hour) {
         try {
             Storage storage = Storage.getInstance();
+            boolean type = false;
             if (storage.getUserById(patientId) == null) {
                 return new Response("Invalid Patient id.", Status.BAD_REQUEST);
             }
@@ -68,17 +70,29 @@ public class AppointmentController {
             if (!isValidHour(hour)) {
                 return new Response("Invalid hour.", Status.BAD_REQUEST);
             }
-            if (storage.getUserById(doctorId) == null || !(storage.getUserById(doctorId) instanceof Doctor)) {
-                return new Response("Invalid Doctor id.", Status.BAD_REQUEST);
+            if (doctorId != 0) {
+                if (storage.getUserById(doctorId) == null || !(storage.getUserById(doctorId) instanceof Doctor)) {
+                    return new Response("Invalid Doctor id.", Status.BAD_REQUEST);
+                }
+                type = true;
             }
-            
             if (!checkDisponibility(doctorId, hour, date)) {
                 return new Response("Doctor not available.", Status.BAD_REQUEST);
             }
 
+            long count = storage.getAppointments().stream()
+                    .filter(a -> a.getPatient().getId() == patientId)
+                    .count();
+            String appointmentId = String.format("A-%d-%04d", patientId, count);
+
+            Patient patient = (Patient) storage.getUserById(patientId);
+            Doctor doctor = (Doctor) storage.getUserById(doctorId);
+
+            LocalDateTime datetime = LocalDateTime.of(LocalDate.parse(date), LocalTime.parse(hour));
+            storage.addAppointment(new Appointment(appointmentId, patient, doctor, specialty, datetime, reason, type));
+            return new Response("Appointment requested successfully.", Status.CREATED);
         } catch (Exception e) {
             return new Response("Unexpected Error", Status.INTERNAL_SERVER_ERROR);
         }
-        return null;
     }
 }
