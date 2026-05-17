@@ -101,4 +101,11 @@ public class HospitalizationController {
             return new Response("Unexpected error", Status.INTERNAL_SERVER_ERROR);
         }
     }
+    public static Response cancelHospitalization(String hospitalizationId) {
+        try {
+            return changeStatus(hospitalizationId, HospitalizationStatus.ONGOING, false,  HospitalizationStatus.CANCELED, "Hospitalization canceled.", "Hospitalization cannot be canceled in its current state.");
+        } catch (Exception e) {
+            return new Response("Unexpected error", Status.INTERNAL_SERVER_ERROR);
+        }
+    }
 }
