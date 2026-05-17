@@ -12,6 +12,7 @@ import core.controllers.utils.Validator;
 import core.models.Hospitalization;
 import core.models.enums.HospitalizationStatus;
 import core.models.enums.RoomType;
+import core.models.storage.IStorage;
 import core.models.storage.Storage;
 import core.models.user.Doctor;
 import core.models.user.Patient;
@@ -24,23 +25,26 @@ import java.util.HashMap;
  *
  * @author krl0s
  */
-public class HospitalizationController {
+public class HospitalizationController implements IHospitalizationController{
 
+    //Atributos
+    private final IStorage storage;
+            
     //Metodos internos
-    private static Hospitalization findHospitalization(String hospitalizationId) throws HospitalizationNotFoundException {
-        Hospitalization hospitalization = Storage.getInstance().getHospitalizationById(hospitalizationId);
+    private Hospitalization findHospitalization(String hospitalizationId) throws HospitalizationNotFoundException {
+        Hospitalization hospitalization = this.storage.getHospitalizationById(hospitalizationId);
         if (hospitalization == null) {
             throw new HospitalizationNotFoundException("Hospitalization not found.");
         }
         return hospitalization;
     }
 
-    private static String generateHospitalizationId(long patientId) {
-        long count = Storage.getInstance().getHospitalizations().stream().filter(a -> a.getPatient().getId() == patientId).count();
+    private String generateHospitalizationId(long patientId) {
+        long count = this.storage.getHospitalizations().stream().filter(a -> a.getPatient().getId() == patientId).count();
         return String.format("H-%d-%04d", patientId, count);
     }
 
-    private static Response changeStatus(String hospitalizationId, HospitalizationStatus requiredStatus, boolean mustMatch, HospitalizationStatus newStatus, String successMsg, String errorMsg) {
+    private Response changeStatus(String hospitalizationId, HospitalizationStatus requiredStatus, boolean mustMatch, HospitalizationStatus newStatus, String successMsg, String errorMsg) {
         try {
             Hospitalization hospitalization = findHospitalization(hospitalizationId);
 
@@ -59,10 +63,9 @@ public class HospitalizationController {
         }
     }
 
-    private static Response createHospitalization(long patientId, long doctorId, String date, String reason, RoomType roomType, String observations, HospitalizationStatus status) {
+    private Response createHospitalization(long patientId, long doctorId, String date, String reason, RoomType roomType, String observations, HospitalizationStatus status) {
         try {
-            Storage storage = Storage.getInstance();
-            User patient = storage.getUserById(patientId);
+            User patient = this.storage.getUserById(patientId);
             if (patient == null || !(patient instanceof Patient)) {
                 return new Response("Invalid Patient id.", Status.BAD_REQUEST);
             }
@@ -70,7 +73,7 @@ public class HospitalizationController {
                 return new Response("Invalid date.", Status.BAD_REQUEST);
             }
 
-            User doctor = storage.getUserById(doctorId);
+            User doctor = this.storage.getUserById(doctorId);
             if (doctor == null || !(doctor instanceof Doctor)) {
                 return new Response("Invalid Doctor id.", Status.BAD_REQUEST);
             }
@@ -81,7 +84,7 @@ public class HospitalizationController {
 
             String hospitalizationId = generateHospitalizationId(patientId);
             Hospitalization hospitalization = new Hospitalization(hospitalizationId, (Patient) patient, (Doctor) doctor, LocalDate.parse(date), reason, roomType, observations, status);
-            storage.addHospitalization(hospitalization);
+            this.storage.addHospitalization(hospitalization);
             return new Response("Hospitalization requested", Status.CREATED);
         } catch (Exception e) {
             return new Response("Unexpected error", Status.INTERNAL_SERVER_ERROR);
@@ -90,30 +93,41 @@ public class HospitalizationController {
     }
 
     //Metodos
-    public static Response requestHospitalization(long patientId, long doctorId, String date, String reason, RoomType roomType, String observations) {
+    
+    public HospitalizationController(IStorage storage) {
+        this.storage = storage;
+    }
+    
+    @Override
+    public Response requestHospitalization(long patientId, long doctorId, String date, String reason, RoomType roomType, String observations) {
             return createHospitalization(patientId, doctorId, date, reason, roomType, observations, HospitalizationStatus.REQUESTED);
     }
 
-    public static Response requestHospitalizationOngoing(long patientId, long doctorId, String date, String reason, RoomType roomType, String observations) {
+    @Override
+    public Response requestHospitalizationOngoing(long patientId, long doctorId, String date, String reason, RoomType roomType, String observations) {
         return createHospitalization(patientId, doctorId, date, reason, roomType, observations, HospitalizationStatus.ONGOING);
     }
 
-    public static Response approveHospitalization(String hospitalizationId) {
+    @Override
+    public Response approveHospitalization(String hospitalizationId) {
         return changeStatus(hospitalizationId, HospitalizationStatus.REQUESTED, true, HospitalizationStatus.ONGOING, "Hospitalization approved.", "Hospitalization cannot be approved in its current state.");
     }
 
-    public static Response denyHospitalization(String hospitalizationId) {
+    @Override
+    public Response denyHospitalization(String hospitalizationId) {
         return changeStatus(hospitalizationId, HospitalizationStatus.REQUESTED, true, HospitalizationStatus.CANCELED, "Hospitalization denied.", "Hospitalization cannot be denied in its current state.");
     }
 
-    public static Response cancelHospitalization(String hospitalizationId) {
+    @Override
+    public Response cancelHospitalization(String hospitalizationId) {
         return changeStatus(hospitalizationId, HospitalizationStatus.ONGOING, false, HospitalizationStatus.CANCELED, "Hospitalization canceled.", "Hospitalization cannot be canceled in its current state.");
     }
 
-    public static Response getPatientHospitalizations(long patientId) {
+    @Override
+    public Response getPatientHospitalizations(long patientId) {
         try {
             ArrayList<Hospitalization> result = new ArrayList<>();
-            for (Hospitalization h : Storage.getInstance().getHospitalizations()) {
+            for (Hospitalization h : this.storage.getHospitalizations()) {
                 if (h.getPatient().getId() == patientId) {
                     result.add(h);
                 }
