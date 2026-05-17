@@ -63,7 +63,6 @@ public class Storage implements IStorage {
                 return user;
             }
         }
-        //TODO: Error?
         return null;
     }
 
@@ -74,7 +73,6 @@ public class Storage implements IStorage {
                 return user;
             }
         }
-        //TODO: Error x2?
         return null;
     }
 
@@ -134,7 +132,6 @@ public class Storage implements IStorage {
                 return app;
             }
         }
-        //TODO: Error? x3
         return null;
     }
 
@@ -161,7 +158,6 @@ public class Storage implements IStorage {
                 return hosp;
             }
         }
-        //TODO: Error? x4
         return null;
     }
 
