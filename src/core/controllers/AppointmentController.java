@@ -22,9 +22,11 @@ import java.time.LocalTime;
  * @author krl0s
  */
 public class AppointmentController {
-
+    
+    static Storage storage = Storage.getInstance();
+    //Metodos internos
     private static boolean checkDisponibility(long doctorId, String hour, String date) {
-        Storage storage = Storage.getInstance();
+        
         Doctor doctor = (Doctor) storage.getUserById(doctorId);
 
         for (Appointment appointment : storage.getAppointments()) {
@@ -37,10 +39,16 @@ public class AppointmentController {
         return true;
     }
 
+    private static String generateAppointmentId(long patientId) {
+        long count = Storage.getInstance().getAppointments().stream()
+                .filter(a -> a.getPatient().getId() == patientId)
+                .count();
+        return String.format("A-%d-%04d", patientId, count);
+    }
+
     //Metodos
     public static Response requestAppointment(long patientId, long doctorId, Specialty specialty, String reason, String date, String hour) {
         try {
-            Storage storage = Storage.getInstance();
             boolean type = false;
             if (storage.getUserById(patientId) == null) {
                 return new Response("Invalid Patient id.", Status.BAD_REQUEST);
@@ -76,18 +84,31 @@ public class AppointmentController {
                     return new Response("No available doctor for that specialty.", Status.BAD_REQUEST);
                 }
             }
-            long count = storage.getAppointments().stream()
-                    .filter(a -> a.getPatient().getId() == patientId)
-                    .count();
-            String appointmentId = String.format("A-%d-%04d", patientId, count);
 
+            String appointmentId = generateAppointmentId(patientId);
             Patient patient = (Patient) storage.getUserById(patientId);
-
             LocalDateTime datetime = LocalDateTime.of(LocalDate.parse(date), LocalTime.parse(hour));
+
             storage.addAppointment(new Appointment(appointmentId, patient, doctor, specialty, datetime, reason, type));
             return new Response("Appointment requested successfully.", Status.CREATED);
         } catch (Exception e) {
-            return new Response("Unexpected Error", Status.INTERNAL_SERVER_ERROR);
+            return new Response("Unexpected Error.", Status.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    public static Response acceptAppointment(String appointmentId) {
+        try {
+            Appointment appointment = storage.getAppointmentById(appointmentId);
+            if(appointment == null){
+            return new Response("Appointment not found.", Status.NOT_FOUND);
+            }
+            if (appointment.getStatus().equals(AppointmentStatus.REQUESTED)) {
+                appointment.setStatus(AppointmentStatus.PENDING);
+                return new Response("Appointment accepted.", Status.OK);
+            }
+        } catch (Exception e) {
+            return new Response("Unexpected Error.", Status.INTERNAL_SERVER_ERROR);
+        }
+        return null;
     }
 }
