@@ -6,6 +6,7 @@ package core.controllers;
 
 import core.controllers.utils.Response;
 import core.controllers.utils.Status;
+import core.controllers.utils.Validator;
 import core.models.Appointment;
 import core.models.enums.AppointmentStatus;
 import core.models.enums.Specialty;
@@ -22,25 +23,7 @@ import java.time.LocalTime;
  */
 public class AppointmentController {
 
-    //Validaciones
-    private static boolean isValidDate(String date) {
-        if (!date.matches("\\d{4}-\\d{2}-\\d{2}")) {
-            return false;
-        }
-        try {
-            LocalDate.parse(date);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    private static boolean isValidHour(String hour) {
-        if (!hour.matches("([01]\\d|2[0-3]):(00|15|30|45)")) {
-            return false;
-        }
-        return true;
-    }
+    
 
     private static boolean checkDisponibility(long doctorId, String hour, String date) {
         Storage storage = Storage.getInstance();
@@ -64,16 +47,19 @@ public class AppointmentController {
             if (storage.getUserById(patientId) == null) {
                 return new Response("Invalid Patient id.", Status.BAD_REQUEST);
             }
-            if (!isValidDate(date)) {
+            if (!Validator.isValidDate(date)) {
                 return new Response("Invalid date.", Status.BAD_REQUEST);
             }
-            if (!isValidHour(hour)) {
+            if (!Validator.isValidHour(hour)) {
                 return new Response("Invalid hour.", Status.BAD_REQUEST);
             }
             Doctor doctor = null;
             if (doctorId != 0) {
                 if (storage.getUserById(doctorId) == null || !(storage.getUserById(doctorId) instanceof Doctor)) {
                     return new Response("Invalid Doctor id.", Status.BAD_REQUEST);
+                }
+                if (doctor.getSpecialty() != specialty) {
+                    return new Response("Specialty does not match doctor's specialty.", Status.BAD_REQUEST);
                 }
                 if (!checkDisponibility(doctorId, hour, date)) {
                     return new Response("Doctor not available.", Status.BAD_REQUEST);
