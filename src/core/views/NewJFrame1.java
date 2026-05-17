@@ -894,7 +894,7 @@ public class NewJFrame1 extends javax.swing.JFrame {
         long idDoctor = Long.parseLong(jComboBox2.getItemAt(jComboBox2.getSelectedIndex()));
         Doctor doc = null;
         for(User use: this.users){
-            if (use.id  == idDoctor ){
+            if (use.getId()  == idDoctor ){
                 doc = (Doctor) use;
             }
         }
