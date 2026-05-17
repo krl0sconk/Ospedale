@@ -9,6 +9,7 @@ import core.controllers.utils.Response;
 import core.controllers.utils.Status;
 import core.controllers.utils.Validator;
 import core.models.Appointment;
+import core.models.Prescription;
 import core.models.enums.AppointmentStatus;
 import core.models.enums.Specialty;
 import core.models.storage.Storage;
@@ -149,7 +150,8 @@ public class AppointmentController {
             return new Response("Unexpected Error.", Status.INTERNAL_SERVER_ERROR);
         }
     }
-    public static Response rescheduleAppointment(String appointmentId, String newHour, String reason, long doctorId) {
+
+    public static Response rescheduleAppointment(String appointmentId, String newHour, String reason) {
         try {
             Appointment appointment = findAppointment(appointmentId);
             if (appointment.getStatus().equals(AppointmentStatus.PENDING)) {
@@ -157,9 +159,11 @@ public class AppointmentController {
                     return new Response("Hour invalid.", Status.BAD_REQUEST);
                 }
                 if (!checkDisponibility(appointment.getDoctor().getId(), newHour, appointment.getDatetime().toLocalDate().toString())) {
-                    return new  Response("No disponibility.", Status.BAD_REQUEST);
+                    return new Response("No disponibility.", Status.BAD_REQUEST);
                 }
-                appointment.setReason(appointment.getReason()+" RESCHEDULED:"+reason);
+                LocalDateTime newDatetime = LocalDateTime.of(appointment.getDatetime().toLocalDate(), LocalTime.parse(newHour));
+                appointment.setDatetime(newDatetime);
+                appointment.setReason(appointment.getReason() + " RESCHEDULED:" + reason);
                 return new Response("Appointment rescheduled.", Status.OK);
             }
             return new Response("Appointment cannot be rescheduled in its current state.", Status.BAD_REQUEST);
@@ -168,6 +172,22 @@ public class AppointmentController {
         } catch (Exception e) {
             return new Response("Unexpected Error.", Status.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    public static Response prescribeMedication(String appointmentId, String medicationName, double dose, String administrationRoute, int treatmentDuration, String additionalInstructions, int frecuency) {
+        try {
+            Appointment appointment = findAppointment(appointmentId);
+            if (!appointment.getStatus().equals(AppointmentStatus.PENDING)) {
+                return new Response("Medication cannot be prescribed in appointment's current state.", Status.BAD_REQUEST);
+            }
+            Prescription pre = new Prescription(appointment, medicationName, dose, administrationRoute, treatmentDuration, additionalInstructions, frecuency);
+            appointment.addPrescription(pre);
+        } catch (AppointmentNotFoundException e) {
+            return new Response(e.getMessage(), Status.NOT_FOUND);
+        } catch (Exception e) {
+            return new Response("Unexpected Error.", Status.INTERNAL_SERVER_ERROR);
+        }
+        return null;
     }
 
 }
