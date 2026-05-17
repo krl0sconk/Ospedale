@@ -6,6 +6,7 @@ package core.controllers;
 
 import core.controllers.utils.AppointmentNotFoundException;
 import core.controllers.utils.Response;
+import core.controllers.utils.Serializer;
 import core.controllers.utils.Status;
 import core.controllers.utils.Validator;
 import core.models.Appointment;
@@ -19,6 +20,8 @@ import core.models.user.User;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  *
@@ -42,9 +45,7 @@ public class AppointmentController {
     }
 
     private static String generateAppointmentId(long patientId) {
-        long count = Storage.getInstance().getAppointments().stream()
-                .filter(a -> a.getPatient().getId() == patientId)
-                .count();
+        long count = Storage.getInstance().getAppointments().stream().filter(a -> a.getPatient().getId() == patientId).count();
         return String.format("A-%d-%04d", patientId, count);
     }
 
@@ -173,6 +174,46 @@ public class AppointmentController {
             return new Response("Medication prescribed.", Status.CREATED);
         } catch (AppointmentNotFoundException e) {
             return new Response(e.getMessage(), Status.NOT_FOUND);
+        } catch (Exception e) {
+            return new Response("Unexpected Error.", Status.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public static Response getPatientAppointments(long patientId) {
+        try {
+            ArrayList<Appointment> result = new ArrayList<>();
+            for (Appointment a : Storage.getInstance().getAppointments()) {
+                if (a.getPatient().getId() == patientId) {
+                    result.add(a);
+                }
+            }
+            result.sort((a, b) -> b.getDatetime().compareTo(a.getDatetime()));
+            HashMap<String, Object> data = new HashMap<>();
+            data.put("list", Serializer.serializeList(result));
+            return new Response("Returned patient appointments.", Status.OK, data);
+        } catch (Exception e) {
+            return new Response("Unexpected Error.", Status.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public static Response getDoctorAppointments(long doctorId, boolean pendingOnly) {
+        try {
+            ArrayList<Appointment> result = new ArrayList<>();
+            for (Appointment a : Storage.getInstance().getAppointments()) {
+                if (a.getDoctor().getId() == doctorId) {
+                    if (pendingOnly) {
+                        if (a.getStatus().equals(AppointmentStatus.PENDING)) {
+                            result.add(a);
+                        }
+                    } else {
+                        result.add(a);
+                    }
+                }
+            }
+            result.sort((a, b) -> b.getDatetime().compareTo(a.getDatetime()));
+            HashMap<String, Object> data = new HashMap<>();
+            data.put("list", Serializer.serializeList(result));
+            return new Response("Returned doctor appointmetns.", Status.OK, data);
         } catch (Exception e) {
             return new Response("Unexpected Error.", Status.INTERNAL_SERVER_ERROR);
         }
