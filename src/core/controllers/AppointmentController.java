@@ -4,6 +4,7 @@
  */
 package core.controllers;
 
+import core.controllers.utils.AppointmentNotFoundException;
 import core.controllers.utils.Response;
 import core.controllers.utils.Status;
 import core.controllers.utils.Validator;
@@ -43,6 +44,14 @@ public class AppointmentController {
                 .filter(a -> a.getPatient().getId() == patientId)
                 .count();
         return String.format("A-%d-%04d", patientId, count);
+    }
+
+    private static Appointment findAppointment(String appointmentId) throws AppointmentNotFoundException {
+        Appointment appointment = Storage.getInstance().getAppointmentById(appointmentId);
+        if (appointment == null) {
+            throw new AppointmentNotFoundException("Appointment not found.");
+        }
+        return appointment;
     }
 
     //Metodos
@@ -98,52 +107,47 @@ public class AppointmentController {
 
     public static Response acceptAppointment(String appointmentId) {
         try {
-            Storage storage = Storage.getInstance();
-            Appointment appointment = storage.getAppointmentById(appointmentId);
-            if (appointment == null) {
-                return new Response("Appointment not found.", Status.NOT_FOUND);
-            }
+            Appointment appointment = findAppointment(appointmentId);
             if (appointment.getStatus().equals(AppointmentStatus.REQUESTED)) {
                 appointment.setStatus(AppointmentStatus.PENDING);
                 return new Response("Appointment accepted.", Status.OK);
             }
             return new Response("Appointment cannot be accepted in its current state.", Status.BAD_REQUEST);
+        } catch (AppointmentNotFoundException e) {
+            return new Response(e.getMessage(), Status.NOT_FOUND);
         } catch (Exception e) {
             return new Response("Unexpected Error.", Status.INTERNAL_SERVER_ERROR);
         }
     }
+
     public static Response completeAppointment(String appointmentId) {
         try {
-            Storage storage = Storage.getInstance();
-            Appointment appointment = storage.getAppointmentById(appointmentId);
-            if (appointment == null) {
-                return new Response("Appointment not found.", Status.NOT_FOUND);
-            }
+            Appointment appointment = findAppointment(appointmentId);
             if (appointment.getStatus().equals(AppointmentStatus.PENDING)) {
                 appointment.setStatus(AppointmentStatus.COMPLETED);
                 return new Response("Appointment completed.", Status.OK);
             }
             return new Response("Appointment cannot be completed in its current state.", Status.BAD_REQUEST);
+        } catch (AppointmentNotFoundException e) {
+            return new Response(e.getMessage(), Status.NOT_FOUND);
         } catch (Exception e) {
             return new Response("Unexpected Error.", Status.INTERNAL_SERVER_ERROR);
         }
     }
+
     public static Response cancelAppointment(String appointmentId) {
         try {
-            Storage storage = Storage.getInstance();
-            Appointment appointment = storage.getAppointmentById(appointmentId);
-            if (appointment == null) {
-                return new Response("Appointment not found.", Status.NOT_FOUND);
-            }
+            Appointment appointment = findAppointment(appointmentId);
             if (!appointment.getStatus().equals(AppointmentStatus.COMPLETED)) {
                 appointment.setStatus(AppointmentStatus.CANCELED);
                 return new Response("Appointment canceled.", Status.OK);
             }
             return new Response("Appointment cannot be canceled in its current state.", Status.BAD_REQUEST);
+        } catch (AppointmentNotFoundException e) {
+            return new Response(e.getMessage(), Status.NOT_FOUND);
         } catch (Exception e) {
             return new Response("Unexpected Error.", Status.INTERNAL_SERVER_ERROR);
         }
     }
-    
-    
+
 }
