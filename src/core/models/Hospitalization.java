@@ -21,9 +21,7 @@ public class Hospitalization {
     private doctor doctor;
     private LocalDate date;
 
-    public String getId() {
-        return id;
-    }
+    
     private String reason;
     private RoomType roomType;
     private String observations;
@@ -33,6 +31,10 @@ public class Hospitalization {
         this.status = status;
     }
 
+    public String getId() {
+        return id;
+    }
+    
     public Hospitalization(String id, patient patient, doctor doctor, LocalDate date, String reason, RoomType roomType, String observations) {
         this.id = id;
         this.patient = patient;
@@ -45,18 +47,7 @@ public class Hospitalization {
         this.observations = observations;
         this.status = HospitalizationStatus.REQUESTED;
     }
-    public Hospitalization(String id, patient patient, doctor doctor, LocalDate date, String reason, RoomType roomType, String observations, HospitalizationStatus hopsS) {
-        this.id = id;
-        this.patient = patient;
-        patient.setHospitalization(this);
-        this.doctor = doctor;
-        doctor.addHospitalization(this);
-        this.date = date;
-        this.reason = reason;
-        this.roomType = roomType;
-        this.observations = observations;
-        this.status = hopsS;
-    }
+    
 
     public patient getPatient() {
         return patient;

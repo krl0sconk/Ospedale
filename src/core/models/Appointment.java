@@ -23,10 +23,6 @@ public class Appointment {
     private Specialty specialty;
     private LocalDateTime datetime;
     private String reason;
-
-    public void setReason(String reason) {
-        this.reason = reason;
-    }
     private boolean type;
     private ArrayList<Prescription> prescriptions;
     private AppointmentStatus status;
@@ -35,6 +31,23 @@ public class Appointment {
     private String recommendedTreatment;
     private String followUp;
 
+    public Appointment(String id, patient patient, doctor doctor, Specialty specialty, LocalDateTime datetime, String reason, boolean type) {
+        this.id = id;
+        this.patient = patient;
+        this.doctor = doctor;
+        this.specialty = specialty;
+        this.datetime = datetime;
+        this.reason = reason;
+        this.type = type;
+        this.status = AppointmentStatus.REQUESTED;
+        this.prescriptions = new ArrayList<>();
+    }
+    
+    
+    public void setReason(String reason) {
+        this.reason = reason;
+    }
+    
     public void setDiagnosis(String diagnosis) {
         this.diagnosis = diagnosis;
     }
@@ -51,17 +64,6 @@ public class Appointment {
         this.followUp = followUp;
     }
 
-    public Appointment(String id, patient patient, doctor doctor, Specialty specialty, LocalDateTime datetime, String reason, boolean type) {
-        this.id = id;
-        this.patient = patient;
-        this.doctor = doctor;
-        this.specialty = specialty;
-        this.datetime = datetime;
-        this.reason = reason;
-        this.type = type;
-        this.status = AppointmentStatus.REQUESTED;
-        this.prescriptions = new ArrayList<>();
-    }
 
     public void setStatus(AppointmentStatus status) {
         this.status = status;
