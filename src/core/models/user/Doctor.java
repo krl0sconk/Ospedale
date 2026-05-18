@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import core.models.Appointment;
 import core.models.Hospitalization;
 import core.models.enums.Specialty;
+import java.util.HashMap;
 
 /**
  *
@@ -52,4 +53,11 @@ public class Doctor extends User {
     public void setAssignedOffice(String assignedOffice) {
         this.assignedOffice = assignedOffice;
     }
+
+    @Override
+    public HashMap<String, Object> serialize() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+    
+    
 }

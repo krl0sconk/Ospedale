@@ -4,6 +4,8 @@
  */
 package core.models.user;
 
+import java.util.HashMap;
+
 /**
  *
  * @author edangulo
@@ -12,6 +14,11 @@ public class Administrator extends User {
     
     public Administrator(long id, String username, String firstname, String lastname, String password) {
         super(id, username, firstname, lastname, password);
+    }
+
+    @Override
+    public HashMap<String, Object> serialize() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
     
 }

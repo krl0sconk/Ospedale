@@ -14,6 +14,17 @@ public abstract class User {
     
     protected final long id;
     protected String username;
+    protected String firstname;
+    protected String lastname;
+    protected String password;
+    
+    public User(long id, String username, String firstname, String lastname, String password) {
+        this.id = id;
+        this.username = username;
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.password = password;
+    }
 
     public void setUsername(String username) {
         this.username = username;
@@ -28,17 +39,6 @@ public abstract class User {
     }
 
     public void setPassword(String password) {
-        this.password = password;
-    }
-    protected String firstname;
-    protected String lastname;
-    protected String password;
-
-    public User(long id, String username, String firstname, String lastname, String password) {
-        this.id = id;
-        this.username = username;
-        this.firstname = firstname;
-        this.lastname = lastname;
         this.password = password;
     }
 
@@ -62,8 +62,6 @@ public abstract class User {
         return password;
     }
 
-    public HashMap<String, Object> serialize() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
+    public abstract HashMap<String, Object> serialize(); 
     
 }
