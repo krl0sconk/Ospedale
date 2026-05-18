@@ -68,8 +68,20 @@ public class patient extends User {
 
     @Override
     public HashMap<String, Object> serialize() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        HashMap<String, Object> patmap=new HashMap<>();
+        patmap.put("id", this.id );
+        patmap.put("username", this.username);
+        patmap.put("firstname", this.firstname);
+        patmap.put("lastname", this.lastname);
+        patmap.put("password", this.password);
+        patmap.put("email", this.email);
+        patmap.put("birthdate", this.birthdate);
+        patmap.put("gender", this.gender);
+        patmap.put("phone", this.phone);
+        patmap.put("address", this.address);
+        return patmap;
     }
+    
     public void update(String username, String firstname, String lastname, String password, String email, LocalDate birthdate, boolean gender, long phone, String address){
         this.username=username;
         this.firstname=firstname;

@@ -54,7 +54,17 @@ public class doctor extends User {
 
     @Override
     public HashMap<String, Object> serialize() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        HashMap<String, Object> docmap=new HashMap<>();
+        docmap.put("id", this.id );
+        docmap.put("username", this.username);
+        docmap.put("firstname", this.firstname);
+        docmap.put("lastname", this.lastname);
+        docmap.put("password", this.password);
+        docmap.put("specialty", this.specialty);
+        docmap.put("licenceNumber", this.licenceNumber);
+        docmap.put("assignedOffice", this.assignedOffice);
+       
+        return docmap;
     }
     
     public boolean addHospitalization(Hospitalization hosp){
@@ -70,4 +80,6 @@ public class doctor extends User {
         this.licenceNumber=licenceNumber;
         this.assignedOffice=assignedOffice;
     }
+    
+    
 }
