@@ -18,7 +18,14 @@ public class Administrator extends User {
 
     @Override
     public HashMap<String, Object> serialize() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        HashMap<String, Object> admap=new HashMap<>();
+        admap.put("id", this.id );
+        admap.put("username", this.username);
+        admap.put("firstname", this.firstname);
+        admap.put("lastname", this.lastname);
+        admap.put("userType", "admin" );
+       
+        return admap;
     }
     
     public void update(String username, String firstname, String lastname, String password){
@@ -27,5 +34,7 @@ public class Administrator extends User {
         this.lastname=lastname;
         this.password=password;
     }
+    
+    
     
 }

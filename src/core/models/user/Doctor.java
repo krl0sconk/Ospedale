@@ -59,7 +59,7 @@ public class doctor extends User {
         docmap.put("username", this.username);
         docmap.put("firstname", this.firstname);
         docmap.put("lastname", this.lastname);
-        docmap.put("password", this.password);
+        docmap.put("userType", "doctor" );
         docmap.put("specialty", this.specialty);
         docmap.put("licenceNumber", this.licenceNumber);
         docmap.put("assignedOffice", this.assignedOffice);
