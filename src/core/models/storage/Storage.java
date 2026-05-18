@@ -9,8 +9,8 @@ import core.models.Hospitalization;
 import core.models.Prescription;
 import core.models.enums.Specialty;
 import core.models.user.Administrator;
-import core.models.user.Doctor;
-import core.models.user.Patient;
+import core.models.user.doctor;
+import core.models.user.patient;
 import core.models.user.User;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -77,10 +77,10 @@ public class Storage implements IStorage {
     }
 
     @Override
-    public ArrayList<Patient> getPatients() {
-        ArrayList<Patient> patients = new ArrayList<>();
+    public ArrayList<patient> getPatients() {
+        ArrayList<patient> patients = new ArrayList<>();
         for (User user : users) {
-            if (user instanceof Patient patient) {
+            if (user instanceof patient patient) {
                 patients.add(patient);
             }
         }
@@ -88,10 +88,10 @@ public class Storage implements IStorage {
     }
 
     @Override
-    public ArrayList<Doctor> getDoctors() {
-        ArrayList<Doctor> doctors = new ArrayList<>();
+    public ArrayList<doctor> getDoctors() {
+        ArrayList<doctor> doctors = new ArrayList<>();
         for (User user : users) {
-            if (user instanceof Doctor doctor) {
+            if (user instanceof doctor doctor) {
                 doctors.add(doctor);
             }
         }
@@ -164,7 +164,7 @@ public class Storage implements IStorage {
     @Override
     public void updatePatient(long id, String username, String firstname, String lastname, String password, String email, LocalDate birthdate, boolean gender, long phone, String address) {
         for (User user : users) {
-            if (user.getId() == id && user instanceof Patient patient) {
+            if (user.getId() == id && user instanceof patient patient) {
                 //TODO: Metodo update (Migue)
                 patient.update(username, firstname, lastname, password, email, birthdate, gender, phone, address);
                 return;
@@ -175,7 +175,7 @@ public class Storage implements IStorage {
     @Override
     public void updateDoctor(long id, String username, String firstname, String lastname, String password, Specialty specialty, String licenceNumber, String assignedOffice) {
         for (User user : users) {
-            if (user.getId() == id && user instanceof Doctor doctor) {
+            if (user.getId() == id && user instanceof doctor doctor) {
                 //TODO: Metodo update (Migue)
                 doctor.update(username, firstname, lastname, password, specialty, licenceNumber, assignedOffice);
                 return;

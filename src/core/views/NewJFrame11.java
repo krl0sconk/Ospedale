@@ -7,8 +7,8 @@ package core.views;
 import core.models.Hospitalization;
 import core.models.Appointment;
 import core.models.user.User;
-import core.models.user.Patient;
-import core.models.user.Doctor;
+import core.models.user.patient;
+import core.models.user.doctor;
 import java.awt.Color;
 import java.util.ArrayList;
 import core.models.enums.Specialty;
@@ -432,16 +432,16 @@ public class NewJFrame11 extends javax.swing.JFrame {
         String comPassword = jTextField10.getText();
         Specialty specialty = Specialty.valueOf(spec.replaceAll(" &", "").replaceAll(" ", "_"));
         if (password.equals(comPassword)) {
-            users.add(new Doctor(id, username, firstname, lastname, password, specialty, licenseNumber, assignedOffice));
+            users.add(new doctor(id, username, firstname, lastname, password, specialty, licenseNumber, assignedOffice));
         }
     }//GEN-LAST:event_jButton9ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         long idDoctor = Long.parseLong(jComboBox2.getItemAt(jComboBox2.getSelectedIndex()));
-        Doctor temp = null;
+        doctor temp = null;
         for(User use:this.users){
             if(use.getId() == idDoctor)
-                temp =(Doctor) user;
+                temp =(doctor) user;
         }
         NewJFrame111 doctor = new NewJFrame111(user,temp, users, hospitalizations,appointments);
         this.setVisible(false);
@@ -457,10 +457,10 @@ public class NewJFrame11 extends javax.swing.JFrame {
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         long idPatient = Long.parseLong(jComboBox2.getItemAt(jComboBox2.getSelectedIndex()));
-        Patient temp = null;
+        patient temp = null;
         for(User use:this.users){
             if(use.getId() == idPatient)
-                temp =(Patient) user;
+                temp =(patient) user;
         }
         NewJFrame1 patient = new NewJFrame1(user,temp,users,appointments,hospitalizations);
         this.setVisible(false);

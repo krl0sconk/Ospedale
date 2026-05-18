@@ -7,8 +7,8 @@ package core.views;
 import core.models.Hospitalization;
 import core.models.Appointment;
 import core.models.user.User;
-import core.models.user.Patient;
-import core.models.user.Doctor;
+import core.models.user.patient;
+import core.models.user.doctor;
 import core.models.user.Administrator;
 import com.formdev.flatlaf.FlatDarkLaf;
 import java.awt.Color;
@@ -431,13 +431,13 @@ public class NewJFrame extends javax.swing.JFrame {
                         this.setVisible(false);
                         admin.setVisible(true);
                     }
-                    else if (selectedUser instanceof Doctor ) {
-                        NewJFrame111 doctor = new NewJFrame111(selectedUser,(Doctor)selectedUser,users,hospitalizations,appointments);
+                    else if (selectedUser instanceof doctor ) {
+                        NewJFrame111 doctor = new NewJFrame111(selectedUser,(doctor)selectedUser,users,hospitalizations,appointments);
                         this.setVisible(false);
                         doctor.setVisible(true);
                     }
                     else {
-                        NewJFrame1 patient = new NewJFrame1(selectedUser,(Patient) selectedUser,users,appointments, hospitalizations);
+                        NewJFrame1 patient = new NewJFrame1(selectedUser,(patient) selectedUser,users,appointments, hospitalizations);
                         this.setVisible(false);
                         patient.setVisible(true);
                     }
@@ -461,7 +461,7 @@ public class NewJFrame extends javax.swing.JFrame {
         String comPassword = jTextField10.getText();
         LocalDate birthdate = LocalDate.of(Integer.parseInt(birth.substring(0, 4)), Integer.parseInt(birth.substring(5, 7)), Integer.parseInt(birth.substring(8)));
         if (comPassword.equals(password)) {
-            users.add(new Patient(id, user, firstname, lastname, password, email, birthdate, gender, phone, address));
+            users.add(new patient(id, user, firstname, lastname, password, email, birthdate, gender, phone, address));
         }
         
     }//GEN-LAST:event_jButton9ActionPerformed

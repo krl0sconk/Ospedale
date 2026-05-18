@@ -10,8 +10,8 @@ import core.controllers.utils.Status;
 import core.controllers.utils.Validator;
 import core.models.enums.Specialty;
 import core.models.storage.IStorage;
-import core.models.user.Doctor;
-import core.models.user.Patient;
+import core.models.user.doctor;
+import core.models.user.patient;
 import core.models.user.User;
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -70,7 +70,7 @@ public class UserController implements IUserController{
                 return new Response("Invalid date.", Status.BAD_REQUEST);
             }
 
-            if (!this.storage.addUser(new Patient(id, username, firstname, lastname, password, email, LocalDate.parse(birthdate), gender, phone, address))) {
+            if (!this.storage.addUser(new patient(id, username, firstname, lastname, password, email, LocalDate.parse(birthdate), gender, phone, address))) {
                 return new Response("A Patient with that id already exists", Status.BAD_REQUEST);
             }
 
@@ -133,7 +133,7 @@ public class UserController implements IUserController{
                 return new Response("Invalid Office.", Status.BAD_REQUEST);
             }
 
-            if (!this.storage.addUser(new Doctor(id, username, firstname, lastname, password, specialty, licenceNumber, assignedOffice))) {
+            if (!this.storage.addUser(new doctor(id, username, firstname, lastname, password, specialty, licenceNumber, assignedOffice))) {
                 return new Response("A Doctor with that id already exists", Status.BAD_REQUEST);
             }
             return new Response("Doctor registered succesfully.", Status.CREATED);

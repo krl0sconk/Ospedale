@@ -14,7 +14,7 @@ import java.util.HashMap;
  *
  * @author edangulo
  */
-public class Doctor extends User {
+public class doctor extends User {
     
     private Specialty specialty;
     private String licenceNumber;
@@ -22,12 +22,13 @@ public class Doctor extends User {
     private ArrayList<Appointment> appointments;
     private ArrayList<Hospitalization> hospitalizations;
 
-    public Doctor(long id, String username, String firstname, String lastname, String password, Specialty specialty, String licenceNumber, String assignedOffice) {
+    public doctor(long id, String username, String firstname, String lastname, String password, Specialty specialty, String licenceNumber, String assignedOffice ) {
         super(id, username, firstname, lastname, password);
-        hospitalizations = new ArrayList<>();
         this.specialty = specialty;
         this.licenceNumber = licenceNumber;
         this.assignedOffice = assignedOffice;
+        this.appointments = new ArrayList<>();
+        this.hospitalizations = new ArrayList<>();
     }
 
     public ArrayList<Appointment> getAppointments() {
@@ -38,10 +39,7 @@ public class Doctor extends User {
         return specialty;
     }
     
-    public boolean addHospitalization(Hospitalization hosp){
-        return hospitalizations.add(hosp);
-    }
-
+    
     public void setSpecialty(Specialty specialty) {
         this.specialty = specialty;
     }
@@ -59,5 +57,17 @@ public class Doctor extends User {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
     
+    public boolean addHospitalization(Hospitalization hosp){
+        return hospitalizations.add(hosp);
+    }
     
+    public void update(String username, String firstname, String lastname, String password, Specialty specialty, String licenceNumber, String assignedOffice){
+        this.username=username;
+        this.firstname=firstname;
+        this.lastname=lastname;
+        this.password=password;
+        this.specialty=specialty;
+        this.licenceNumber=licenceNumber;
+        this.assignedOffice=assignedOffice;
+    }
 }

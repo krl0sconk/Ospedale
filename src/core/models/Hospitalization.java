@@ -6,8 +6,8 @@ package core.models;
 
 import core.models.enums.HospitalizationStatus;
 import core.models.enums.RoomType;
-import core.models.user.Patient;
-import core.models.user.Doctor;
+import core.models.user.patient;
+import core.models.user.doctor;
 import java.time.LocalDate;
 
 /**
@@ -17,8 +17,8 @@ import java.time.LocalDate;
 public class Hospitalization {
     
     private final String id;
-    private Patient patient;
-    private Doctor doctor;
+    private patient patient;
+    private doctor doctor;
     private LocalDate date;
 
     public String getId() {
@@ -33,7 +33,7 @@ public class Hospitalization {
         this.status = status;
     }
 
-    public Hospitalization(String id, Patient patient, Doctor doctor, LocalDate date, String reason, RoomType roomType, String observations) {
+    public Hospitalization(String id, patient patient, doctor doctor, LocalDate date, String reason, RoomType roomType, String observations) {
         this.id = id;
         this.patient = patient;
         patient.setHospitalization(this);
@@ -45,7 +45,7 @@ public class Hospitalization {
         this.observations = observations;
         this.status = HospitalizationStatus.REQUESTED;
     }
-    public Hospitalization(String id, Patient patient, Doctor doctor, LocalDate date, String reason, RoomType roomType, String observations, HospitalizationStatus hopsS) {
+    public Hospitalization(String id, patient patient, doctor doctor, LocalDate date, String reason, RoomType roomType, String observations, HospitalizationStatus hopsS) {
         this.id = id;
         this.patient = patient;
         patient.setHospitalization(this);
@@ -58,7 +58,7 @@ public class Hospitalization {
         this.status = hopsS;
     }
 
-    public Patient getPatient() {
+    public patient getPatient() {
         return patient;
     }
 

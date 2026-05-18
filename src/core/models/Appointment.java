@@ -6,8 +6,8 @@ package core.models;
 
 import core.models.enums.Specialty;
 import core.models.enums.AppointmentStatus;
-import core.models.user.Patient;
-import core.models.user.Doctor;
+import core.models.user.patient;
+import core.models.user.doctor;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
@@ -18,8 +18,8 @@ import java.util.ArrayList;
 public class Appointment {
     
     private final String id;
-    private Patient patient;
-    private Doctor doctor;
+    private patient patient;
+    private doctor doctor;
     private Specialty specialty;
     private LocalDateTime datetime;
     private String reason;
@@ -51,7 +51,7 @@ public class Appointment {
         this.followUp = followUp;
     }
 
-    public Appointment(String id, Patient patient, Doctor doctor, Specialty specialty, LocalDateTime datetime, String reason, boolean type) {
+    public Appointment(String id, patient patient, doctor doctor, Specialty specialty, LocalDateTime datetime, String reason, boolean type) {
         this.id = id;
         this.patient = patient;
         this.doctor = doctor;
@@ -71,7 +71,7 @@ public class Appointment {
         return id;
     }
 
-    public Doctor getDoctor() {
+    public doctor getDoctor() {
         return doctor;
     }
 
@@ -91,7 +91,7 @@ public class Appointment {
         return status;
     }
 
-    public Patient getPatient() {
+    public patient getPatient() {
         return patient;
     }
 

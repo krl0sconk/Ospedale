@@ -14,7 +14,7 @@ import java.util.HashMap;
  *
  * @author edangulo
  */
-public class Patient extends User {
+public class patient extends User {
     
     private String email;
     private LocalDate birthdate;
@@ -24,7 +24,7 @@ public class Patient extends User {
     private ArrayList<Appointment> appointments;
     private Hospitalization hospitalization;
     
-    public Patient(long id, String username, String firstname, String lastname, String password, String email, LocalDate birthdate, boolean gender, long phone, String address) {
+    public patient(long id, String username, String firstname, String lastname, String password, String email, LocalDate birthdate, boolean gender, long phone, String address) {
         super(id, username, firstname, lastname, password);
         this.email = email;
         this.birthdate = birthdate;
@@ -69,6 +69,18 @@ public class Patient extends User {
     @Override
     public HashMap<String, Object> serialize() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+    public void update(String username, String firstname, String lastname, String password, String email, LocalDate birthdate, boolean gender, long phone, String address){
+        this.username=username;
+        this.firstname=firstname;
+        this.lastname=lastname;
+        this.password=password;
+        this.email=email;
+        this.birthdate=birthdate;
+        this.gender=gender;
+        this.phone=phone;
+        this.address=address;
+        
     }
 
     
