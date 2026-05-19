@@ -18,14 +18,14 @@ import core.models.enums.Specialty;
  * @author jjlora
  * @author edangulo
  */
-public class NewJFrame11 extends javax.swing.JFrame {
+public class AdminView extends javax.swing.JFrame {
 
     private int x, y;
     private ArrayList<User> users;
     private ArrayList<Appointment>appointments;
     private ArrayList<Hospitalization>hospitalizations;
     private User user;
-    public NewJFrame11(User user, ArrayList<User>users,ArrayList<Hospitalization> hospitalizations, ArrayList<Appointment> appointments) {
+    public AdminView(User user, ArrayList<User>users,ArrayList<Hospitalization> hospitalizations, ArrayList<Appointment> appointments) {
         initComponents();
         this.user = user;
         this.users = users;
@@ -262,33 +262,28 @@ public class NewJFrame11 extends javax.swing.JFrame {
                                 .addComponent(jLabel9)
                                 .addGap(18, 18, 18)
                                 .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(panelRound3Layout.createSequentialGroup()
-                                .addGroup(panelRound3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addGroup(panelRound3Layout.createSequentialGroup()
-                                        .addComponent(jLabel10)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(jTextField8, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(panelRound3Layout.createSequentialGroup()
-                                        .addComponent(jLabel11)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(jTextField9, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(panelRound3Layout.createSequentialGroup()
-                                        .addComponent(jLabel12)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(jTextField10, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addGap(333, 333, 333)))
+                            .addGroup(panelRound3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addGroup(panelRound3Layout.createSequentialGroup()
+                                    .addComponent(jLabel10)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jTextField8, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(panelRound3Layout.createSequentialGroup()
+                                    .addComponent(jLabel11)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jTextField9, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(panelRound3Layout.createSequentialGroup()
+                                    .addComponent(jLabel12)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(jTextField10, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE))))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 82, Short.MAX_VALUE)
                         .addGroup(panelRound3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jButton2)
                             .addGroup(panelRound3Layout.createSequentialGroup()
-                                .addGroup(panelRound3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(panelRound3Layout.createSequentialGroup()
-                                        .addGap(12, 12, 12)
-                                        .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(panelRound3Layout.createSequentialGroup()
-                                        .addGap(47, 47, 47)
-                                        .addComponent(jLabel13)))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 15, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGap(12, 12, 12)
+                                .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(panelRound3Layout.createSequentialGroup()
+                                .addGap(47, 47, 47)
+                                .addComponent(jLabel13)))
                         .addGap(74, 74, 74))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelRound3Layout.createSequentialGroup()
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -443,14 +438,14 @@ public class NewJFrame11 extends javax.swing.JFrame {
             if(use.getId() == idDoctor)
                 temp =(Doctor) user;
         }
-        NewJFrame111 doctor = new NewJFrame111(user,temp, users, hospitalizations,appointments);
+        DoctorView doctor = new DoctorView(user,temp, users, hospitalizations,appointments);
         this.setVisible(false);
         doctor.setVisible(true);
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
         
-        NewJFrame login = new NewJFrame();
+        LogRegView login = new LogRegView();
         this.setVisible(false);
         login.setVisible(true);
     }//GEN-LAST:event_jButton10ActionPerformed
@@ -462,7 +457,7 @@ public class NewJFrame11 extends javax.swing.JFrame {
             if(use.getId() == idPatient)
                 temp =(Patient) user;
         }
-        NewJFrame1 patient = new NewJFrame1(user,temp,users,appointments,hospitalizations);
+        PatientView patient = new PatientView(user,temp,users,appointments,hospitalizations);
         this.setVisible(false);
         patient.setVisible(true);
     }//GEN-LAST:event_jButton3ActionPerformed
