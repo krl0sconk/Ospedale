@@ -33,6 +33,7 @@ public class Prescription implements ISerializable {
     @Override
     public HashMap<String, Object> serialize() {
         HashMap<String, Object> presmap=new HashMap<>();
+        presmap.put("medicationNmae", this.medicationName );
         presmap.put("administrationRoute", this.administrationRoute );
         presmap.put("treatmentDuration", this.treatmentDuration);
         presmap.put("additionalInstructions", this.additionalInstructions);

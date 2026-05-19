@@ -75,7 +75,7 @@ public class patient extends User {
         patmap.put("lastname", this.lastname);
         patmap.put("userType", "patient" );
         patmap.put("email", this.email);
-        patmap.put("birthdate", this.birthdate);
+        patmap.put("birthdate", this.birthdate.toString());
         patmap.put("gender", this.gender);
         patmap.put("phone", this.phone);
         patmap.put("address", this.address);

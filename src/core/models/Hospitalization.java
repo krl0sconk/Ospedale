@@ -68,11 +68,11 @@ public class Hospitalization implements ISerializable {
         hosmap.put("id", this.id);
         hosmap.put("patient", this.patient);
         hosmap.put("doctor", this.doctor);
-        hosmap.put("date", this.date);
+        hosmap.put("date", this.date.toString());
         hosmap.put("reason", this.reason);
-        hosmap.put("roomType", this.roomType);
+        hosmap.put("roomType", this.roomType.name());
         hosmap.put("observations", this.observations);
-        hosmap.put("status", this.status);
+        hosmap.put("status", this.status.name());
         
         return hosmap;
     }
