@@ -4,6 +4,7 @@
  */
 package core.controllers.utils;
 
+import core.models.ISerializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 

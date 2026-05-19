@@ -47,6 +47,11 @@ public class Appointment {
     public void setReason(String reason) {
         this.reason = reason;
     }
+
+    public void setPrescriptions(ArrayList<Prescription> prescriptions) {
+        this.prescriptions = prescriptions;
+    }
+    
     
     public void setDiagnosis(String diagnosis) {
         this.diagnosis = diagnosis;
@@ -102,11 +107,11 @@ public class Appointment {
     }
 
     public String getReason() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return this.reason;
     }
 
     public void setDatetime(LocalDateTime newDatetime) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        this.datetime=newDatetime;
     }
     
 }

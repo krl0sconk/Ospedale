@@ -9,7 +9,7 @@ package core.models;
  * @author jjlora
  */
 public class Prescription {
-    private Appointment appointment;
+    
     private String medicationName;
     private double dose;
     private String administrationRoute;
@@ -17,9 +17,9 @@ public class Prescription {
     private String additionalInstructions;
     private int frecuency;
 
-    public Prescription(Appointment appointment, String medicationName, double dose, String administrationRoute, int treatmentDuration, String additionalInstructions, int frecuency) {
-        this.appointment = appointment; 
-        appointment.addPrescription(this);
+    public Prescription(String medicationName, double dose, String administrationRoute, int treatmentDuration, String additionalInstructions, int frecuency) {
+
+        
         this.medicationName = medicationName;
         this.dose = dose;
         this.administrationRoute = administrationRoute;

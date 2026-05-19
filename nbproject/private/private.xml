@@ -14,6 +14,12 @@
             <file>file:/C:/Users/migue/Documentos/UNN/GitHub/Ospedale/src/core/models/Prescription.java</file>
             <file>file:/C:/Users/migue/Documentos/UNN/GitHub/Ospedale/src/core/models/storage/Storage.java</file>
             <file>file:/C:/Users/migue/Documentos/UNN/GitHub/Ospedale/src/core/controllers/utils/Serializer.java</file>
+            <file>file:/C:/Users/migue/Documentos/UNN/GitHub/Ospedale/src/core/controllers/utils/Status.java</file>
+            <file>file:/C:/Users/migue/Documentos/UNN/GitHub/Ospedale/src/core/models/user/User.java</file>
+            <file>file:/C:/Users/migue/Documentos/UNN/GitHub/Ospedale/src/core/models/user/patient.java</file>
+            <file>file:/C:/Users/migue/Documentos/UNN/GitHub/Ospedale/src/core/models/user/doctor.java</file>
+            <file>file:/C:/Users/migue/Documentos/UNN/GitHub/Ospedale/src/core/models/user/Administrator.java</file>
+            <file>file:/C:/Users/migue/Documentos/UNN/GitHub/Ospedale/src/core/controllers/hospitalization/HospitalizationController.java</file>
         </group>
     </open-files>
 </project-private>

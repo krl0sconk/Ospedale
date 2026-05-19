@@ -4,13 +4,14 @@
  */
 package core.models.user;
 
+import core.models.ISerializable;
 import java.util.HashMap;
 
 /**
  *
  * @author edangulo
  */
-public abstract class User {
+public abstract class User implements ISerializable {
     
     protected final long id;
     protected String username;
@@ -62,6 +63,7 @@ public abstract class User {
         return password;
     }
 
+    @Override
     public abstract HashMap<String, Object> serialize(); 
     
 }
