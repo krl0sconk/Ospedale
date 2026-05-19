@@ -4,11 +4,13 @@
  */
 package core.models;
 
+import java.util.HashMap;
+
 /**
  *
  * @author jjlora
  */
-public class Prescription {
+public class Prescription implements ISerializable {
     
     private String medicationName;
     private double dose;
@@ -26,6 +28,18 @@ public class Prescription {
         this.treatmentDuration = treatmentDuration;
         this.additionalInstructions = additionalInstructions;
         this.frecuency = frecuency;
+    }
+
+    @Override
+    public HashMap<String, Object> serialize() {
+        HashMap<String, Object> presmap=new HashMap<>();
+        presmap.put("administrationRoute", this.administrationRoute );
+        presmap.put("treatmentDuration", this.treatmentDuration);
+        presmap.put("additionalInstructions", this.additionalInstructions);
+        presmap.put("frecuency", this.frecuency);
+        presmap.put("dose", this.dose);
+
+        return presmap;
     }
     
     

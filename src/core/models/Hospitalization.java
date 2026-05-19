@@ -9,12 +9,13 @@ import core.models.enums.RoomType;
 import core.models.user.patient;
 import core.models.user.doctor;
 import java.time.LocalDate;
+import java.util.HashMap;
 
 /**
  *
  * @author edangulo
  */
-public class Hospitalization {
+public class Hospitalization implements ISerializable {
     
     private final String id;
     private patient patient;
@@ -59,6 +60,21 @@ public class Hospitalization {
 
     public LocalDate getDate() {
         return date;
+    }
+
+    @Override
+    public HashMap<String, Object> serialize() {
+        HashMap<String, Object> hosmap=new HashMap<>();
+        hosmap.put("id", this.id);
+        hosmap.put("patient", this.patient);
+        hosmap.put("doctor", this.doctor);
+        hosmap.put("date", this.date);
+        hosmap.put("reason", this.reason);
+        hosmap.put("roomType", this.roomType);
+        hosmap.put("observations", this.observations);
+        hosmap.put("status", this.status);
+        
+        return hosmap;
     }
     
     

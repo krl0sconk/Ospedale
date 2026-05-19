@@ -10,12 +10,13 @@ import core.models.user.patient;
 import core.models.user.doctor;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  *
  * @author edangulo
  */
-public class Appointment {
+public class Appointment implements ISerializable{
     
     private final String id;
     private patient patient;
@@ -98,7 +99,7 @@ public class Appointment {
         return status;
     }
 
-    public patient getPatient() {
+    public patient getappient() {
         return patient;
     }
 
@@ -110,8 +111,29 @@ public class Appointment {
         return this.reason;
     }
 
+    public ArrayList<Prescription> getPrescriptions() {
+        return prescriptions;
+    }
+
+    
     public void setDatetime(LocalDateTime newDatetime) {
         this.datetime=newDatetime;
+    }
+
+    @Override
+    public HashMap<String, Object> serialize() {
+        HashMap<String, Object> appmap=new HashMap<>();
+        appmap.put("id", this.id );
+        appmap.put("username", this.id);
+        appmap.put("firstname", this.patient);
+        appmap.put("lastname", this.doctor);
+        appmap.put("email", this.specialty);
+        appmap.put("birthdate", this.datetime);
+        appmap.put("gender", this.reason);
+        appmap.put("phone", this.type);
+        appmap.put("address", this.status.name());
+        appmap.put("prescriptions",this.prescriptions );
+        return appmap;
     }
     
 }
