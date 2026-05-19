@@ -120,19 +120,37 @@ public class Appointment implements ISerializable{
         this.datetime=newDatetime;
     }
 
-    @Override
+
+   @Override
     public HashMap<String, Object> serialize() {
-        HashMap<String, Object> appmap=new HashMap<>();
-        appmap.put("id", this.id );
-        appmap.put("username", this.id);
-        appmap.put("firstname", this.patient);
-        appmap.put("lastname", this.doctor);
-        appmap.put("email", this.specialty);
-        appmap.put("birthdate", this.datetime);
-        appmap.put("gender", this.reason);
-        appmap.put("phone", this.type);
-        appmap.put("address", this.status.name());
-        appmap.put("prescriptions",this.prescriptions );
+        HashMap<String, Object> appmap = new HashMap<>();
+        appmap.put("id", this.id);
+        if (this.patient != null) {
+            appmap.put("patientId", this.patient.getId());
+            appmap.put("patientName", this.patient.getFirstname() + " " + this.patient.getLastname());
+        } else {
+            appmap.put("patientId", null);
+            appmap.put("patientName", null);
+        }
+        if (this.doctor != null) {
+            appmap.put("doctorId", this.doctor.getId());
+            appmap.put("doctorName", this.doctor.getFirstname() + " " + this.doctor.getLastname());
+        } else {
+            appmap.put("doctorId", null);
+            appmap.put("doctorName", null);
+        }
+        appmap.put("specialty", this.specialty != null ? this.specialty.name() : null);
+        appmap.put("datetime", this.datetime != null ? this.datetime.toString() : null);
+        appmap.put("reason", this.reason);
+        appmap.put("type", this.type);
+        appmap.put("status", this.status != null ? this.status.name() : null);
+        ArrayList<HashMap<String, Object>> presList = new ArrayList<>();
+        if (this.prescriptions != null) {
+            for (Prescription p : this.prescriptions) {
+                if (p != null) presList.add(p.serialize());
+            }
+        }
+        appmap.put("prescriptions", presList);
         return appmap;
     }
     

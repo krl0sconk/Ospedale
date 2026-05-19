@@ -33,14 +33,61 @@ public class Prescription implements ISerializable {
     @Override
     public HashMap<String, Object> serialize() {
         HashMap<String, Object> presmap=new HashMap<>();
-        presmap.put("medicationNmae", this.medicationName );
+        presmap.put("medicationName", this.medicationName );
         presmap.put("administrationRoute", this.administrationRoute );
         presmap.put("treatmentDuration", this.treatmentDuration);
         presmap.put("additionalInstructions", this.additionalInstructions);
-        presmap.put("frecuency", this.frecuency);
+        presmap.put("frequency", this.frecuency);
         presmap.put("dose", this.dose);
-
         return presmap;
+    }
+
+    public String getMedicationName() {
+        return medicationName;
+    }
+
+    public void setMedicationName(String medicationName) {
+        this.medicationName = medicationName;
+    }
+
+    public double getDose() {
+        return dose;
+    }
+
+    public void setDose(double dose) {
+        this.dose = dose;
+    }
+
+    public String getAdministrationRoute() {
+        return administrationRoute;
+    }
+
+    public void setAdministrationRoute(String administrationRoute) {
+        this.administrationRoute = administrationRoute;
+    }
+
+    public int getTreatmentDuration() {
+        return treatmentDuration;
+    }
+
+    public void setTreatmentDuration(int treatmentDuration) {
+        this.treatmentDuration = treatmentDuration;
+    }
+
+    public String getAdditionalInstructions() {
+        return additionalInstructions;
+    }
+
+    public void setAdditionalInstructions(String additionalInstructions) {
+        this.additionalInstructions = additionalInstructions;
+    }
+
+    public int getFrecuency() {
+        return frecuency;
+    }
+
+    public void setFrecuency(int frecuency) {
+        this.frecuency = frecuency;
     }
     
     

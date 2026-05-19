@@ -66,13 +66,25 @@ public class Hospitalization implements ISerializable {
     public HashMap<String, Object> serialize() {
         HashMap<String, Object> hosmap=new HashMap<>();
         hosmap.put("id", this.id);
-        hosmap.put("patient", this.patient);
-        hosmap.put("doctor", this.doctor);
-        hosmap.put("date", this.date.toString());
+        if (this.patient != null) {
+            hosmap.put("patientId", this.patient.getId());
+            hosmap.put("patientName", this.patient.getFirstname() + " " + this.patient.getLastname());
+        } else {
+            hosmap.put("patientId", null);
+            hosmap.put("patientName", null);
+        }
+        if (this.doctor != null) {
+            hosmap.put("doctorId", this.doctor.getId());
+            hosmap.put("doctorName", this.doctor.getFirstname() + " " + this.doctor.getLastname());
+        } else {
+            hosmap.put("doctorId", null);
+            hosmap.put("doctorName", null);
+        }
+        hosmap.put("date", this.date != null ? this.date.toString() : null);
         hosmap.put("reason", this.reason);
-        hosmap.put("roomType", this.roomType.name());
+        hosmap.put("roomType", this.roomType != null ? this.roomType.name() : null);
         hosmap.put("observations", this.observations);
-        hosmap.put("status", this.status.name());
+        hosmap.put("status", this.status != null ? this.status.name() : null);
         
         return hosmap;
     }
