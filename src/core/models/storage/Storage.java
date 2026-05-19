@@ -36,6 +36,9 @@ public class Storage {
         this.users = new ArrayList<>();
         this.apps = new ArrayList<>();
         this.hosps = new ArrayList<>();
+        
+        //esto era del view, se inicializa acá
+        this.users.add(new Administrator(0, "admin", "admin", "adnim", "admin123"));
     }
 
     public static Storage getInstance() {

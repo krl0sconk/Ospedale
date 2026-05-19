@@ -28,17 +28,12 @@ import core.views.DoctorView;
 public class LogRegView extends javax.swing.JFrame {
 
     private int x, y;
-    private ArrayList<User> users;
-    private ArrayList<Hospitalization> hospitalizations;
-    private ArrayList<Appointment> appointments;
 
     public LogRegView() {
         initComponents();
         this.setBackground(new Color(0, 0, 0, 0));
         this.setLocationRelativeTo(null);
 
-        this.users = new ArrayList<>();
-        this.users.add(new Administrator(0, "admin", "admin", "adnim", "admin123"));
     }
 
     /**
@@ -424,28 +419,26 @@ public class LogRegView extends javax.swing.JFrame {
 
     private void btnEnterLogActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEnterLogActionPerformed
         // TODO add your handling code here:
-        User selectedUser = null;
-        for (User user : this.users) {
-            if (txtUsernameLog.getText().equals(user.getUsername())) {
-                selectedUser = user;
-                if (selectedUser.getPassword().equals(txtPasswordLog.getText())) {
-                    if (selectedUser instanceof Administrator ) {
-                        AdminView admin = new AdminView(selectedUser,users,hospitalizations, appointments);
-                        this.setVisible(false);
-                        admin.setVisible(true);
-                    }
-                    else if (selectedUser instanceof Doctor ) {
-                        DoctorView doctor = new DoctorView(selectedUser,(Doctor)selectedUser,users,hospitalizations,appointments);
-                        this.setVisible(false);
-                        doctor.setVisible(true);
-                    }
-                    else {
-                        PatientView patient = new PatientView(selectedUser,(Patient) selectedUser,users,appointments, hospitalizations);
-                        this.setVisible(false);
-                        patient.setVisible(true);
-                    }
-                }
+        String username = txtUsernameLog.getText();
+        String password = txtPasswordLog.getText();
+
+        core.controllers.utils.Response response = core.controllers.LoginController.loginUser(username, password);
+        if (response.getStatus() == core.controllers.utils.Status.OK) {
+            java.util.HashMap<String, Object> userData = response.getData();
+            String role = (String) userData.get("role");
+            long id = (long) userData.get("id");
+            this.dispose();
+
+            if (role.equals("ADMIN")) {
+                new AdminView().setVisible(true); // para admin
+            } else if (role.equals("DOCTOR")) {
+                new DoctorView(id).setVisible(true); // para el doctor
+            } else {
+                new PatientView(id).setVisible(true); // para el paciente
             }
+        } else {
+            //aca por si tira algun error
+            javax.swing.JOptionPane.showMessageDialog(this, response.getMessage(), "Error de Autenticación", javax.swing.JOptionPane.ERROR_MESSAGE);
         }
 
     }//GEN-LAST:event_btnEnterLogActionPerformed
@@ -454,7 +447,7 @@ public class LogRegView extends javax.swing.JFrame {
         String firstname = txtFirstNameReg.getText();
         String lastname = txtLastNameReg.getText();
         long id = Long.parseLong(txtIdReg.getText());
-        boolean gender = (cmbGenderReg.getSelectedIndex() == 0 ? null : (cmbGenderReg.getSelectedIndex() == 1 ));
+        boolean gender = (cmbGenderReg.getSelectedIndex() == 0 ? null : (cmbGenderReg.getSelectedIndex() == 1));
         String birth = txtBDateReg.getText();
         String address = txtAddressReg.getText();
         long phone = Long.parseLong(txtPhoneReg.getText());
@@ -463,34 +456,14 @@ public class LogRegView extends javax.swing.JFrame {
         String password = txtPasswordReg.getText();
         String comPassword = txtPassConfReg.getText();
         LocalDate birthdate = LocalDate.of(Integer.parseInt(birth.substring(0, 4)), Integer.parseInt(birth.substring(5, 7)), Integer.parseInt(birth.substring(8)));
-        if (comPassword.equals(password)) {
-            users.add(new Patient(id, user, firstname, lastname, password, email, birthdate, gender, phone, address));
-        }
-        
+       core.controllers.UserController.registerPatient(firstname, lastname, id, gender, birth, address, phone, email, user, password, comPassword);
     }//GEN-LAST:event_btnSaveRegActionPerformed
 
     private void txtPassConfRegActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPassConfRegActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtPassConfRegActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        System.setProperty("flatlaf.useNativeLibrary", "false");
-
-        try {
-            UIManager.setLookAndFeel(new FlatDarkLaf());
-        } catch (Exception ex) {
-            System.err.println("Failed to initialize LaF");
-        }
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new LogRegView().setVisible(true);
-            }
-        });
-    }
+   
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnEnterLog;

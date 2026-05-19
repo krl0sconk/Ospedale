@@ -28,24 +28,11 @@ import core.models.enums.Specialty;
 public class PatientView extends javax.swing.JFrame {
 
     private int x, y;
-    private User user;
-    private ArrayList<User> users;
-    private Patient patient;
-    private ArrayList<Appointment> appointments;
-    private ArrayList<Hospitalization> hospitalizations;
+    private long patientId;
 
-    public PatientView(User user,Patient patient, ArrayList<User> users, ArrayList<Appointment>appointments, ArrayList<Hospitalization> hospitalizations) {
+    public PatientView(long patientId) {
         initComponents();
-        this.user = user;
-        this.users = users;
-        this.patient = patient;
-        this.hospitalizations = hospitalizations;
-        this.appointments = appointments;
-        if (user instanceof Administrator) {
-            jButton7.setVisible(true);
-        } else {
-            jButton7.setVisible(false);
-        }
+        this.patientId = patientId;
         this.setBackground(new Color(0, 0, 0, 0));
         this.setLocationRelativeTo(null);
     }
