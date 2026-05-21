@@ -69,7 +69,7 @@ public class AdminView extends javax.swing.JFrame {
         lblPatient = new javax.swing.JLabel();
         cmbSelectPatient = new javax.swing.JComboBox<>();
         jSeparator2 = new javax.swing.JSeparator();
-        jButton10 = new javax.swing.JButton();
+        btnLogoutAdmin = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setUndecorated(true);
@@ -213,11 +213,11 @@ public class AdminView extends javax.swing.JFrame {
 
         jSeparator2.setOrientation(javax.swing.SwingConstants.VERTICAL);
 
-        jButton10.setFont(new java.awt.Font("Yu Gothic UI", 0, 18)); // NOI18N
-        jButton10.setText("Logout");
-        jButton10.addActionListener(new java.awt.event.ActionListener() {
+        btnLogoutAdmin.setFont(new java.awt.Font("Yu Gothic UI", 0, 18)); // NOI18N
+        btnLogoutAdmin.setText("Logout");
+        btnLogoutAdmin.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton10ActionPerformed(evt);
+                btnLogoutAdminActionPerformed(evt);
             }
         });
 
@@ -285,7 +285,7 @@ public class AdminView extends javax.swing.JFrame {
                         .addGap(74, 74, 74))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelRound3Layout.createSequentialGroup()
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton10)
+                        .addComponent(btnLogoutAdmin)
                         .addGap(318, 318, 318)))
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGroup(panelRound3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -354,7 +354,7 @@ public class AdminView extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 80, Short.MAX_VALUE)
                 .addComponent(btnSaveDoc)
                 .addGap(123, 123, 123)
-                .addComponent(jButton10)
+                .addComponent(btnLogoutAdmin)
                 .addGap(38, 38, 38))
             .addGroup(panelRound3Layout.createSequentialGroup()
                 .addGap(203, 203, 203)
@@ -434,17 +434,17 @@ public class AdminView extends javax.swing.JFrame {
         doctor.setVisible(true);  
     }//GEN-LAST:event_btnDocViewActionPerformed
 
-    private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
+    private void btnLogoutAdminActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogoutAdminActionPerformed
         
         LogRegView login = new LogRegView();
-        this.setVisible(false);
+        this.dispose();
         login.setVisible(true);
-    }//GEN-LAST:event_jButton10ActionPerformed
+    }//GEN-LAST:event_btnLogoutAdminActionPerformed
 
     private void btnPatViewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPatViewActionPerformed
         long idPatient = Long.parseLong(cmbSelectDoc.getItemAt(cmbSelectDoc.getSelectedIndex()));
         PatientView patient = new PatientView(idPatient);
-        this.setVisible(false);
+        this.dispose();
         patient.setVisible(true);
     }//GEN-LAST:event_btnPatViewActionPerformed
 
@@ -455,12 +455,12 @@ public class AdminView extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnDocView;
+    private javax.swing.JButton btnLogoutAdmin;
     private javax.swing.JButton btnPatView;
     private javax.swing.JButton btnSaveDoc;
     private javax.swing.JComboBox<String> cmbSelectDoc;
     private javax.swing.JComboBox<String> cmbSelectPatient;
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton10;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JSeparator jSeparator1;

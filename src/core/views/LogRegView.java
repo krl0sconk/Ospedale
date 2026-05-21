@@ -46,7 +46,7 @@ public class LogRegView extends javax.swing.JFrame {
     private void initComponents() {
 
         pnlFullBg = new core.views.utils.PanelRound();
-        panelRound2 = new core.views.utils.PanelRound();
+        pnlExit = new core.views.utils.PanelRound();
         btnExit = new javax.swing.JButton();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         pnlLogin = new core.views.utils.PanelRound();
@@ -86,15 +86,15 @@ public class LogRegView extends javax.swing.JFrame {
 
         pnlFullBg.setRadius(50);
 
-        panelRound2.setRadius(50);
-        panelRound2.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+        pnlExit.setRadius(50);
+        pnlExit.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
             public void mouseDragged(java.awt.event.MouseEvent evt) {
-                panelRound2MouseDragged(evt);
+                pnlExitMouseDragged(evt);
             }
         });
-        panelRound2.addMouseListener(new java.awt.event.MouseAdapter() {
+        pnlExit.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
-                panelRound2MousePressed(evt);
+                pnlExitMousePressed(evt);
             }
         });
 
@@ -111,17 +111,17 @@ public class LogRegView extends javax.swing.JFrame {
             }
         });
 
-        javax.swing.GroupLayout panelRound2Layout = new javax.swing.GroupLayout(panelRound2);
-        panelRound2.setLayout(panelRound2Layout);
-        panelRound2Layout.setHorizontalGroup(
-            panelRound2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelRound2Layout.createSequentialGroup()
+        javax.swing.GroupLayout pnlExitLayout = new javax.swing.GroupLayout(pnlExit);
+        pnlExit.setLayout(pnlExitLayout);
+        pnlExitLayout.setHorizontalGroup(
+            pnlExitLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlExitLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnExit)
                 .addGap(19, 19, 19))
         );
-        panelRound2Layout.setVerticalGroup(
-            panelRound2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        pnlExitLayout.setVerticalGroup(
+            pnlExitLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(btnExit, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
@@ -376,7 +376,7 @@ public class LogRegView extends javax.swing.JFrame {
         pnlFullBg.setLayout(pnlFullBgLayout);
         pnlFullBgLayout.setHorizontalGroup(
             pnlFullBgLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(panelRound2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(pnlExit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(pnlFullBgLayout.createSequentialGroup()
                 .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1028, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
@@ -384,7 +384,7 @@ public class LogRegView extends javax.swing.JFrame {
         pnlFullBgLayout.setVerticalGroup(
             pnlFullBgLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlFullBgLayout.createSequentialGroup()
-                .addComponent(panelRound2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(pnlExit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jTabbedPane1)
                 .addContainerGap())
@@ -404,14 +404,14 @@ public class LogRegView extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void panelRound2MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_panelRound2MousePressed
+    private void pnlExitMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pnlExitMousePressed
         x = evt.getX();
         y = evt.getY();
-    }//GEN-LAST:event_panelRound2MousePressed
+    }//GEN-LAST:event_pnlExitMousePressed
 
-    private void panelRound2MouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_panelRound2MouseDragged
+    private void pnlExitMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pnlExitMouseDragged
         this.setLocation(this.getLocation().x + evt.getX() - x, this.getLocation().y + evt.getY() - y);
-    }//GEN-LAST:event_panelRound2MouseDragged
+    }//GEN-LAST:event_pnlExitMouseDragged
 
     private void btnExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExitActionPerformed
         System.exit(0);
@@ -440,6 +440,8 @@ public class LogRegView extends javax.swing.JFrame {
             //aca por si tira algun error
             javax.swing.JOptionPane.showMessageDialog(this, response.getMessage(), "Error de Autenticación", javax.swing.JOptionPane.ERROR_MESSAGE);
         }
+        txtUsernameLog.setText("");
+        txtPasswordLog.setText("");
 
     }//GEN-LAST:event_btnEnterLogActionPerformed
 
@@ -485,7 +487,7 @@ public class LogRegView extends javax.swing.JFrame {
     private javax.swing.JLabel lblPhoneReg;
     private javax.swing.JLabel lblUserReg;
     private javax.swing.JLabel lblUsernameLog;
-    private core.views.utils.PanelRound panelRound2;
+    private core.views.utils.PanelRound pnlExit;
     private core.views.utils.PanelRound pnlFullBg;
     private core.views.utils.PanelRound pnlLogin;
     private javax.swing.JPanel pnlRegister;
