@@ -19,6 +19,7 @@ import javax.swing.table.DefaultTableModel;
 import core.models.enums.AppointmentStatus;
 import core.models.enums.RoomType;
 import core.models.enums.Specialty;
+import core.models.storage.IStorage;
 
 /**
  *
@@ -30,7 +31,7 @@ public class PatientView extends javax.swing.JFrame {
     private int x, y;
     private long patientId;
 
-    public PatientView(long patientId) {
+    public PatientView(IStorage storage, long patientId) {
         initComponents();
         this.patientId = patientId;
         this.setBackground(new Color(0, 0, 0, 0));

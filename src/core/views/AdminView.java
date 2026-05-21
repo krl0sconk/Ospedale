@@ -12,6 +12,7 @@ import core.models.user.Doctor;
 import java.awt.Color;
 import java.util.ArrayList;
 import core.models.enums.Specialty;
+import core.models.storage.IStorage;
 
 /**
  *
@@ -22,7 +23,7 @@ public class AdminView extends javax.swing.JFrame {
 
     private int x, y;
 
-    public AdminView() {
+    public AdminView(IStorage storage) {
         initComponents();
         this.setBackground(new Color(0, 0, 0, 0));
         this.setLocationRelativeTo(null);
@@ -424,12 +425,12 @@ public class AdminView extends javax.swing.JFrame {
         String password = txtDocPass.getText();
         String comPassword = txtDocPassConf.getText();
         Specialty specialty = Specialty.valueOf(spec.replaceAll(" &", "").replaceAll(" ", "_"));
-        core.controllers.UserController.registerDoctor(firstname, lastname, id, username, password, password, licenseNumber, specialty, assignedOffice);
+        //register doc
     }//GEN-LAST:event_btnSaveDocActionPerformed
 
     private void btnDocViewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDocViewActionPerformed
         long idDoctor = Long.parseLong(cmbSelectDoc.getItemAt(cmbSelectDoc.getSelectedIndex()));
-        DoctorView doctor = new DoctorView(idDoctor);
+        DoctorView doctor = new DoctorView(storage, idDoctor);
         this.dispose();
         doctor.setVisible(true);  
     }//GEN-LAST:event_btnDocViewActionPerformed

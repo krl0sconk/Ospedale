@@ -22,6 +22,7 @@ import core.models.user.Patient;
 import core.models.Prescription;
 import core.models.enums.RoomType;
 import core.models.enums.Specialty;
+import core.models.storage.IStorage;
 import core.models.user.User;
 import java.util.HashMap;
 
@@ -35,7 +36,7 @@ public class DoctorView extends javax.swing.JFrame {
     private int x, y;
     private long doctorId;
 
-    public DoctorView(long doctorId) {
+    public DoctorView(IStorage storage, long doctorId) {
         initComponents();
         this.doctorId = doctorId;
         this.setBackground(new Color(0, 0, 0, 0));
