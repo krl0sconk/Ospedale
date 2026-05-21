@@ -20,7 +20,7 @@ import java.util.ArrayList;
  *
  * @author krl0s
  */
-public class Storage {
+public class Storage implements IStorage {
 
     // Instancia Singleton
     private static Storage instance;
@@ -41,13 +41,14 @@ public class Storage {
         this.users.add(new Administrator(0, "admin", "admin", "adnim", "admin123"));
     }
 
-    public static Storage getInstance() {
+    public static IStorage getInstance() {
         if (instance == null) {
             instance = new Storage();
         }
         return instance;
     }
 
+    @Override
     public boolean addUser(User newUser) {
         for (User user : users) {
             if (user.getId() == newUser.getId()) {
@@ -58,26 +59,27 @@ public class Storage {
         return true;
     }
 
+    @Override
     public User getUserById(long id) {
         for (User user : users) {
             if (user.getId() == id) {
                 return user;
             }
         }
-        //TODO: Error?
         return null;
     }
 
+    @Override
     public User getUserByUsername(String username) {
         for (User user : users) {
             if (user.getUsername().equals(username.trim())) {
                 return user;
             }
         }
-        //TODO: Error x2?
         return null;
     }
 
+    @Override
     public ArrayList<Patient> getPatients() {
         ArrayList<Patient> patients = new ArrayList<>();
         for (User user : users) {
@@ -88,6 +90,7 @@ public class Storage {
         return patients;
     }
 
+    @Override
     public ArrayList<Doctor> getDoctors() {
         ArrayList<Doctor> doctors = new ArrayList<>();
         for (User user : users) {
@@ -98,6 +101,7 @@ public class Storage {
         return doctors;
     }
 
+    @Override
     public ArrayList<Administrator> getAdministrators() {
         ArrayList<Administrator> admins = new ArrayList<>();
         for (User user : users) {
@@ -108,6 +112,7 @@ public class Storage {
         return admins;
     }
 
+    @Override
     public boolean addAppointment(Appointment newApp) {
         for (Appointment app : apps) {
             if (app.getId().equals(newApp.getId())) {
@@ -118,20 +123,22 @@ public class Storage {
         return true;
     }
 
+    @Override
     public ArrayList<Appointment> getAppointments() {
         return apps;
     }
 
+    @Override
     public Appointment getAppointmentById(String id) {
         for (Appointment app : apps) {
             if (app.getId().equals(id)) {
                 return app;
             }
         }
-        //TODO: Error? x3
         return null;
     }
 
+    @Override
     public boolean addHospitalization(Hospitalization newHosp) {
         for (Hospitalization hosp : hosps) {
             if (hosp.getId().equals(newHosp.getId())) {
@@ -142,25 +149,40 @@ public class Storage {
         return true;
     }
 
+    @Override
     public ArrayList<Hospitalization> getHospitalizations() {
         return hosps;
     }
 
+    @Override
     public Hospitalization getHospitalizationById(String id) {
         for (Hospitalization hosp : hosps) {
             if (hosp.getId().equals(id)) {
                 return hosp;
             }
         }
-        //TODO: Error? x4
         return null;
     }
 
-    public void updatePatient(long id, String username, String firstname, String lastname, String password, String email, LocalDate parse, boolean gender, long phone, String address) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    @Override
+    public void updatePatient(long id, String username, String firstname, String lastname, String password, String email, LocalDate birthdate, boolean gender, long phone, String address) {
+        for (User user : users) {
+            if (user.getId() == id && user instanceof Patient patient) {
+                //TODO: Metodo update (Migue)
+                patient.update(username, firstname, lastname, password, email, birthdate, gender, phone, address);
+                return;
+            }
+        }
     }
 
+    @Override
     public void updateDoctor(long id, String username, String firstname, String lastname, String password, Specialty specialty, String licenceNumber, String assignedOffice) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        for (User user : users) {
+            if (user.getId() == id && user instanceof Doctor doctor) {
+                //TODO: Metodo update (Migue)
+                doctor.update(username, firstname, lastname, password, specialty, licenceNumber, assignedOffice);
+                return;
+            }
+        }
     }
 }

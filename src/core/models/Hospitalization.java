@@ -57,5 +57,19 @@ public class Hospitalization {
         this.observations = observations;
         this.status = hopsS;
     }
+
+    public Patient getPatient() {
+        return patient;
+    }
+
+    public HospitalizationStatus getStatus() {
+        return status;
+    }
+
+    public LocalDate getDate() {
+        return date;
+    }
+    
+    
     
 }

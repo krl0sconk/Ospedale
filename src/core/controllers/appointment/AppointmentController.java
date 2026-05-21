@@ -2,9 +2,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package core.controllers;
+package core.controllers.appointment;
 
-import core.controllers.utils.AppointmentNotFoundException;
+import core.controllers.appointment.utils.AppointmentNotFoundException;
 import core.controllers.utils.Response;
 import core.controllers.utils.Serializer;
 import core.controllers.utils.Status;
@@ -13,6 +13,7 @@ import core.models.Appointment;
 import core.models.Prescription;
 import core.models.enums.AppointmentStatus;
 import core.models.enums.Specialty;
+import core.models.storage.IStorage;
 import core.models.storage.Storage;
 import core.models.user.Doctor;
 import core.models.user.Patient;
@@ -27,14 +28,16 @@ import java.util.HashMap;
  *
  * @author krl0s
  */
-public class AppointmentController {
+public class AppointmentController implements IAppointmentController{
+    
+    //Atributos
+    private final IStorage storage;
 
     //Metodos internos
-    private static boolean checkDisponibility(long doctorId, LocalTime hour, LocalDate date) {
-        Storage storage = Storage.getInstance();
-        Doctor doctor = (Doctor) storage.getUserById(doctorId);
+    private boolean checkDisponibility(long doctorId, LocalTime hour, LocalDate date) {
+        Doctor doctor = (Doctor) this.storage.getUserById(doctorId);
 
-        for (Appointment appointment : storage.getAppointments()) {
+        for (Appointment appointment : this.storage.getAppointments()) {
             if (appointment.getDoctor().equals(doctor) && !(appointment.getStatus().equals(AppointmentStatus.CANCELED))) {
                 if (appointment.getDatetime().equals(LocalDateTime.of(date, hour))) {
                     return false;
@@ -44,20 +47,20 @@ public class AppointmentController {
         return true;
     }
 
-    private static String generateAppointmentId(long patientId) {
-        long count = Storage.getInstance().getAppointments().stream().filter(a -> a.getPatient().getId() == patientId).count();
+    private String generateAppointmentId(long patientId) {
+        long count = this.storage.getAppointments().stream().filter(a -> a.getPatient().getId() == patientId).count();
         return String.format("A-%d-%04d", patientId, count);
     }
 
-    private static Appointment findAppointment(String appointmentId) throws AppointmentNotFoundException {
-        Appointment appointment = Storage.getInstance().getAppointmentById(appointmentId);
+    private Appointment findAppointment(String appointmentId) throws AppointmentNotFoundException {
+        Appointment appointment = this.storage.getAppointmentById(appointmentId);
         if (appointment == null) {
             throw new AppointmentNotFoundException("Appointment not found.");
         }
         return appointment;
     }
 
-    private static Response changeStatus(String appointmentId, AppointmentStatus requiredStatus, boolean mustMatch, AppointmentStatus newStatus, String successMsg, String errorMsg) {
+    private Response changeStatus(String appointmentId, AppointmentStatus requiredStatus, boolean mustMatch, AppointmentStatus newStatus, String successMsg, String errorMsg) {
         try {
             Appointment appointment = findAppointment(appointmentId);
 
@@ -77,11 +80,16 @@ public class AppointmentController {
     }
 
     //Metodos
-    public static Response requestAppointment(long patientId, long doctorId, Specialty specialty, String reason, String date, String hour) {
+    
+    public AppointmentController(IStorage storage) {
+        this.storage = storage;
+    }
+    
+    @Override
+    public Response requestAppointment(long patientId, long doctorId, Specialty specialty, String reason, String date, String hour) {
         try {
-            Storage storage = Storage.getInstance();
             boolean type = false;
-            if (storage.getUserById(patientId) == null) {
+            if (this.storage.getUserById(patientId) == null) {
                 return new Response("Invalid Patient id.", Status.BAD_REQUEST);
             }
             if (!Validator.isValidDate(date)) {
@@ -92,7 +100,7 @@ public class AppointmentController {
             }
             Doctor doctor = null;
             if (doctorId != 0) {
-                User u = storage.getUserById(doctorId);
+                User u = this.storage.getUserById(doctorId);
                 if (u == null || !(u instanceof Doctor)) {
                     return new Response("Invalid Doctor id.", Status.BAD_REQUEST);
                 }
@@ -106,7 +114,7 @@ public class AppointmentController {
                 }
                 type = true;
             } else {
-                for (Doctor doc : storage.getDoctors()) {
+                for (Doctor doc : this.storage.getDoctors()) {
                     if (doc.getSpecialty() == specialty && checkDisponibility(doc.getId(), LocalTime.parse(hour), LocalDate.parse(date))) {
                         doctor = doc;
                         break;
@@ -118,29 +126,33 @@ public class AppointmentController {
             }
 
             String appointmentId = generateAppointmentId(patientId);
-            Patient patient = (Patient) storage.getUserById(patientId);
+            Patient patient = (Patient) this.storage.getUserById(patientId);
             LocalDateTime datetime = LocalDateTime.of(LocalDate.parse(date), LocalTime.parse(hour));
 
-            storage.addAppointment(new Appointment(appointmentId, patient, doctor, specialty, datetime, reason, type));
+            this.storage.addAppointment(new Appointment(appointmentId, patient, doctor, specialty, datetime, reason, type));
             return new Response("Appointment requested successfully.", Status.CREATED);
         } catch (Exception e) {
             return new Response("Unexpected Error.", Status.INTERNAL_SERVER_ERROR);
         }
     }
 
-    public static Response acceptAppointment(String appointmentId) {
+    @Override
+    public Response acceptAppointment(String appointmentId) {
         return changeStatus(appointmentId, AppointmentStatus.REQUESTED, true, AppointmentStatus.PENDING, "Appointment accepted.", "Appointment cannot be accepted in its current state.");
     }
 
-    public static Response completeAppointment(String appointmentId) {
+    @Override
+    public Response completeAppointment(String appointmentId) {
         return changeStatus(appointmentId, AppointmentStatus.PENDING, true, AppointmentStatus.COMPLETED, "Appointment completed.", "Appointment cannot be completed in its current state.");
     }
 
-    public static Response cancelAppointment(String appointmentId) {
+    @Override
+    public Response cancelAppointment(String appointmentId) {
         return changeStatus(appointmentId, AppointmentStatus.COMPLETED, false, AppointmentStatus.CANCELED, "Appointment canceled.", "Appointment cannot be canceled in its current state.");
     }
 
-    public static Response rescheduleAppointment(String appointmentId, String newHour, String reason) {
+    @Override
+    public Response rescheduleAppointment(String appointmentId, String newHour, String reason) {
         try {
             Appointment appointment = findAppointment(appointmentId);
             if (appointment.getStatus().equals(AppointmentStatus.PENDING)) {
@@ -163,7 +175,8 @@ public class AppointmentController {
         }
     }
 
-    public static Response prescribeMedication(String appointmentId, String medicationName, double dose, String administrationRoute, int treatmentDuration, String additionalInstructions, int frecuency) {
+    @Override
+    public Response prescribeMedication(String appointmentId, String medicationName, double dose, String administrationRoute, int treatmentDuration, String additionalInstructions, int frecuency) {
         try {
             Appointment appointment = findAppointment(appointmentId);
             if (!appointment.getStatus().equals(AppointmentStatus.PENDING)) {
@@ -179,10 +192,11 @@ public class AppointmentController {
         }
     }
 
-    public static Response getPatientAppointments(long patientId) {
+    @Override
+    public Response getPatientAppointments(long patientId) {
         try {
             ArrayList<Appointment> result = new ArrayList<>();
-            for (Appointment a : Storage.getInstance().getAppointments()) {
+            for (Appointment a : this.storage.getAppointments()) {
                 if (a.getPatient().getId() == patientId) {
                     result.add(a);
                 }
@@ -196,10 +210,11 @@ public class AppointmentController {
         }
     }
 
-    public static Response getDoctorAppointments(long doctorId, boolean pendingOnly) {
+    @Override
+    public Response getDoctorAppointments(long doctorId, boolean pendingOnly) {
         try {
             ArrayList<Appointment> result = new ArrayList<>();
-            for (Appointment a : Storage.getInstance().getAppointments()) {
+            for (Appointment a : this.storage.getAppointments()) {
                 if (a.getDoctor().getId() == doctorId) {
                     if (pendingOnly) {
                         if (a.getStatus().equals(AppointmentStatus.PENDING)) {

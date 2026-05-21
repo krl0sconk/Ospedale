@@ -3,12 +3,21 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+<<<<<<< HEAD
             <file>file:/C:/Users/Gabriela%20Campo/Desktop/POO%20FINAL/Ospedale/src/core/views/LogRegView.java</file>
             <file>file:/C:/Users/Gabriela%20Campo/Desktop/POO%20FINAL/Ospedale/src/core/views/AdminView.java</file>
             <file>file:/C:/Users/Gabriela%20Campo/Desktop/POO%20FINAL/Ospedale/src/core/controllers/UserController.java</file>
             <file>file:/C:/Users/Gabriela%20Campo/Desktop/POO%20FINAL/Ospedale/src/main/Main.java</file>
             <file>file:/C:/Users/Gabriela%20Campo/Desktop/POO%20FINAL/Ospedale/src/core/views/DoctorView.java</file>
             <file>file:/C:/Users/Gabriela%20Campo/Desktop/POO%20FINAL/Ospedale/src/core/controllers/AppointmentController.java</file>
+=======
+            <file>file:/mnt/SSD_LINUX/Documents/POO/Ospedale/src/core/controllers/usecases/HospitalizeFromAppointmentUseCase.java</file>
+            <file>file:/mnt/SSD_LINUX/Documents/POO/Ospedale/src/main/Main.java</file>
+            <file>file:/mnt/SSD_LINUX/Documents/POO/Ospedale/src/core/controllers/appointment/AppointmentController.java</file>
+            <file>file:/mnt/SSD_LINUX/Documents/POO/Ospedale/src/core/controllers/utils/Validator.java</file>
+            <file>file:/mnt/SSD_LINUX/Documents/POO/Ospedale/src/core/controllers/utils/Serializer.java</file>
+            <file>file:/mnt/SSD_LINUX/Documents/POO/Ospedale/src/core/controllers/utils/AppointmentNotFoundException.java</file>
+>>>>>>> main
         </group>
     </open-files>
 </project-private>
