@@ -47,4 +47,11 @@ public interface IStorage {
     ArrayList<Hospitalization> getHospitalizations();
 
     Hospitalization getHospitalizationById(String id);
+    
+    boolean addListener(StorageListener listener);
+
+    boolean removeListener(StorageListener listener);
+
+    void emitEvent(String eventName, java.util.HashMap<String, Object> payload);
 }
+    
