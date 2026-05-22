@@ -26,8 +26,15 @@ import core.models.storage.Storage;
 public class Main {
 
     public static void main(String[] args) {
+        IStorage storage = Storage.getInstance();
 
-           System.setProperty("flatlaf.useNativeLibrary", "false");
+        ILoginController loginController = new LoginController(storage);
+        IUserController userController = new UserController(storage);
+        IAppointmentController appointmentController = new AppointmentController(storage);
+        IHospitalizationController hospitalizationController = new HospitalizationController(storage);
+        HospitalizeFromAppointmentUseCase useCase = new HospitalizeFromAppointmentUseCase(appointmentController, hospitalizationController, storage);
+
+        System.setProperty("flatlaf.useNativeLibrary", "false");
 
         try {
             UIManager.setLookAndFeel(new FlatDarkLaf());
@@ -37,17 +44,11 @@ public class Main {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new LogRegView().setVisible(true);
+                new LogRegView(storage).setVisible(true);
             }
         });
 
-        IStorage storage = Storage.getInstance();
-
-        ILoginController loginController = new LoginController(storage);
-        IUserController userController = new UserController(storage);
-        IAppointmentController appointmentController = new AppointmentController(storage);
-        IHospitalizationController hospitalizationController = new HospitalizationController(storage);
-        HospitalizeFromAppointmentUseCase useCase = new HospitalizeFromAppointmentUseCase(appointmentController, hospitalizationController, storage);
+        
 
     }
 }
