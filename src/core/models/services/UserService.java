@@ -9,8 +9,8 @@
 package core.models.services;
 
 import core.models.user.Administrator;
-import core.models.user.doctor;
-import core.models.user.patient;
+import core.models.user.Doctor;
+import core.models.user.Patient;
 import core.models.user.User;
 import core.models.storage.IUserRepository;
 import core.models.events.EventBus;
@@ -45,11 +45,11 @@ public final class UserService {
         return repo.getUserByUsername(username);
     }
 
-    public ArrayList<patient> getPatients() {
+    public ArrayList<Patient> getPatients() {
         return repo.getPatients();
     }
 
-    public ArrayList<doctor> getDoctors() {
+    public ArrayList<Doctor> getDoctors() {
         return repo.getDoctors();
     }
 
@@ -60,16 +60,16 @@ public final class UserService {
     public void updatePatient(long id, String username, String firstname, String lastname, String password, String email, LocalDate birthdate, boolean gender, long phone, String address) {
         repo.updatePatient(id, username, firstname, lastname, password, email, birthdate, gender, phone, address);
         User u = repo.getUserById(id);
-        if (u instanceof patient) {
-            bus.emitEvent(core.models.events.ModelEvent.USER_UPDATED, ((patient) u).serialize());
+        if (u instanceof Patient) {
+            bus.emitEvent(core.models.events.ModelEvent.USER_UPDATED, ((Patient) u).serialize());
         }
     }
 
     public void updateDoctor(long id, String username, String firstname, String lastname, String password, Specialty specialty, String licenceNumber, String assignedOffice) {
         repo.updateDoctor(id, username, firstname, lastname, password, specialty, licenceNumber, assignedOffice);
         User u = repo.getUserById(id);
-        if (u instanceof doctor) {
-            bus.emitEvent(core.models.events.ModelEvent.USER_UPDATED, ((doctor) u).serialize());
+        if (u instanceof Doctor) {
+            bus.emitEvent(core.models.events.ModelEvent.USER_UPDATED, ((Doctor) u).serialize());
         }
     }
 }
