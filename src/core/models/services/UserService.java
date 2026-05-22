@@ -1,0 +1,67 @@
+package core.models.services;
+
+import core.models.user.Administrator;
+import core.models.user.doctor;
+import core.models.user.patient;
+import core.models.user.User;
+import core.models.storage.IUserRepository;
+import core.models.events.EventBus;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
+import core.models.enums.Specialty;
+
+public final class UserService {
+
+    private final IUserRepository repo;
+    private final EventBus bus;
+
+    public UserService(IUserRepository repo, EventBus bus) {
+        this.repo = repo;
+        this.bus = bus;
+    }
+
+    public boolean addUser(User user) {
+        boolean added = repo.addUser(user);
+        if (added) {
+            bus.emitEvent("user.added", new HashMap<>());
+        }
+        return added;
+    }
+
+    public User getUserById(long id) {
+        return repo.getUserById(id);
+    }
+
+    public User getUserByUsername(String username) {
+        return repo.getUserByUsername(username);
+    }
+
+    public ArrayList<patient> getPatients() {
+        return repo.getPatients();
+    }
+
+    public ArrayList<doctor> getDoctors() {
+        return repo.getDoctors();
+    }
+
+    public ArrayList<Administrator> getAdministrators() {
+        return repo.getAdministrators();
+    }
+
+    public void updatePatient(long id, String username, String firstname, String lastname, String password, String email, LocalDate birthdate, boolean gender, long phone, String address) {
+        repo.updatePatient(id, username, firstname, lastname, password, email, birthdate, gender, phone, address);
+        User u = repo.getUserById(id);
+        if (u instanceof patient) {
+            bus.emitEvent("user.updated", ((patient) u).serialize());
+        }
+    }
+
+    public void updateDoctor(long id, String username, String firstname, String lastname, String password, Specialty specialty, String licenceNumber, String assignedOffice) {
+        repo.updateDoctor(id, username, firstname, lastname, password, specialty, licenceNumber, assignedOffice);
+        User u = repo.getUserById(id);
+        if (u instanceof doctor) {
+            bus.emitEvent("user.updated", ((doctor) u).serialize());
+        }
+    }
+}

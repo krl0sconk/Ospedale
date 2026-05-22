@@ -4,6 +4,7 @@ import core.models.enums.Specialty;
 import core.models.user.Administrator;
 import core.models.user.doctor;
 import core.models.user.patient;
+import core.models.storage.IStorage;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDate;
@@ -15,7 +16,7 @@ public final class JsonUserLoader {
     private JsonUserLoader() {
     }
 
-    public static void loadUsersInto(Storage storage, String filePath) throws Exception {
+    public static void loadUsersInto(IStorage storage, String filePath) throws Exception {
         String content = Files.readString(Path.of(filePath));
         JSONObject root = new JSONObject(content);
         JSONArray usersArray = root.getJSONArray("users");

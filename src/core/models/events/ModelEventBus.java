@@ -4,7 +4,7 @@ import core.models.storage.StorageListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public final class ModelEventBus {
+public final class ModelEventBus implements EventBus {
 
     private static final ModelEventBus instance = new ModelEventBus();
 

@@ -6,7 +6,6 @@ package core.models;
 
 import core.models.enums.Specialty;
 import core.models.enums.AppointmentStatus;
-import core.models.events.ModelEventBus;
 import core.models.user.patient;
 import core.models.user.doctor;
 import java.time.LocalDateTime;
@@ -48,18 +47,10 @@ public class Appointment implements ISerializable{
     
     public void setReason(String reason) {
         this.reason = reason;
-        try {
-            ModelEventBus.getInstance().emitEvent("appointment.updated", this.serialize());
-        } catch (Exception ex) {
-        }
     }
 
     public void setPrescriptions(ArrayList<Prescription> prescriptions) {
         this.prescriptions = prescriptions;
-        try {
-            ModelEventBus.getInstance().emitEvent("appointment.updated", this.serialize());
-        } catch (Exception ex) {
-        }
     }
     
     
@@ -82,10 +73,6 @@ public class Appointment implements ISerializable{
 
     public void setStatus(AppointmentStatus status) {
         this.status = status;
-        try {
-            ModelEventBus.getInstance().emitEvent("appointment.updated", this.serialize());
-        } catch (Exception ex) {
-        }
     }
 
     public String getId() {
@@ -119,10 +106,6 @@ public class Appointment implements ISerializable{
     public boolean addPrescription(Prescription prescrip) {
         boolean added = this.prescriptions.add(prescrip);
         if (added) {
-            try {
-                ModelEventBus.getInstance().emitEvent("appointment.prescription_added", this.serialize());
-            } catch (Exception ex) {
-            }
         }
         return added;
     }
@@ -138,10 +121,6 @@ public class Appointment implements ISerializable{
     
     public void setDatetime(LocalDateTime newDatetime) {
         this.datetime=newDatetime;
-        try {
-            ModelEventBus.getInstance().emitEvent("appointment.updated", this.serialize());
-        } catch (Exception ex) {
-        }
     }
 
 

@@ -6,6 +6,7 @@ package core.models.storage;
 
 import core.models.Appointment;
 import core.models.Hospitalization;
+import core.models.events.EventBus;
 import core.models.events.ModelEventBus;
 import core.models.enums.Specialty;
 import core.models.user.Administrator;
@@ -20,7 +21,7 @@ import java.util.ArrayList;
  *
  * @author krl0s
  */
-public class Storage implements IStorage {
+public class Storage implements IStorage, IUserRepository, IAppointmentRepository, IHospitalizationRepository {
 
     // Instancia Singleton
     private static Storage instance;
@@ -32,15 +33,29 @@ public class Storage implements IStorage {
     private ArrayList<Hospitalization> hosps;
 
     // Metodos Storage
+    private final EventBus eventBus;
+
     private Storage() {
+        this(ModelEventBus.getInstance());
+    }
+
+    private Storage(EventBus eventBus) {
         this.users = new ArrayList<>();
         this.apps = new ArrayList<>();
         this.hosps = new ArrayList<>();
+        this.eventBus = eventBus;
     }
 
     public static IStorage getInstance() {
         if (instance == null) {
             instance = new Storage();
+        }
+        return instance;
+    }
+
+    public static IStorage getInstance(EventBus eventBus) {
+        if (instance == null) {
+            instance = new Storage(eventBus);
         }
         return instance;
     }
@@ -53,8 +68,6 @@ public class Storage implements IStorage {
             }
         }
         users.add(newUser);
-        // Emit event for user added
-        ModelEventBus.getInstance().emitEvent("user.added", new java.util.HashMap<>());
         return true;
     }
 
@@ -119,8 +132,6 @@ public class Storage implements IStorage {
             }
         }
         apps.add(newApp);
-        // Emit event for appointment added
-        ModelEventBus.getInstance().emitEvent("appointment.added", newApp.serialize());
         return true;
     }
 
@@ -147,24 +158,22 @@ public class Storage implements IStorage {
             }
         }
         hosps.add(newHosp);
-        // Emit event for hospitalization added
-        ModelEventBus.getInstance().emitEvent("hospitalization.added", newHosp.serialize());
         return true;
     }
 
     @Override
     public boolean addListener(StorageListener listener) {
-        return ModelEventBus.getInstance().addListener(listener);
+        return eventBus.addListener(listener);
     }
 
     @Override
     public boolean removeListener(StorageListener listener) {
-        return ModelEventBus.getInstance().removeListener(listener);
+        return eventBus.removeListener(listener);
     }
 
     @Override
     public void emitEvent(String eventName, java.util.HashMap<String, Object> payload) {
-        ModelEventBus.getInstance().emitEvent(eventName, payload);
+        eventBus.emitEvent(eventName, payload);
     }
 
     @Override
@@ -187,7 +196,6 @@ public class Storage implements IStorage {
         for (User user : users) {
             if (user.getId() == id && user instanceof patient patient) {
                 patient.update(username, firstname, lastname, password, email, birthdate, gender, phone, address);
-                ModelEventBus.getInstance().emitEvent("user.updated", patient.serialize());
                 return;
             }
         }
@@ -198,7 +206,6 @@ public class Storage implements IStorage {
         for (User user : users) {
             if (user.getId() == id && user instanceof doctor doctor) {
                 doctor.update(username, firstname, lastname, password, specialty, licenceNumber, assignedOffice);
-                ModelEventBus.getInstance().emitEvent("user.updated", doctor.serialize());
                 return;
             }
         }
