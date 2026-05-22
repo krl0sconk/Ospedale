@@ -20,11 +20,12 @@ import core.models.storage.IStorage;
  * @author edangulo
  */
 public class AdminView extends javax.swing.JFrame {
-
+    IStorage storage;
     private int x, y;
 
     public AdminView(IStorage storage) {
         initComponents();
+        this.storage = storage;
         this.setBackground(new Color(0, 0, 0, 0));
         this.setLocationRelativeTo(null);
     }
@@ -437,14 +438,14 @@ public class AdminView extends javax.swing.JFrame {
 
     private void btnLogoutAdminActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogoutAdminActionPerformed
         
-        LogRegView login = new LogRegView();
+        LogRegView login = new LogRegView(this.storage);
         this.dispose();
         login.setVisible(true);
     }//GEN-LAST:event_btnLogoutAdminActionPerformed
 
     private void btnPatViewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPatViewActionPerformed
         long idPatient = Long.parseLong(cmbSelectDoc.getItemAt(cmbSelectDoc.getSelectedIndex()));
-        PatientView patient = new PatientView(idPatient);
+        PatientView patient = new PatientView(this.storage, idPatient);
         this.dispose();
         patient.setVisible(true);
     }//GEN-LAST:event_btnPatViewActionPerformed
