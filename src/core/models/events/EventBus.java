@@ -7,4 +7,5 @@ public interface EventBus {
     boolean addListener(StorageListener listener);
     boolean removeListener(StorageListener listener);
     void emitEvent(String eventName, HashMap<String, Object> payload);
+    void emitEvent(ModelEvent event, HashMap<String, Object> payload);
 }

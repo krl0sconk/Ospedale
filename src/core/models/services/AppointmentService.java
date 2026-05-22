@@ -20,7 +20,7 @@ public final class AppointmentService {
     public boolean addAppointment(Appointment appointment) {
         boolean added = repo.addAppointment(appointment);
         if (added) {
-            bus.emitEvent("appointment.added", appointment.serialize());
+            bus.emitEvent(core.models.events.ModelEvent.APPOINTMENT_ADDED, appointment.serialize());
         }
         return added;
     }
@@ -38,7 +38,7 @@ public final class AppointmentService {
         if (app == null) return false;
         boolean added = app.addPrescription(prescrip);
         if (added) {
-            bus.emitEvent("appointment.prescription_added", app.serialize());
+            bus.emitEvent(core.models.events.ModelEvent.APPOINTMENT_PRESCRIPTION_ADDED, app.serialize());
         }
         return added;
     }
@@ -47,6 +47,6 @@ public final class AppointmentService {
         Appointment app = repo.getAppointmentById(appointmentId);
         if (app == null) return;
         app.setStatus(status);
-        bus.emitEvent("appointment.updated", app.serialize());
+        bus.emitEvent(core.models.events.ModelEvent.APPOINTMENT_UPDATED, app.serialize());
     }
 }

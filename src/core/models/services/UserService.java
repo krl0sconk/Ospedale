@@ -24,7 +24,7 @@ public final class UserService {
     public boolean addUser(User user) {
         boolean added = repo.addUser(user);
         if (added) {
-            bus.emitEvent("user.added", new HashMap<>());
+            bus.emitEvent(core.models.events.ModelEvent.USER_ADDED, new HashMap<>());
         }
         return added;
     }
@@ -53,7 +53,7 @@ public final class UserService {
         repo.updatePatient(id, username, firstname, lastname, password, email, birthdate, gender, phone, address);
         User u = repo.getUserById(id);
         if (u instanceof patient) {
-            bus.emitEvent("user.updated", ((patient) u).serialize());
+            bus.emitEvent(core.models.events.ModelEvent.USER_UPDATED, ((patient) u).serialize());
         }
     }
 
@@ -61,7 +61,7 @@ public final class UserService {
         repo.updateDoctor(id, username, firstname, lastname, password, specialty, licenceNumber, assignedOffice);
         User u = repo.getUserById(id);
         if (u instanceof doctor) {
-            bus.emitEvent("user.updated", ((doctor) u).serialize());
+            bus.emitEvent(core.models.events.ModelEvent.USER_UPDATED, ((doctor) u).serialize());
         }
     }
 }

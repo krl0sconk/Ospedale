@@ -176,6 +176,10 @@ public class Storage implements IStorage, IUserRepository, IAppointmentRepositor
         eventBus.emitEvent(eventName, payload);
     }
 
+    public void emitEvent(core.models.events.ModelEvent event, java.util.HashMap<String, Object> payload) {
+        eventBus.emitEvent(event, payload);
+    }
+
     @Override
     public ArrayList<Hospitalization> getHospitalizations() {
         return hosps;

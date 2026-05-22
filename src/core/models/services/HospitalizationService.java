@@ -18,7 +18,7 @@ public final class HospitalizationService {
     public boolean addHospitalization(Hospitalization hosp) {
         boolean added = repo.addHospitalization(hosp);
         if (added) {
-            bus.emitEvent("hospitalization.added", hosp.serialize());
+            bus.emitEvent(core.models.events.ModelEvent.HOSPITALIZATION_ADDED, hosp.serialize());
         }
         return added;
     }
@@ -35,6 +35,6 @@ public final class HospitalizationService {
         Hospitalization h = repo.getHospitalizationById(hospitalizationId);
         if (h == null) return;
         h.setStatus(status);
-        bus.emitEvent("hospitalization.updated", h.serialize());
+        bus.emitEvent(core.models.events.ModelEvent.HOSPITALIZATION_UPDATED, h.serialize());
     }
 }

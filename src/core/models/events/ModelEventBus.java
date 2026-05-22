@@ -3,6 +3,7 @@ package core.models.events;
 import core.models.storage.StorageListener;
 import java.util.ArrayList;
 import java.util.HashMap;
+import core.models.events.ModelEvent;
 
 public final class ModelEventBus implements EventBus {
 
@@ -33,9 +34,25 @@ public final class ModelEventBus implements EventBus {
     }
 
     public void emitEvent(String eventName, HashMap<String, Object> payload) {
+        ModelEvent ev = ModelEvent.fromString(eventName);
+        if (ev != null) {
+            emitEvent(ev, payload);
+            return;
+        }
         for (StorageListener listener : new ArrayList<>(this.listeners)) {
             try {
                 listener.onEvent(eventName, payload);
+            } catch (Exception ex) {
+                // Ignore listener failures to keep notifications isolated.
+            }
+        }
+    }
+
+    @Override
+    public void emitEvent(ModelEvent event, HashMap<String, Object> payload) {
+        for (StorageListener listener : new ArrayList<>(this.listeners)) {
+            try {
+                listener.onEvent(event, payload);
             } catch (Exception ex) {
                 // Ignore listener failures to keep notifications isolated.
             }
