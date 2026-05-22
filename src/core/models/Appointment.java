@@ -6,6 +6,7 @@ package core.models;
 
 import core.models.enums.Specialty;
 import core.models.enums.AppointmentStatus;
+import core.models.storage.Storage;
 import core.models.user.patient;
 import core.models.user.doctor;
 import java.time.LocalDateTime;
@@ -47,10 +48,18 @@ public class Appointment implements ISerializable{
     
     public void setReason(String reason) {
         this.reason = reason;
+        try {
+            Storage.getInstance().emitEvent("appointment.updated", this.serialize());
+        } catch (Exception ex) {
+        }
     }
 
     public void setPrescriptions(ArrayList<Prescription> prescriptions) {
         this.prescriptions = prescriptions;
+        try {
+            Storage.getInstance().emitEvent("appointment.updated", this.serialize());
+        } catch (Exception ex) {
+        }
     }
     
     
@@ -73,6 +82,10 @@ public class Appointment implements ISerializable{
 
     public void setStatus(AppointmentStatus status) {
         this.status = status;
+        try {
+            Storage.getInstance().emitEvent("appointment.updated", this.serialize());
+        } catch (Exception ex) {
+        }
     }
 
     public String getId() {
@@ -99,12 +112,19 @@ public class Appointment implements ISerializable{
         return status;
     }
 
-    public patient getappient() {
+    public patient getPatient() {
         return patient;
     }
 
     public boolean addPrescription(Prescription prescrip) {
-        return this.prescriptions.add(prescrip);
+        boolean added = this.prescriptions.add(prescrip);
+        if (added) {
+            try {
+                Storage.getInstance().emitEvent("appointment.prescription_added", this.serialize());
+            } catch (Exception ex) {
+            }
+        }
+        return added;
     }
 
     public String getReason() {
@@ -118,6 +138,10 @@ public class Appointment implements ISerializable{
     
     public void setDatetime(LocalDateTime newDatetime) {
         this.datetime=newDatetime;
+        try {
+            Storage.getInstance().emitEvent("appointment.updated", this.serialize());
+        } catch (Exception ex) {
+        }
     }
 
 
