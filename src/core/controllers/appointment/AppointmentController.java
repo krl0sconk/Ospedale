@@ -183,7 +183,7 @@ public class AppointmentController implements IAppointmentController {
             if (!appointment.getStatus().equals(AppointmentStatus.PENDING)) {
                 return new Response("Medication cannot be prescribed in appointment's current state.", Status.BAD_REQUEST);
             }
-            Prescription pre = new Prescription(appointment, medicationName, dose, administrationRoute, treatmentDuration, additionalInstructions, frecuency);
+            Prescription pre = new Prescription(medicationName, dose, administrationRoute, treatmentDuration, additionalInstructions, frecuency);
             appointment.addPrescription(pre);
             return new Response("Medication prescribed.", Status.CREATED);
         } catch (AppointmentNotFoundException e) {
