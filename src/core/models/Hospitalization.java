@@ -8,7 +8,7 @@ import core.models.enums.HospitalizationStatus;
 import core.models.enums.RoomType;
 import core.models.user.patient;
 import core.models.user.doctor;
-import core.models.storage.Storage;
+import core.models.events.ModelEventBus;
 import java.time.LocalDate;
 import java.util.HashMap;
 
@@ -32,7 +32,7 @@ public class Hospitalization implements ISerializable {
     public void setStatus(HospitalizationStatus status) {
         this.status = status;
         try {
-            Storage.getInstance().emitEvent("hospitalization.updated", this.serialize());
+            ModelEventBus.getInstance().emitEvent("hospitalization.updated", this.serialize());
         } catch (Exception ex) {
         }
     }
