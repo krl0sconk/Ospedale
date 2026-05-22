@@ -15,8 +15,8 @@ package core.models;
 
 import core.models.enums.Specialty;
 import core.models.enums.AppointmentStatus;
-import core.models.user.patient;
-import core.models.user.doctor;
+import core.models.user.Patient;
+import core.models.user.Doctor;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,8 +28,8 @@ import java.util.HashMap;
 public class Appointment implements ISerializable{
     
     private final String id;
-    private patient patient;
-    private doctor doctor;
+    private Patient patient;
+    private Doctor doctor;
     private Specialty specialty;
     private LocalDateTime datetime;
     private String reason;
@@ -41,7 +41,7 @@ public class Appointment implements ISerializable{
     private String recommendedTreatment;
     private String followUp;
 
-    public Appointment(String id, patient patient, doctor doctor, Specialty specialty, LocalDateTime datetime, String reason, boolean type) {
+    public Appointment(String id, Patient patient, Doctor doctor, Specialty specialty, LocalDateTime datetime, String reason, boolean type) {
         this.id = id;
         this.patient = patient;
         this.doctor = doctor;
@@ -88,7 +88,7 @@ public class Appointment implements ISerializable{
         return id;
     }
 
-    public doctor getDoctor() {
+    public Doctor getDoctor() {
         return doctor;
     }
 
@@ -108,7 +108,7 @@ public class Appointment implements ISerializable{
         return status;
     }
 
-    public patient getPatient() {
+    public Patient getPatient() {
         return patient;
     }
 

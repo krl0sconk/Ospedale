@@ -21,7 +21,7 @@ import java.util.HashMap;
  *
  * @author edangulo
  */
-public class doctor extends User {
+public class Doctor extends User {
     
     private Specialty specialty;
     private String licenceNumber;
@@ -29,7 +29,7 @@ public class doctor extends User {
     private ArrayList<Appointment> appointments;
     private ArrayList<Hospitalization> hospitalizations;
 
-    public doctor(long id, String username, String firstname, String lastname, String password, Specialty specialty, String licenceNumber, String assignedOffice ) {
+    public Doctor(long id, String username, String firstname, String lastname, String password, Specialty specialty, String licenceNumber, String assignedOffice ) {
         super(id, username, firstname, lastname, password);
         this.specialty = specialty;
         this.licenceNumber = licenceNumber;

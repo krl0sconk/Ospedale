@@ -9,9 +9,9 @@ import core.controllers.utils.Serializer;
 import core.controllers.utils.Status;
 import core.controllers.utils.Validator;
 import core.models.enums.Specialty;
-import core.models.storage.IStorage;
-import core.models.user.doctor;
-import core.models.user.patient;
+import core.models.services.UserService;
+import core.models.user.Doctor;
+import core.models.user.Patient;
 import core.models.user.User;
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -20,19 +20,19 @@ import java.util.HashMap;
  *
  * @author krl0s
  */
-public class UserController implements IUserController{
-    
+public class UserController implements IUserController {
+
     //Atributos
-    private final IStorage storage;
-    
+    private final UserService userService;
+
     //Metodos internos
     private Response validateCommonFields(long id, String username, String password, String confirmation) {
         if (!Validator.isValidId(id)) {
             return new Response("Invalid id.", Status.BAD_REQUEST);
         }
 
-        User existingUsername = this.storage.getUserByUsername(username);
-        if (existingUsername != null && this.storage.getUserById(id) != existingUsername) {
+        User existingUsername = this.userService.getUserByUsername(username);
+        if (existingUsername != null && this.userService.getUserById(id) != existingUsername) {
             return new Response("Username already exists.", Status.BAD_REQUEST);
         }
 
@@ -43,11 +43,10 @@ public class UserController implements IUserController{
     }
 
     //Metodos
-    
-    public UserController(IStorage storage) {
-        this.storage = storage;
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
-    
+
     //Pacientes
     @Override
     public Response registerPatient(String firstname, String lastname, long id, boolean gender, String birthdate, String address, long phone, String email, String username, String password, String passwordConfirmation) {
@@ -70,7 +69,7 @@ public class UserController implements IUserController{
                 return new Response("Invalid date.", Status.BAD_REQUEST);
             }
 
-            if (!this.storage.addUser(new patient(id, username, firstname, lastname, password, email, LocalDate.parse(birthdate), gender, phone, address))) {
+            if (!this.userService.addUser(new Patient(id, username, firstname, lastname, password, email, LocalDate.parse(birthdate), gender, phone, address))) {
                 return new Response("A Patient with that id already exists", Status.BAD_REQUEST);
             }
 
@@ -93,7 +92,7 @@ public class UserController implements IUserController{
             if (validation != null) {
                 return validation;
             }
-            if (this.storage.getUserById(id) == null) {
+            if (this.userService.getUserById(id) == null) {
                 return new Response("Patient not found.", Status.NOT_FOUND);
             }
             if (!Validator.isValidEmail(email)) {
@@ -106,7 +105,7 @@ public class UserController implements IUserController{
                 return new Response("Invalid date.", Status.BAD_REQUEST);
             }
 
-            this.storage.updatePatient(id, username, firstname, lastname, password, email, LocalDate.parse(birthdate), gender, phone, address);
+            this.userService.updatePatient(id, username, firstname, lastname, password, email, LocalDate.parse(birthdate), gender, phone, address);
             return new Response("Patient updated succesfully.", Status.OK);
 
         } catch (Exception e) {
@@ -133,7 +132,7 @@ public class UserController implements IUserController{
                 return new Response("Invalid Office.", Status.BAD_REQUEST);
             }
 
-            if (!this.storage.addUser(new doctor(id, username, firstname, lastname, password, specialty, licenceNumber, assignedOffice))) {
+            if (!this.userService.addUser(new Doctor(id, username, firstname, lastname, password, specialty, licenceNumber, assignedOffice))) {
                 return new Response("A Doctor with that id already exists", Status.BAD_REQUEST);
             }
             return new Response("Doctor registered succesfully.", Status.CREATED);
@@ -154,7 +153,7 @@ public class UserController implements IUserController{
             if (validation != null) {
                 return validation;
             }
-            if (this.storage.getUserById(id) == null) {
+            if (this.userService.getUserById(id) == null) {
                 return new Response("Doctor not found.", Status.NOT_FOUND);
             }
             if (!Validator.isValidLicence(licenceNumber)) {
@@ -164,7 +163,7 @@ public class UserController implements IUserController{
                 return new Response("Invalid Office.", Status.BAD_REQUEST);
             }
 
-            this.storage.updateDoctor(id, username, firstname, lastname, password, specialty, licenceNumber, assignedOffice);
+            this.userService.updateDoctor(id, username, firstname, lastname, password, specialty, licenceNumber, assignedOffice);
             return new Response("Doctor updated succesfully.", Status.OK);
 
         } catch (Exception e) {
@@ -176,7 +175,7 @@ public class UserController implements IUserController{
     public Response getPatients() {
         try {
             HashMap<String, Object> data = new HashMap<>();
-            data.put("list", Serializer.serializeList(this.storage.getPatients()));
+            data.put("list", Serializer.serializeList(this.userService.getPatients()));
             return new Response("Returned patients.", Status.OK, data);
         } catch (Exception e) {
             return new Response("Unexpected error.", Status.INTERNAL_SERVER_ERROR);
@@ -187,7 +186,7 @@ public class UserController implements IUserController{
     public Response getDoctors() {
         try {
             HashMap<String, Object> data = new HashMap<>();
-            data.put("list", Serializer.serializeList(this.storage.getDoctors()));
+            data.put("list", Serializer.serializeList(this.userService.getDoctors()));
             return new Response("Returned doctors.", Status.OK, data);
         } catch (Exception e) {
             return new Response("Unexpected error.", Status.INTERNAL_SERVER_ERROR);

@@ -10,8 +10,8 @@ package core.models.storage;
 
 import core.models.enums.Specialty;
 import core.models.user.Administrator;
-import core.models.user.doctor;
-import core.models.user.patient;
+import core.models.user.Doctor;
+import core.models.user.Patient;
 import core.models.storage.IStorage;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -49,7 +49,7 @@ public final class JsonUserLoader {
                 boolean gender = userJson.getBoolean("gender");
                 long phone = userJson.getLong("phone");
                 String address = userJson.getString("address");
-                storage.addUser(new patient(id, username, firstname, lastname, password, email, birthdate, gender, phone, address));
+                storage.addUser(new Patient(id, username, firstname, lastname, password, email, birthdate, gender, phone, address));
                 continue;
             }
 
@@ -57,7 +57,7 @@ public final class JsonUserLoader {
                 Specialty specialty = mapSpecialty(userJson.getString("specialty"));
                 String licenceNumber = userJson.getString("licenceNumber");
                 String assignedOffice = userJson.getString("assignedOffice");
-                storage.addUser(new doctor(id, username, firstname, lastname, password, specialty, licenceNumber, assignedOffice));
+                storage.addUser(new Doctor(id, username, firstname, lastname, password, specialty, licenceNumber, assignedOffice));
             }
         }
     }

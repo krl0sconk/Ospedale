@@ -11,8 +11,8 @@ import core.models.Appointment;
 import core.models.Hospitalization;
 import core.models.enums.Specialty;
 import core.models.user.Administrator;
-import core.models.user.doctor;
-import core.models.user.patient;
+import core.models.user.Doctor;
+import core.models.user.Patient;
 import core.models.user.User;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -29,9 +29,9 @@ public interface IStorage {
 
     User getUserByUsername(String username);
 
-    ArrayList<patient> getPatients();
+    ArrayList<Patient> getPatients();
 
-    ArrayList<doctor> getDoctors();
+    ArrayList<Doctor> getDoctors();
 
     ArrayList<Administrator> getAdministrators();
 

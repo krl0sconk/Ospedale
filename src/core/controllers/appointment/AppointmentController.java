@@ -13,10 +13,10 @@ import core.models.Appointment;
 import core.models.Prescription;
 import core.models.enums.AppointmentStatus;
 import core.models.enums.Specialty;
-import core.models.storage.IStorage;
-import core.models.storage.Storage;
-import core.models.user.doctor;
-import core.models.user.patient;
+import core.models.services.AppointmentService;
+import core.models.services.UserService;
+import core.models.user.Doctor;
+import core.models.user.Patient;
 import core.models.user.User;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -28,16 +28,17 @@ import java.util.HashMap;
  *
  * @author krl0s
  */
-public class AppointmentController implements IAppointmentController{
-    
+public class AppointmentController implements IAppointmentController {
+
     //Atributos
-    private final IStorage storage;
+    private final AppointmentService appointmentService;
+    private final UserService userService;
 
     //Metodos internos
     private boolean checkDisponibility(long doctorId, LocalTime hour, LocalDate date) {
-        doctor doctor = (doctor) this.storage.getUserById(doctorId);
+        Doctor doctor = (Doctor) this.userService.getUserById(doctorId);
 
-        for (Appointment appointment : this.storage.getAppointments()) {
+        for (Appointment appointment : this.appointmentService.getAppointments()) {
             if (appointment.getDoctor().equals(doctor) && !(appointment.getStatus().equals(AppointmentStatus.CANCELED))) {
                 if (appointment.getDatetime().equals(LocalDateTime.of(date, hour))) {
                     return false;
@@ -48,12 +49,12 @@ public class AppointmentController implements IAppointmentController{
     }
 
     private String generateAppointmentId(long patientId) {
-        long count = this.storage.getAppointments().stream().filter(a -> a.getPatient().getId() == patientId).count();
+        long count = this.appointmentService.getAppointments().stream().filter(a -> a.getPatient().getId() == patientId).count();
         return String.format("A-%d-%04d", patientId, count);
     }
 
     private Appointment findAppointment(String appointmentId) throws AppointmentNotFoundException {
-        Appointment appointment = this.storage.getAppointmentById(appointmentId);
+        Appointment appointment = this.appointmentService.getAppointmentById(appointmentId);
         if (appointment == null) {
             throw new AppointmentNotFoundException("Appointment not found.");
         }
@@ -80,16 +81,16 @@ public class AppointmentController implements IAppointmentController{
     }
 
     //Metodos
-    
-    public AppointmentController(IStorage storage) {
-        this.storage = storage;
+    public AppointmentController(AppointmentService appointmentService, UserService userService) {
+        this.appointmentService = appointmentService;
+        this.userService = userService;
     }
-    
+
     @Override
     public Response requestAppointment(long patientId, long doctorId, Specialty specialty, String reason, String date, String hour) {
         try {
             boolean type = false;
-            if (this.storage.getUserById(patientId) == null) {
+            if (this.userService.getUserById(patientId) == null) {
                 return new Response("Invalid Patient id.", Status.BAD_REQUEST);
             }
             if (!Validator.isValidDate(date)) {
@@ -98,13 +99,13 @@ public class AppointmentController implements IAppointmentController{
             if (!Validator.isValidHour(hour)) {
                 return new Response("Invalid hour.", Status.BAD_REQUEST);
             }
-            doctor doctor = null;
+            Doctor doctor = null;
             if (doctorId != 0) {
-                User u = this.storage.getUserById(doctorId);
-                if (u == null || !(u instanceof doctor)) {
+                User u = this.userService.getUserById(doctorId);
+                if (u == null || !(u instanceof Doctor)) {
                     return new Response("Invalid Doctor id.", Status.BAD_REQUEST);
                 }
-                doctor = (doctor) u;
+                doctor = (Doctor) u;
 
                 if (!checkDisponibility(doctorId, LocalTime.parse(hour), LocalDate.parse(date))) {
                     return new Response("Doctor not available.", Status.BAD_REQUEST);
@@ -114,7 +115,7 @@ public class AppointmentController implements IAppointmentController{
                 }
                 type = true;
             } else {
-                for (doctor doc : this.storage.getDoctors()) {
+                for (Doctor doc : this.userService.getDoctors()) {
                     if (doc.getSpecialty() == specialty && checkDisponibility(doc.getId(), LocalTime.parse(hour), LocalDate.parse(date))) {
                         doctor = doc;
                         break;
@@ -126,10 +127,10 @@ public class AppointmentController implements IAppointmentController{
             }
 
             String appointmentId = generateAppointmentId(patientId);
-            patient patient = (patient) this.storage.getUserById(patientId);
+            Patient patient = (Patient) this.userService.getUserById(patientId);
             LocalDateTime datetime = LocalDateTime.of(LocalDate.parse(date), LocalTime.parse(hour));
 
-            this.storage.addAppointment(new Appointment(appointmentId, patient, doctor, specialty, datetime, reason, type));
+            this.appointmentService.addAppointment(new Appointment(appointmentId, patient, doctor, specialty, datetime, reason, type));
             return new Response("Appointment requested successfully.", Status.CREATED);
         } catch (Exception e) {
             return new Response("Unexpected Error.", Status.INTERNAL_SERVER_ERROR);
@@ -196,7 +197,7 @@ public class AppointmentController implements IAppointmentController{
     public Response getPatientAppointments(long patientId) {
         try {
             ArrayList<Appointment> result = new ArrayList<>();
-            for (Appointment a : this.storage.getAppointments()) {
+            for (Appointment a : this.appointmentService.getAppointments()) {
                 if (a.getPatient().getId() == patientId) {
                     result.add(a);
                 }
@@ -214,7 +215,7 @@ public class AppointmentController implements IAppointmentController{
     public Response getDoctorAppointments(long doctorId, boolean pendingOnly) {
         try {
             ArrayList<Appointment> result = new ArrayList<>();
-            for (Appointment a : this.storage.getAppointments()) {
+            for (Appointment a : this.appointmentService.getAppointments()) {
                 if (a.getDoctor().getId() == doctorId) {
                     if (pendingOnly) {
                         if (a.getStatus().equals(AppointmentStatus.PENDING)) {

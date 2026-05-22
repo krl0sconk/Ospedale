@@ -21,7 +21,7 @@ import java.util.HashMap;
  *
  * @author edangulo
  */
-public class patient extends User {
+public class Patient extends User {
     
     private String email;
     private LocalDate birthdate;
@@ -31,7 +31,7 @@ public class patient extends User {
     private ArrayList<Appointment> appointments;
     private Hospitalization hospitalization;
     
-    public patient(long id, String username, String firstname, String lastname, String password, String email, LocalDate birthdate, boolean gender, long phone, String address) {
+    public Patient(long id, String username, String firstname, String lastname, String password, String email, LocalDate birthdate, boolean gender, long phone, String address) {
         super(id, username, firstname, lastname, password);
         this.email = email;
         this.birthdate = birthdate;

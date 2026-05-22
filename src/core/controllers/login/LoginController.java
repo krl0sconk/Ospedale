@@ -6,7 +6,7 @@ package core.controllers.login;
 
 import core.controllers.utils.Response;
 import core.controllers.utils.Status;
-import core.models.storage.IStorage;
+import core.models.services.UserService;
 import core.models.user.User;
 
 /**
@@ -14,17 +14,15 @@ import core.models.user.User;
  * @author krl0s
  */
 public class LoginController implements ILoginController {
-    
+
     //Atributos
-    private final IStorage storage;
-
-
+    private final UserService userService;
     //Metodos
-    
-    public LoginController(IStorage storage) {
-        this.storage = storage;
+
+    public LoginController(UserService userService) {
+        this.userService = userService;
     }
-    
+
     @Override
     public Response loginUser(String username, String password) {
         try {
@@ -36,7 +34,7 @@ public class LoginController implements ILoginController {
                 return new Response("Password must not be empty.", Status.BAD_REQUEST);
             }
 
-            User user = this.storage.getUserByUsername(username);
+            User user = this.userService.getUserByUsername(username);
             if (user == null) {
                 return new Response("User not found.", Status.NOT_FOUND);
             }

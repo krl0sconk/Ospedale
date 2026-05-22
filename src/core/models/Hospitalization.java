@@ -14,8 +14,8 @@ package core.models;
 
 import core.models.enums.HospitalizationStatus;
 import core.models.enums.RoomType;
-import core.models.user.patient;
-import core.models.user.doctor;
+import core.models.user.Patient;
+import core.models.user.Doctor;
 import java.time.LocalDate;
 import java.util.HashMap;
 
@@ -26,8 +26,8 @@ import java.util.HashMap;
 public class Hospitalization implements ISerializable {
     
     private final String id;
-    private patient patient;
-    private doctor doctor;
+    private Patient patient;
+    private Doctor doctor;
     private LocalDate date;
 
     
@@ -44,7 +44,7 @@ public class Hospitalization implements ISerializable {
         return id;
     }
     
-    public Hospitalization(String id, patient patient, doctor doctor, LocalDate date, String reason, RoomType roomType, String observations, HospitalizationStatus status) {
+    public Hospitalization(String id, Patient patient, Doctor doctor, LocalDate date, String reason, RoomType roomType, String observations, HospitalizationStatus status) {
         this.id = id;
         this.patient = patient;
         patient.setHospitalization(this);
@@ -58,7 +58,7 @@ public class Hospitalization implements ISerializable {
     }
     
 
-    public patient getPatient() {
+    public Patient getPatient() {
         return patient;
     }
 

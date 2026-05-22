@@ -10,7 +10,7 @@ import core.controllers.utils.Response;
 import core.controllers.utils.Status;
 import core.models.Appointment;
 import core.models.enums.RoomType;
-import core.models.storage.IStorage;
+import core.models.services.AppointmentService;
 
 /**
  *
@@ -20,12 +20,12 @@ public class HospitalizeFromAppointmentUseCase {
 
     private final IAppointmentController appointmentController;
     private final IHospitalizationController hospitalizationController;
-    private final IStorage storage;
+    private final AppointmentService appointmentService;
 
-    public HospitalizeFromAppointmentUseCase(IAppointmentController appointmentController, IHospitalizationController hospitalizationController, IStorage storage) {
+    public HospitalizeFromAppointmentUseCase(IAppointmentController appointmentController, IHospitalizationController hospitalizationController, AppointmentService appointmentService) {
         this.appointmentController = appointmentController;
         this.hospitalizationController = hospitalizationController;
-        this.storage = storage;
+        this.appointmentService = appointmentService;
     }
 
     public Response execute(String appointmentId, String date, String reason, RoomType roomType, String observations) {
@@ -34,7 +34,7 @@ public class HospitalizeFromAppointmentUseCase {
             return completeResponse;
         }
 
-        Appointment appointment = this.storage.getAppointmentById(appointmentId);
+        Appointment appointment = this.appointmentService.getAppointmentById(appointmentId);
         return this.hospitalizationController.requestHospitalizationOngoing(
                 appointment.getPatient().getId(),
                 appointment.getDoctor().getId(),
