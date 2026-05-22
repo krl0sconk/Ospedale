@@ -20,6 +20,8 @@
             <file>file:/C:/Users/migue/Documentos/UNN/GitHub/Ospedale/src/core/models/user/doctor.java</file>
             <file>file:/C:/Users/migue/Documentos/UNN/GitHub/Ospedale/src/core/models/user/Administrator.java</file>
             <file>file:/C:/Users/migue/Documentos/UNN/GitHub/Ospedale/src/core/controllers/hospitalization/HospitalizationController.java</file>
+            <file>file:/C:/Users/migue/Documentos/UNN/GitHub/Ospedale/src/core/models/ISerializable.java</file>
+            <file>file:/C:/Users/migue/Documentos/UNN/GitHub/Ospedale/src/core/models/storage/StorageListener.java</file>
         </group>
     </open-files>
 </project-private>
