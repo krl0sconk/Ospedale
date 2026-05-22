@@ -8,6 +8,7 @@ import core.models.enums.HospitalizationStatus;
 import core.models.enums.RoomType;
 import core.models.user.patient;
 import core.models.user.doctor;
+import core.models.storage.Storage;
 import java.time.LocalDate;
 import java.util.HashMap;
 
@@ -30,13 +31,17 @@ public class Hospitalization implements ISerializable {
 
     public void setStatus(HospitalizationStatus status) {
         this.status = status;
+        try {
+            Storage.getInstance().emitEvent("hospitalization.updated", this.serialize());
+        } catch (Exception ex) {
+        }
     }
 
     public String getId() {
         return id;
     }
     
-    public Hospitalization(String id, patient patient, doctor doctor, LocalDate date, String reason, RoomType roomType, String observations) {
+    public Hospitalization(String id, patient patient, doctor doctor, LocalDate date, String reason, RoomType roomType, String observations, HospitalizationStatus status) {
         this.id = id;
         this.patient = patient;
         patient.setHospitalization(this);
@@ -46,7 +51,7 @@ public class Hospitalization implements ISerializable {
         this.reason = reason;
         this.roomType = roomType;
         this.observations = observations;
-        this.status = HospitalizationStatus.REQUESTED;
+        this.status = status;
     }
     
 
