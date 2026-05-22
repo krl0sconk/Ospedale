@@ -13,7 +13,15 @@ import core.controllers.login.LoginController;
 import core.controllers.usecases.HospitalizeFromAppointmentUseCase;
 import core.controllers.user.IUserController;
 import core.controllers.user.UserController;
+import core.models.events.EventBus;
+import core.models.events.ModelEventBus;
+import core.models.services.AppointmentService;
+import core.models.services.HospitalizationService;
+import core.models.services.UserService;
+import core.models.storage.IAppointmentRepository;
+import core.models.storage.IHospitalizationRepository;
 import core.models.storage.IStorage;
+import core.models.storage.IUserRepository;
 import core.models.storage.Storage;
 
 /**
@@ -25,10 +33,15 @@ public class Main {
     public static void main(String[] args) {
         IStorage storage = Storage.getInstance();
 
-        ILoginController loginController = new LoginController(storage);
-        IUserController userController = new UserController(storage);
-        IAppointmentController appointmentController = new AppointmentController(storage);
-        IHospitalizationController hospitalizationController = new HospitalizationController(storage);
-        HospitalizeFromAppointmentUseCase useCase = new HospitalizeFromAppointmentUseCase(appointmentController, hospitalizationController, storage);
+        EventBus bus = ModelEventBus.getInstance();
+        UserService userService = new UserService((IUserRepository) storage, bus);
+        AppointmentService appointmentService = new AppointmentService((IAppointmentRepository) storage, bus);
+        HospitalizationService hospitalizationService = new HospitalizationService((IHospitalizationRepository) storage, bus);
+
+        ILoginController loginController = new LoginController(userService);
+        IUserController userController = new UserController(userService);
+        IAppointmentController appointmentController = new AppointmentController(appointmentService, userService);
+        IHospitalizationController hospitalizationController = new HospitalizationController(hospitalizationService, userService);
+        HospitalizeFromAppointmentUseCase useCase = new HospitalizeFromAppointmentUseCase(appointmentController, hospitalizationController, appointmentService);
     }
 }
