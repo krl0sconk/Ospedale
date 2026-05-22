@@ -2,18 +2,38 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
+/*
+ * Archivo: User.java
+ * Propósito: Clase base abstracta para usuarios del sistema (admin, doctor, patient).
+ * Relacionado con: `patient`, `doctor`, `Administrator`, `IUserRepository`.
+ * Impacto SOLID:
+ *  - LSP: las subclases respetan el contrato `ISerializable` y pueden sustituirse.
+ *  - ISP: define únicamente lo necesario para un usuario (cumple ISP a nivel de dominio).
+ */
 package core.models.user;
 
+import core.models.ISerializable;
 import java.util.HashMap;
 
 /**
  *
  * @author edangulo
  */
-public abstract class User {
+public abstract class User implements ISerializable {
     
     protected final long id;
     protected String username;
+    protected String firstname;
+    protected String lastname;
+    protected String password;
+    
+    public User(long id, String username, String firstname, String lastname, String password) {
+        this.id = id;
+        this.username = username;
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.password = password;
+    }
 
     public void setUsername(String username) {
         this.username = username;
@@ -28,17 +48,6 @@ public abstract class User {
     }
 
     public void setPassword(String password) {
-        this.password = password;
-    }
-    protected String firstname;
-    protected String lastname;
-    protected String password;
-
-    public User(long id, String username, String firstname, String lastname, String password) {
-        this.id = id;
-        this.username = username;
-        this.firstname = firstname;
-        this.lastname = lastname;
         this.password = password;
     }
 
@@ -62,8 +71,7 @@ public abstract class User {
         return password;
     }
 
-    public HashMap<String, Object> serialize() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
+    @Override
+    public abstract HashMap<String, Object> serialize(); 
     
 }

@@ -7,8 +7,8 @@ package core.views;
 import core.models.Hospitalization;
 import core.models.Appointment;
 import core.models.user.User;
-import core.models.user.Patient;
-import core.models.user.Doctor;
+import core.models.user.patient;
+import core.models.user.doctor;
 import core.models.user.Administrator;
 import java.awt.Color;
 import java.time.LocalDate;
@@ -30,11 +30,11 @@ public class NewJFrame1 extends javax.swing.JFrame {
     private int x, y;
     private User user;
     private ArrayList<User> users;
-    private Patient patient;
+    private patient patient;
     private ArrayList<Appointment> appointments;
     private ArrayList<Hospitalization> hospitalizations;
 
-    public NewJFrame1(User user,Patient patient, ArrayList<User> users, ArrayList<Appointment>appointments, ArrayList<Hospitalization> hospitalizations) {
+    public NewJFrame1(User user,patient patient, ArrayList<User> users, ArrayList<Appointment>appointments, ArrayList<Hospitalization> hospitalizations) {
         initComponents();
         this.user = user;
         this.users = users;
@@ -805,8 +805,8 @@ public class NewJFrame1 extends javax.swing.JFrame {
         LocalDate birthdate = LocalDate.of(Integer.parseInt(birth.substring(0, 4)), Integer.parseInt(birth.substring(5, 7)), Integer.parseInt(birth.substring(8)));
         if (comPassword.equals(password)) {
             for (User user : this.users) {
-                if (user.getId() == this.user.getId() && user instanceof Patient) {
-                    Patient userTemp = (Patient) user;
+                if (user.getId() == this.user.getId() && user instanceof patient) {
+                    patient userTemp = (patient) user;
                     userTemp.setAddress(address);
                     userTemp.setBirthdate(birthdate);
                     userTemp.setEmail(email);
@@ -855,7 +855,7 @@ public class NewJFrame1 extends javax.swing.JFrame {
 
         jComboBox5.addItem("Select one");
         for (User doc : this.users) {
-            if (doc instanceof Doctor) {
+            if (doc instanceof doctor) {
                 jComboBox5.addItem(doc.getFirstname() + " " + doc.getLastname());
             }
         }
@@ -868,10 +868,10 @@ public class NewJFrame1 extends javax.swing.JFrame {
         LocalDateTime Finally = LocalDateTime.of(appointmentDate, appointmentHour);
         String appointmentReason = jTextArea4.getText();
         long docId = Long.parseLong(jComboBox5.getItemAt(jComboBox5.getSelectedIndex()));
-        Doctor doctor = null;
+        doctor doctor = null;
         for(User use:this.users){
             if (use.getId() == docId) {
-                doctor = (Doctor) use;
+                doctor = (doctor) use;
             }
         }
         boolean appointmentType = (jComboBox1.getSelectedIndex() == 0 ? null : (jComboBox1.getSelectedIndex() == 2 ));
@@ -881,7 +881,7 @@ public class NewJFrame1 extends javax.swing.JFrame {
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
         // TODO add your handling code here:
-        Patient p = (Patient) user;
+        patient p = (patient) user;
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
         model.setRowCount(0);
         for (Appointment a : p.getAppointments()) {
@@ -892,10 +892,10 @@ public class NewJFrame1 extends javax.swing.JFrame {
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         String hospitalizationReason = jTextArea3.getText();
         long idDoctor = Long.parseLong(jComboBox2.getItemAt(jComboBox2.getSelectedIndex()));
-        Doctor doc = null;
+        doctor doc = null;
         for(User use: this.users){
             if (use.id  == idDoctor ){
-                doc = (Doctor) use;
+                doc = (doctor) use;
             }
         }
         LocalDate stimateDate = LocalDate.of(Integer.parseInt(jTextField16.getText().substring(0, 4)),Integer.parseInt(jTextField16.getText().substring(5, 7)), Integer.parseInt(jTextField16.getText().substring(8)));

@@ -15,8 +15,8 @@ import core.models.enums.AppointmentStatus;
 import core.models.enums.Specialty;
 import core.models.storage.IStorage;
 import core.models.storage.Storage;
-import core.models.user.Doctor;
-import core.models.user.Patient;
+import core.models.user.doctor;
+import core.models.user.patient;
 import core.models.user.User;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -35,7 +35,7 @@ public class AppointmentController implements IAppointmentController{
 
     //Metodos internos
     private boolean checkDisponibility(long doctorId, LocalTime hour, LocalDate date) {
-        Doctor doctor = (Doctor) this.storage.getUserById(doctorId);
+        doctor doctor = (doctor) this.storage.getUserById(doctorId);
 
         for (Appointment appointment : this.storage.getAppointments()) {
             if (appointment.getDoctor().equals(doctor) && !(appointment.getStatus().equals(AppointmentStatus.CANCELED))) {
@@ -98,13 +98,13 @@ public class AppointmentController implements IAppointmentController{
             if (!Validator.isValidHour(hour)) {
                 return new Response("Invalid hour.", Status.BAD_REQUEST);
             }
-            Doctor doctor = null;
+            doctor doctor = null;
             if (doctorId != 0) {
                 User u = this.storage.getUserById(doctorId);
-                if (u == null || !(u instanceof Doctor)) {
+                if (u == null || !(u instanceof doctor)) {
                     return new Response("Invalid Doctor id.", Status.BAD_REQUEST);
                 }
-                doctor = (Doctor) u;
+                doctor = (doctor) u;
 
                 if (!checkDisponibility(doctorId, LocalTime.parse(hour), LocalDate.parse(date))) {
                     return new Response("Doctor not available.", Status.BAD_REQUEST);
@@ -114,7 +114,7 @@ public class AppointmentController implements IAppointmentController{
                 }
                 type = true;
             } else {
-                for (Doctor doc : this.storage.getDoctors()) {
+                for (doctor doc : this.storage.getDoctors()) {
                     if (doc.getSpecialty() == specialty && checkDisponibility(doc.getId(), LocalTime.parse(hour), LocalDate.parse(date))) {
                         doctor = doc;
                         break;
@@ -126,7 +126,7 @@ public class AppointmentController implements IAppointmentController{
             }
 
             String appointmentId = generateAppointmentId(patientId);
-            Patient patient = (Patient) this.storage.getUserById(patientId);
+            patient patient = (patient) this.storage.getUserById(patientId);
             LocalDateTime datetime = LocalDateTime.of(LocalDate.parse(date), LocalTime.parse(hour));
 
             this.storage.addAppointment(new Appointment(appointmentId, patient, doctor, specialty, datetime, reason, type));

@@ -7,8 +7,8 @@ package core.views;
 import core.models.Hospitalization;
 import core.models.Appointment;
 import core.models.user.User;
-import core.models.user.Patient;
-import core.models.user.Doctor;
+import core.models.user.patient;
+import core.models.user.doctor;
 import core.models.user.Administrator;
 import java.awt.Color;
 import java.time.LocalDate;
@@ -28,9 +28,9 @@ public class NewJFrame111 extends javax.swing.JFrame {
     private ArrayList<User> users;
     private ArrayList<Hospitalization>hospitalizations;
     private ArrayList<Appointment>appointments;
-    private Doctor doctor;
-    private Patient patient;
-    public NewJFrame111(User user,Doctor doc, ArrayList<User> users,ArrayList<Hospitalization> hospitalizations,ArrayList<Appointment> appointments) {
+    private doctor doctor;
+    private patient patient;
+    public NewJFrame111(User user,doctor doc, ArrayList<User> users,ArrayList<Hospitalization> hospitalizations,ArrayList<Appointment> appointments) {
         initComponents();
         this.user = user;
         this.users =users;

@@ -2,31 +2,37 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
+/*
+ * Archivo: Appointment.java
+ * Propósito: Entidad que representa una cita médica.
+ * Relacionado con: `Prescription`, `patient`, `doctor`, `IAppointmentRepository` y `AppointmentService`.
+ * Impacto SOLID:
+ *  - SRP: mantiene datos y lógica simple de la entidad; la emisión de eventos fue extraída a `AppointmentService` para mejorar SRP.
+ *  - OCP: está diseñada para ser extendida con nuevos campos sin modificar consumidores.
+ *  - DIP: la entidad es independiente de `EventBus` (mejora DIP).
+ */
 package core.models;
 
 import core.models.enums.Specialty;
 import core.models.enums.AppointmentStatus;
-import core.models.user.Patient;
-import core.models.user.Doctor;
+import core.models.user.patient;
+import core.models.user.doctor;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  *
  * @author edangulo
  */
-public class Appointment {
+public class Appointment implements ISerializable{
     
     private final String id;
-    private Patient patient;
-    private Doctor doctor;
+    private patient patient;
+    private doctor doctor;
     private Specialty specialty;
     private LocalDateTime datetime;
     private String reason;
-
-    public void setReason(String reason) {
-        this.reason = reason;
-    }
     private boolean type;
     private ArrayList<Prescription> prescriptions;
     private AppointmentStatus status;
@@ -35,6 +41,28 @@ public class Appointment {
     private String recommendedTreatment;
     private String followUp;
 
+    public Appointment(String id, patient patient, doctor doctor, Specialty specialty, LocalDateTime datetime, String reason, boolean type) {
+        this.id = id;
+        this.patient = patient;
+        this.doctor = doctor;
+        this.specialty = specialty;
+        this.datetime = datetime;
+        this.reason = reason;
+        this.type = type;
+        this.status = AppointmentStatus.REQUESTED;
+        this.prescriptions = new ArrayList<>();
+    }
+    
+    
+    public void setReason(String reason) {
+        this.reason = reason;
+    }
+
+    public void setPrescriptions(ArrayList<Prescription> prescriptions) {
+        this.prescriptions = prescriptions;
+    }
+    
+    
     public void setDiagnosis(String diagnosis) {
         this.diagnosis = diagnosis;
     }
@@ -51,17 +79,6 @@ public class Appointment {
         this.followUp = followUp;
     }
 
-    public Appointment(String id, Patient patient, Doctor doctor, Specialty specialty, LocalDateTime datetime, String reason, boolean type) {
-        this.id = id;
-        this.patient = patient;
-        this.doctor = doctor;
-        this.specialty = specialty;
-        this.datetime = datetime;
-        this.reason = reason;
-        this.type = type;
-        this.status = AppointmentStatus.REQUESTED;
-        this.prescriptions = new ArrayList<>();
-    }
 
     public void setStatus(AppointmentStatus status) {
         this.status = status;
@@ -71,7 +88,7 @@ public class Appointment {
         return id;
     }
 
-    public Doctor getDoctor() {
+    public doctor getDoctor() {
         return doctor;
     }
 
@@ -91,20 +108,62 @@ public class Appointment {
         return status;
     }
 
-    public Patient getPatient() {
+    public patient getPatient() {
         return patient;
     }
 
     public boolean addPrescription(Prescription prescrip) {
-        return this.prescriptions.add(prescrip);
+        boolean added = this.prescriptions.add(prescrip);
+        if (added) {
+        }
+        return added;
     }
 
     public String getReason() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return this.reason;
     }
 
+    public ArrayList<Prescription> getPrescriptions() {
+        return prescriptions;
+    }
+
+    
     public void setDatetime(LocalDateTime newDatetime) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        this.datetime=newDatetime;
+    }
+
+
+   @Override
+    public HashMap<String, Object> serialize() {
+        HashMap<String, Object> appmap = new HashMap<>();
+        appmap.put("id", this.id);
+        if (this.patient != null) {
+            appmap.put("patientId", this.patient.getId());
+            appmap.put("patientName", this.patient.getFirstname() + " " + this.patient.getLastname());
+        } else {
+            appmap.put("patientId", null);
+            appmap.put("patientName", null);
+        }
+        if (this.doctor != null) {
+            appmap.put("doctorId", this.doctor.getId());
+            appmap.put("doctorName", this.doctor.getFirstname() + " " + this.doctor.getLastname());
+        } else {
+            appmap.put("doctorId", null);
+            appmap.put("doctorName", null);
+        }
+        appmap.put("specialty", this.specialty != null ? this.specialty.name() : null);
+        appmap.put("datetime", this.datetime != null ? this.datetime.toString() : null);
+        appmap.put("reason", this.reason);
+        appmap.put("type", this.type);
+        appmap.put("status", this.status != null ? this.status.name() : null);
+        ArrayList<HashMap<String, Object>> presList = new ArrayList<>();
+        if (this.prescriptions != null) {
+            for (Prescription p : this.prescriptions) {
+                if (p != null) presList.add(p.serialize());
+            }
+        }
+        appmap.put("prescriptions", presList);
+        return appmap;
     }
     
 }

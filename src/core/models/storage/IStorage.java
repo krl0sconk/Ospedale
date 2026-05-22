@@ -1,6 +1,9 @@
 /*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Interface.java to edit this template
+ * Archivo: IStorage.java
+ * Propósito: Interfaz compuesta usada para compatibilidad hacia atrás por controladores.
+ * Relacionado con: `Storage`, `IUserRepository`, `IAppointmentRepository`, `IHospitalizationRepository`.
+ * Impacto SOLID:
+ *  - Temporal: mantiene una interfaz compuesta para compatibilidad; recomendamos migrar a las interfaces específicas (ISP).
  */
 package core.models.storage;
 
@@ -8,8 +11,8 @@ import core.models.Appointment;
 import core.models.Hospitalization;
 import core.models.enums.Specialty;
 import core.models.user.Administrator;
-import core.models.user.Doctor;
-import core.models.user.Patient;
+import core.models.user.doctor;
+import core.models.user.patient;
 import core.models.user.User;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -26,9 +29,9 @@ public interface IStorage {
 
     User getUserByUsername(String username);
 
-    ArrayList<Patient> getPatients();
+    ArrayList<patient> getPatients();
 
-    ArrayList<Doctor> getDoctors();
+    ArrayList<doctor> getDoctors();
 
     ArrayList<Administrator> getAdministrators();
 
@@ -47,4 +50,11 @@ public interface IStorage {
     ArrayList<Hospitalization> getHospitalizations();
 
     Hospitalization getHospitalizationById(String id);
+    
+    boolean addListener(StorageListener listener);
+
+    boolean removeListener(StorageListener listener);
+
+    void emitEvent(String eventName, java.util.HashMap<String, Object> payload);
 }
+    

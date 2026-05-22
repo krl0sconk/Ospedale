@@ -13,8 +13,8 @@ import core.models.Hospitalization;
 import core.models.enums.HospitalizationStatus;
 import core.models.enums.RoomType;
 import core.models.storage.IStorage;
-import core.models.user.Doctor;
-import core.models.user.Patient;
+import core.models.user.doctor;
+import core.models.user.patient;
 import core.models.user.User;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -65,7 +65,7 @@ public class HospitalizationController implements IHospitalizationController{
     private Response createHospitalization(long patientId, long doctorId, String date, String reason, RoomType roomType, String observations, HospitalizationStatus status) {
         try {
             User patient = this.storage.getUserById(patientId);
-            if (patient == null || !(patient instanceof Patient)) {
+            if (patient == null || !(patient instanceof patient)) {
                 return new Response("Invalid Patient id.", Status.BAD_REQUEST);
             }
             if (!Validator.isValidDate(date)) {
@@ -73,7 +73,7 @@ public class HospitalizationController implements IHospitalizationController{
             }
 
             User doctor = this.storage.getUserById(doctorId);
-            if (doctor == null || !(doctor instanceof Doctor)) {
+            if (doctor == null || !(doctor instanceof doctor)) {
                 return new Response("Invalid Doctor id.", Status.BAD_REQUEST);
             }
 
@@ -82,7 +82,7 @@ public class HospitalizationController implements IHospitalizationController{
             }
 
             String hospitalizationId = generateHospitalizationId(patientId);
-            Hospitalization hospitalization = new Hospitalization(hospitalizationId, (Patient) patient, (Doctor) doctor, LocalDate.parse(date), reason, roomType, observations, status);
+            Hospitalization hospitalization = new Hospitalization(hospitalizationId, (patient) patient, (doctor) doctor, LocalDate.parse(date), reason, roomType, observations, status);
             this.storage.addHospitalization(hospitalization);
             return new Response("Hospitalization requested", Status.CREATED);
         } catch (Exception e) {
