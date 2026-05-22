@@ -1,13 +1,12 @@
 /*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Enum.java to edit this template
+ * Archivo: HospitalizationStatus.java
+ * Propósito: Estados posibles para una `Hospitalization`.
+ * Relacionado con: `Hospitalization`, `HospitalizationService`.
+ * Impacto SOLID:
+ *  - SRP: enum enfocado en representar el estado del proceso de hospitalización.
  */
 package core.models.enums;
 
-/**
- *
- * @author edangulo
- */
 public enum HospitalizationStatus {
 
     REQUESTED,

@@ -1,3 +1,10 @@
+/*
+ * Archivo: EventBus.java
+ * Propósito: Interfaz que define el contrato para publicar y suscribir eventos del dominio.
+ * Relacionado con: `ModelEventBus`, `Storage`, `StorageListener`, servicios (`UserService`, ...).
+ * Impacto SOLID:
+ *  - DIP: permite depender de una abstracción para emitir/recibir eventos (mejora DIP y testabilidad).
+ */
 package core.models.events;
 
 import core.models.storage.StorageListener;

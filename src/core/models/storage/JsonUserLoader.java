@@ -1,3 +1,11 @@
+/*
+ * Archivo: JsonUserLoader.java
+ * Propósito: Carga usuarios desde un archivo JSON hacia una implementación de `IStorage`.
+ * Relacionado con: `IStorage`, `Storage` y el archivo `users.json` en `json/users.json`.
+ * Impacto SOLID:
+ *  - SRP: tiene la única responsabilidad de leer y mapear JSON a objetos del dominio.
+ *  - DIP: depende de la abstracción `IStorage` para insertar usuarios, evitando dependencias concretas.
+ */
 package core.models.storage;
 
 import core.models.enums.Specialty;

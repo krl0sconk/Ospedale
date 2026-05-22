@@ -2,6 +2,14 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
+/*
+ * Archivo: User.java
+ * Propósito: Clase base abstracta para usuarios del sistema (admin, doctor, patient).
+ * Relacionado con: `patient`, `doctor`, `Administrator`, `IUserRepository`.
+ * Impacto SOLID:
+ *  - LSP: las subclases respetan el contrato `ISerializable` y pueden sustituirse.
+ *  - ISP: define únicamente lo necesario para un usuario (cumple ISP a nivel de dominio).
+ */
 package core.models.user;
 
 import core.models.ISerializable;

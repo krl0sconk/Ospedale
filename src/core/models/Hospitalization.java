@@ -2,6 +2,14 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
+/*
+ * Archivo: Hospitalization.java
+ * Propósito: Entidad que modela una hospitalización (ingreso de paciente).
+ * Relacionado con: `patient`, `doctor`, `RoomType`, `HospitalizationService` y `IHospitalizationRepository`.
+ * Impacto SOLID:
+ *  - SRP: contiene estado de hospitalización; la publicación de eventos fue movida a servicios para respetar SRP.
+ *  - LSP: sustituible por su interfaz/contrato si fuera necesario.
+ */
 package core.models;
 
 import core.models.enums.HospitalizationStatus;

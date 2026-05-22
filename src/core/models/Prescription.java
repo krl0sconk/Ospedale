@@ -2,6 +2,13 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
+/*
+ * Archivo: Prescription.java
+ * Propósito: Representa una receta médica asociada a una `Appointment`.
+ * Relacionado con: `Appointment` y la serialización (`ISerializable`).
+ * Impacto SOLID:
+ *  - SRP: enfocado en los datos de la prescripción (cumple SRP).
+ */
 package core.models;
 
 import java.util.HashMap;

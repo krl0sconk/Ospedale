@@ -1,3 +1,11 @@
+/*
+ * Archivo: ModelEventBus.java
+ * Propósito: Implementación concreta de `EventBus` basada en listeners en memoria.
+ * Relacionado con: `EventBus`, `StorageListener`, `Storage` y servicios que emiten eventos.
+ * Impacto SOLID:
+ *  - SRP: responsable sólo de la gestión de listeners y distribución de eventos.
+ *  - DIP: implementa la abstracción `EventBus` para permitir inyección y mocks en tests.
+ */
 package core.models.events;
 
 import core.models.storage.StorageListener;

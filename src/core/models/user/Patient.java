@@ -2,6 +2,13 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
+/*
+ * Archivo: patient.java
+ * Propósito: Representa a un paciente del hospital, con datos personales y citas.
+ * Relacionado con: `Appointment`, `Hospitalization`, `IUserRepository`, `UserService`.
+ * Impacto SOLID:
+ *  - SRP: encapsula estado del paciente; las operaciones transaccionales (update + eventos) se realizan en `UserService`.
+ */
 package core.models.user;
 
 import java.time.LocalDate;

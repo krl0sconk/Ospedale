@@ -1,3 +1,11 @@
+/*
+ * Archivo: HospitalizationService.java
+ * Propósito: Servicio que maneja la creación y actualización de `Hospitalization` y publica eventos.
+ * Relacionado con: `IHospitalizationRepository`, `EventBus`, y controladores que gestionan ingresos.
+ * Impacto SOLID:
+ *  - SRP: contiene la orquestación y publicación de eventos, manteniendo la entidad enfocada.
+ *  - DIP: depende de abstracciones para desacoplar implementación concreta del repositorio y bus.
+ */
 package core.models.services;
 
 import core.models.Hospitalization;

@@ -1,3 +1,10 @@
+/*
+ * Archivo: IUserRepository.java
+ * Propósito: Contrato del repositorio específico para operaciones sobre usuarios.
+ * Relacionado con: `IStorage`, `UserService`, `JsonUserLoader`.
+ * Impacto SOLID:
+ *  - ISP: define una interfaz enfocada en usuarios para evitar interfaces gordas.
+ */
 package core.models.storage;
 
 import core.models.user.Administrator;

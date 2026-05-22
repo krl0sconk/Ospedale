@@ -2,6 +2,15 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
+/*
+ * Archivo: Appointment.java
+ * Propósito: Entidad que representa una cita médica.
+ * Relacionado con: `Prescription`, `patient`, `doctor`, `IAppointmentRepository` y `AppointmentService`.
+ * Impacto SOLID:
+ *  - SRP: mantiene datos y lógica simple de la entidad; la emisión de eventos fue extraída a `AppointmentService` para mejorar SRP.
+ *  - OCP: está diseñada para ser extendida con nuevos campos sin modificar consumidores.
+ *  - DIP: la entidad es independiente de `EventBus` (mejora DIP).
+ */
 package core.models;
 
 import core.models.enums.Specialty;

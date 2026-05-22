@@ -2,6 +2,13 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
+/*
+ * Archivo: doctor.java
+ * Propósito: Representa a un médico con especialidad, consultorio y listas de citas/hospitalizaciones.
+ * Relacionado con: `Appointment`, `Hospitalization`, `IUserRepository`, `UserService`.
+ * Impacto SOLID:
+ *  - SRP: mantiene únicamente datos y colecciones relacionadas; operaciones de negocio se exponen vía servicios.
+ */
 package core.models.user;
 
 import java.util.ArrayList;

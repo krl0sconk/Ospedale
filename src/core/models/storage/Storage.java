@@ -1,6 +1,11 @@
 /*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ * Archivo: Storage.java
+ * Propósito: Repositorio en memoria (singleton) que implementa los contratos de almacenamiento.
+ * Relacionado con: `IStorage`, `IUserRepository`, `IAppointmentRepository`, `IHospitalizationRepository`, `EventBus`.
+ * Impacto SOLID:
+ *  - SRP: actúa como repositorio en memoria; la responsabilidad de publicar eventos delega en `EventBus`.
+ *  - ISP: implementa sub-interfaces específicas para cumplir ISP y facilitar migración.
+ *  - DIP: depende de la abstracción `EventBus` para notificaciones.
  */
 package core.models.storage;
 

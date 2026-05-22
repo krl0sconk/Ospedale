@@ -1,13 +1,12 @@
 /*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Enum.java to edit this template
+ * Archivo: RoomType.java
+ * Propósito: Tipos de habitaciones usadas por `Hospitalization`.
+ * Relacionado con: `Hospitalization`.
+ * Impacto SOLID:
+ *  - SRP: enum simple que clasifica tipos de habitación.
  */
 package core.models.enums;
 
-/**
- *
- * @author edangulo
- */
 public enum RoomType {
     
     STANDARD,

@@ -1,3 +1,10 @@
+/*
+ * Archivo: ModelEvent.java
+ * Propósito: Enumeración de eventos canonizados usados por el `EventBus`.
+ * Relacionado con: `ModelEventBus`, `Storage`, `services`.
+ * Impacto SOLID:
+ *  - SRP/DIP: centraliza nombres de eventos para evitar string literals dispersos y facilitar el DIP.
+ */
 package core.models.events;
 
 public enum ModelEvent {

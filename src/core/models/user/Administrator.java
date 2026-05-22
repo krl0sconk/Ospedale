@@ -2,6 +2,13 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
+/*
+ * Archivo: Administrator.java
+ * Propósito: Representa un usuario administrador con capacidades administrativas.
+ * Relacionado con: `User`, `IUserRepository`.
+ * Impacto SOLID:
+ *  - SRP: clase ligera que cumple una única responsabilidad de representar al admin.
+ */
 package core.models.user;
 
 import java.util.HashMap;

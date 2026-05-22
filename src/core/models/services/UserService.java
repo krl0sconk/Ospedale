@@ -1,3 +1,11 @@
+/*
+ * Archivo: UserService.java
+ * Propósito: Capa de servicio que orquesta operaciones sobre usuarios y publica eventos.
+ * Relacionado con: `IUserRepository`, `EventBus`, controladores que consumen `UserService`.
+ * Impacto SOLID:
+ *  - SRP: separa lógica de negocio y publicación de eventos de las entidades y repositorios.
+ *  - DIP: depende de `IUserRepository` y `EventBus` (abstracciones) para facilitar pruebas.
+ */
 package core.models.services;
 
 import core.models.user.Administrator;

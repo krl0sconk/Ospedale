@@ -1,3 +1,11 @@
+/*
+ * Archivo: AppointmentService.java
+ * Propósito: Servicio que coordina operaciones sobre `Appointment` y publica eventos correspondientes.
+ * Relacionado con: `IAppointmentRepository`, `EventBus`, controladores que manejan citas.
+ * Impacto SOLID:
+ *  - SRP: separa la orquestación y publicación de eventos de la entidad `Appointment`.
+ *  - DIP: depende de abstracciones para facilitar pruebas y desacoplar implementaciones.
+ */
 package core.models.services;
 
 import core.models.Appointment;
