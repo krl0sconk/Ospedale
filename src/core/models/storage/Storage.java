@@ -1,12 +1,18 @@
 /*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ * Archivo: Storage.java
+ * Propósito: Repositorio en memoria (singleton) que implementa los contratos de almacenamiento.
+ * Relacionado con: `IStorage`, `IUserRepository`, `IAppointmentRepository`, `IHospitalizationRepository`, `EventBus`.
+ * Impacto SOLID:
+ *  - SRP: actúa como repositorio en memoria; la responsabilidad de publicar eventos delega en `EventBus`.
+ *  - ISP: implementa sub-interfaces específicas para cumplir ISP y facilitar migración.
+ *  - DIP: depende de la abstracción `EventBus` para notificaciones.
  */
 package core.models.storage;
 
 import core.models.Appointment;
 import core.models.Hospitalization;
-import core.models.Prescription;
+import core.models.events.EventBus;
+import core.models.events.ModelEventBus;
 import core.models.enums.Specialty;
 import core.models.user.Administrator;
 import core.models.user.Doctor;
@@ -20,7 +26,7 @@ import java.util.ArrayList;
  *
  * @author krl0s
  */
-public class Storage implements IStorage {
+public class Storage implements IStorage, IUserRepository, IAppointmentRepository, IHospitalizationRepository {
 
     // Instancia Singleton
     private static Storage instance;
@@ -32,18 +38,32 @@ public class Storage implements IStorage {
     private ArrayList<Hospitalization> hosps;
 
     // Metodos Storage
+    private final EventBus eventBus;
+
     private Storage() {
+        this(ModelEventBus.getInstance());
+    }
+
+    private Storage(EventBus eventBus) {
         this.users = new ArrayList<>();
         this.apps = new ArrayList<>();
-        this.hosps = new ArrayList<>();
-        
+        this.hosps = new ArrayList<>();        
         //esto era del view, se inicializa acá
         this.users.add(new Administrator(0, "admin", "admin", "adnim", "admin123"));
+
+        this.eventBus = eventBus;
     }
 
     public static IStorage getInstance() {
         if (instance == null) {
             instance = new Storage();
+        }
+        return instance;
+    }
+
+    public static IStorage getInstance(EventBus eventBus) {
+        if (instance == null) {
+            instance = new Storage(eventBus);
         }
         return instance;
     }
@@ -150,6 +170,25 @@ public class Storage implements IStorage {
     }
 
     @Override
+    public boolean addListener(StorageListener listener) {
+        return eventBus.addListener(listener);
+    }
+
+    @Override
+    public boolean removeListener(StorageListener listener) {
+        return eventBus.removeListener(listener);
+    }
+
+    @Override
+    public void emitEvent(String eventName, java.util.HashMap<String, Object> payload) {
+        eventBus.emitEvent(eventName, payload);
+    }
+
+    public void emitEvent(core.models.events.ModelEvent event, java.util.HashMap<String, Object> payload) {
+        eventBus.emitEvent(event, payload);
+    }
+
+    @Override
     public ArrayList<Hospitalization> getHospitalizations() {
         return hosps;
     }
@@ -168,7 +207,6 @@ public class Storage implements IStorage {
     public void updatePatient(long id, String username, String firstname, String lastname, String password, String email, LocalDate birthdate, boolean gender, long phone, String address) {
         for (User user : users) {
             if (user.getId() == id && user instanceof Patient patient) {
-                //TODO: Metodo update (Migue)
                 patient.update(username, firstname, lastname, password, email, birthdate, gender, phone, address);
                 return;
             }
@@ -179,7 +217,6 @@ public class Storage implements IStorage {
     public void updateDoctor(long id, String username, String firstname, String lastname, String password, Specialty specialty, String licenceNumber, String assignedOffice) {
         for (User user : users) {
             if (user.getId() == id && user instanceof Doctor doctor) {
-                //TODO: Metodo update (Migue)
                 doctor.update(username, firstname, lastname, password, specialty, licenceNumber, assignedOffice);
                 return;
             }

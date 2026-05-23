@@ -20,6 +20,7 @@ import core.models.storage.IStorage;
  * @author edangulo
  */
 public class AdminView extends javax.swing.JFrame {
+
     IStorage storage;
     private int x, y;
 
@@ -426,29 +427,37 @@ public class AdminView extends javax.swing.JFrame {
         String password = txtDocPass.getText();
         String comPassword = txtDocPassConf.getText();
         Specialty specialty = Specialty.valueOf(spec.replaceAll(" &", "").replaceAll(" ", "_"));
-        //register doc
+         
     }//GEN-LAST:event_btnSaveDocActionPerformed
 
     private void btnDocViewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDocViewActionPerformed
         long idDoctor = Long.parseLong(cmbSelectDoc.getItemAt(cmbSelectDoc.getSelectedIndex()));
         DoctorView doctor = new DoctorView(storage, idDoctor);
         this.dispose();
-        doctor.setVisible(true);  
+        doctor.setVisible(true);
     }//GEN-LAST:event_btnDocViewActionPerformed
 
+    
+
+/*
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_jButton2ActionPerformed
+    this came as an error with a merge, i dont even know why 
+*/
+    
     private void btnLogoutAdminActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogoutAdminActionPerformed
-        
+
         LogRegView login = new LogRegView(this.storage);
         this.dispose();
         login.setVisible(true);
     }//GEN-LAST:event_btnLogoutAdminActionPerformed
 
-    private void btnPatViewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPatViewActionPerformed
+    private void btnPatViewActionPerformed(java.awt.event.ActionEvent evt) {
         long idPatient = Long.parseLong(cmbSelectDoc.getItemAt(cmbSelectDoc.getSelectedIndex()));
         PatientView patient = new PatientView(this.storage, idPatient);
         this.dispose();
         patient.setVisible(true);
-    }//GEN-LAST:event_btnPatViewActionPerformed
+    }
 
     private void cmbSelectDocActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbSelectDocActionPerformed
         // TODO add your handling code here:

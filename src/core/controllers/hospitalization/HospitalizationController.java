@@ -12,7 +12,8 @@ import core.controllers.utils.Validator;
 import core.models.Hospitalization;
 import core.models.enums.HospitalizationStatus;
 import core.models.enums.RoomType;
-import core.models.storage.IStorage;
+import core.models.services.HospitalizationService;
+import core.models.services.UserService;
 import core.models.user.Doctor;
 import core.models.user.Patient;
 import core.models.user.User;
@@ -24,14 +25,15 @@ import java.util.HashMap;
  *
  * @author krl0s
  */
-public class HospitalizationController implements IHospitalizationController{
+public class HospitalizationController implements IHospitalizationController {
 
     //Atributos
-    private final IStorage storage;
-            
+    private final HospitalizationService hospitalizationService;
+    private final UserService userService;
+
     //Metodos internos
     private Hospitalization findHospitalization(String hospitalizationId) throws HospitalizationNotFoundException {
-        Hospitalization hospitalization = this.storage.getHospitalizationById(hospitalizationId);
+        Hospitalization hospitalization = this.hospitalizationService.getHospitalizationById(hospitalizationId);
         if (hospitalization == null) {
             throw new HospitalizationNotFoundException("Hospitalization not found.");
         }
@@ -39,7 +41,7 @@ public class HospitalizationController implements IHospitalizationController{
     }
 
     private String generateHospitalizationId(long patientId) {
-        long count = this.storage.getHospitalizations().stream().filter(a -> a.getPatient().getId() == patientId).count();
+        long count = this.hospitalizationService.getHospitalizations().stream().filter(a -> a.getPatient().getId() == patientId).count();
         return String.format("H-%d-%04d", patientId, count);
     }
 
@@ -64,7 +66,7 @@ public class HospitalizationController implements IHospitalizationController{
 
     private Response createHospitalization(long patientId, long doctorId, String date, String reason, RoomType roomType, String observations, HospitalizationStatus status) {
         try {
-            User patient = this.storage.getUserById(patientId);
+            User patient = this.userService.getUserById(patientId);
             if (patient == null || !(patient instanceof Patient)) {
                 return new Response("Invalid Patient id.", Status.BAD_REQUEST);
             }
@@ -72,7 +74,7 @@ public class HospitalizationController implements IHospitalizationController{
                 return new Response("Invalid date.", Status.BAD_REQUEST);
             }
 
-            User doctor = this.storage.getUserById(doctorId);
+            User doctor = this.userService.getUserById(doctorId);
             if (doctor == null || !(doctor instanceof Doctor)) {
                 return new Response("Invalid Doctor id.", Status.BAD_REQUEST);
             }
@@ -83,7 +85,7 @@ public class HospitalizationController implements IHospitalizationController{
 
             String hospitalizationId = generateHospitalizationId(patientId);
             Hospitalization hospitalization = new Hospitalization(hospitalizationId, (Patient) patient, (Doctor) doctor, LocalDate.parse(date), reason, roomType, observations, status);
-            this.storage.addHospitalization(hospitalization);
+            this.hospitalizationService.addHospitalization(hospitalization);
             return new Response("Hospitalization requested", Status.CREATED);
         } catch (Exception e) {
             return new Response("Unexpected error", Status.INTERNAL_SERVER_ERROR);
@@ -92,14 +94,14 @@ public class HospitalizationController implements IHospitalizationController{
     }
 
     //Metodos
-    
-    public HospitalizationController(IStorage storage) {
-        this.storage = storage;
+    public HospitalizationController(HospitalizationService hospitalizationService, UserService userService) {
+        this.hospitalizationService = hospitalizationService;
+        this.userService = userService;
     }
-    
+
     @Override
     public Response requestHospitalization(long patientId, long doctorId, String date, String reason, RoomType roomType, String observations) {
-            return createHospitalization(patientId, doctorId, date, reason, roomType, observations, HospitalizationStatus.REQUESTED);
+        return createHospitalization(patientId, doctorId, date, reason, roomType, observations, HospitalizationStatus.REQUESTED);
     }
 
     @Override
@@ -126,7 +128,7 @@ public class HospitalizationController implements IHospitalizationController{
     public Response getPatientHospitalizations(long patientId) {
         try {
             ArrayList<Hospitalization> result = new ArrayList<>();
-            for (Hospitalization h : this.storage.getHospitalizations()) {
+            for (Hospitalization h : this.hospitalizationService.getHospitalizations()) {
                 if (h.getPatient().getId() == patientId) {
                     result.add(h);
                 }

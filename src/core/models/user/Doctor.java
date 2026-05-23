@@ -2,12 +2,20 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
+/*
+ * Archivo: doctor.java
+ * Propósito: Representa a un médico con especialidad, consultorio y listas de citas/hospitalizaciones.
+ * Relacionado con: `Appointment`, `Hospitalization`, `IUserRepository`, `UserService`.
+ * Impacto SOLID:
+ *  - SRP: mantiene únicamente datos y colecciones relacionadas; operaciones de negocio se exponen vía servicios.
+ */
 package core.models.user;
 
 import java.util.ArrayList;
 import core.models.Appointment;
 import core.models.Hospitalization;
 import core.models.enums.Specialty;
+import java.util.HashMap;
 
 /**
  *
@@ -21,12 +29,13 @@ public class Doctor extends User {
     private ArrayList<Appointment> appointments;
     private ArrayList<Hospitalization> hospitalizations;
 
-    public Doctor(long id, String username, String firstname, String lastname, String password, Specialty specialty, String licenceNumber, String assignedOffice) {
+    public Doctor(long id, String username, String firstname, String lastname, String password, Specialty specialty, String licenceNumber, String assignedOffice ) {
         super(id, username, firstname, lastname, password);
-        hospitalizations = new ArrayList<>();
         this.specialty = specialty;
         this.licenceNumber = licenceNumber;
         this.assignedOffice = assignedOffice;
+        this.appointments = new ArrayList<>();
+        this.hospitalizations = new ArrayList<>();
     }
 
     public ArrayList<Appointment> getAppointments() {
@@ -37,10 +46,7 @@ public class Doctor extends User {
         return specialty;
     }
     
-    public boolean addHospitalization(Hospitalization hosp){
-        return hospitalizations.add(hosp);
-    }
-
+    
     public void setSpecialty(Specialty specialty) {
         this.specialty = specialty;
     }
@@ -52,4 +58,35 @@ public class Doctor extends User {
     public void setAssignedOffice(String assignedOffice) {
         this.assignedOffice = assignedOffice;
     }
+
+    @Override
+    public HashMap<String, Object> serialize() {
+        HashMap<String, Object> docmap=new HashMap<>();
+        docmap.put("id", this.id );
+        docmap.put("username", this.username);
+        docmap.put("firstname", this.firstname);
+        docmap.put("lastname", this.lastname);
+        docmap.put("userType", "doctor" );
+        docmap.put("specialty", this.specialty.name());
+        docmap.put("licenceNumber", this.licenceNumber);
+        docmap.put("assignedOffice", this.assignedOffice);
+       
+        return docmap;
+    }
+    
+    public boolean addHospitalization(Hospitalization hosp){
+        return hospitalizations.add(hosp);
+    }
+    
+    public void update(String username, String firstname, String lastname, String password, Specialty specialty, String licenceNumber, String assignedOffice){
+        this.username=username;
+        this.firstname=firstname;
+        this.lastname=lastname;
+        this.password=password;
+        this.specialty=specialty;
+        this.licenceNumber=licenceNumber;
+        this.assignedOffice=assignedOffice;
+    }
+    
+    
 }
