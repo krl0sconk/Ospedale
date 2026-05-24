@@ -445,7 +445,7 @@ public class AdminView extends javax.swing.JFrame {
         String passwordConf = txtDocPassConf.getText();
         String license = txtDocLicenseNum.getText();
         String office = txtAssignedOffice.getText();
-        Specialty specialty = Specialty.valueOf(cmbSpecialty.getSelectedItem().toString());
+        Specialty specialty = Specialty.valueOf(cmbSpecialty.getSelectedItem().toString().toUpperCase().replaceAll("&", "_").replaceAll(" ", "_").replace("___", "_"));
 
         Response response = this.userController.registerDoctor(
                 firstname, lastname, id, username, password, passwordConf, license, specialty, office
@@ -456,7 +456,7 @@ public class AdminView extends javax.swing.JFrame {
         } else {
             JOptionPane.showMessageDialog(this, response.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
-
+        loadDoctors();
     }//GEN-LAST:event_btnSaveDocActionPerformed
 
     private void btnDocViewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDocViewActionPerformed
