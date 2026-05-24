@@ -55,6 +55,7 @@ public class PatientView extends javax.swing.JFrame {
         this.hospitalizationController = hospitalizationController;
         this.userController = userController;
         this.loginController = loginController;
+        loadAppointmentCombo();
         this.setBackground(new Color(0, 0, 0, 0));
         this.setLocationRelativeTo(null);
         loadPatientAppointments();  // cargar tabla al abrir
@@ -63,7 +64,22 @@ public class PatientView extends javax.swing.JFrame {
         this.isAdmin = isAdmin;
         btnBack.setVisible(isAdmin);
     }
+
     // auxiliar methods
+    private void loadAppointmentCombo() {
+        Response r = this.appointmentController.getPatientAppointments(this.patientId);
+        if (r.getStatus() == Status.OK) {
+            cmbAppoId.removeAllItems();
+            cmbAppoId.addItem("Select one");
+            ArrayList<HashMap<String, Object>> list
+                    = (ArrayList<HashMap<String, Object>>) r.getData().get("list");
+            if (list != null) {
+                for (HashMap<String, Object> a : list) {
+                    cmbAppoId.addItem((String) a.get("id"));
+                }
+            }
+        }
+    }
 
     private void loadDoctors() {
         Response r = this.userController.getDoctors();
@@ -77,14 +93,14 @@ public class PatientView extends javax.swing.JFrame {
             }
         }
     }
-    private void clearHospFields() {
-    txtaHospReason.setText("");
-    txtAdmissionDate.setText("");
-    txtaObservations.setText("");
-    cmbSelectDoc.setSelectedIndex(0);
-    cmbRoomType.setSelectedIndex(0);
-}
 
+    private void clearHospFields() {
+        txtaHospReason.setText("");
+        txtAdmissionDate.setText("");
+        txtaObservations.setText("");
+        cmbSelectDoc.setSelectedIndex(0);
+        cmbRoomType.setSelectedIndex(0);
+    }
 
     private void loadPatientAppointments() {
         DefaultTableModel model = (DefaultTableModel) tblAppointInfo.getModel();
@@ -122,14 +138,14 @@ public class PatientView extends javax.swing.JFrame {
         txtPasswordConf.setText("");
 
     }
-    private void loadRoomTypes() {
-    cmbRoomType.removeAllItems();
-    cmbRoomType.addItem("Select one");
-    for (RoomType room : RoomType.values()) {
-        cmbRoomType.addItem(room.name());
-    }
-}
 
+    private void loadRoomTypes() {
+        cmbRoomType.removeAllItems();
+        cmbRoomType.addItem("Select one");
+        for (RoomType room : RoomType.values()) {
+            cmbRoomType.addItem(room.name());
+        }
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -875,6 +891,7 @@ public class PatientView extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, r.getMessage(), "Success",
                     JOptionPane.INFORMATION_MESSAGE);
             loadPatientAppointments();
+            loadAppointmentCombo();
         } else {
             JOptionPane.showMessageDialog(this, r.getMessage(), "Error",
                     JOptionPane.ERROR_MESSAGE);
@@ -950,19 +967,17 @@ public class PatientView extends javax.swing.JFrame {
     }//GEN-LAST:event_rdbDoctorActionPerformed
 
     private void btnCreateAppoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateAppoActionPerformed
+
         if (cmbSpecialtiesDocOption.getSelectedIndex() == 0) {
             JOptionPane.showMessageDialog(this, "Please select a specialty or doctor.",
                     "Warning", JOptionPane.WARNING_MESSAGE);
             return;
         }
-
         String date = txtAppoDate.getText();
         String hour = txtAppoTime.getText();
         String reason = txtaAppoReason.getText();
-
         long doctorId = 0;
         Specialty specialty = null;
-
         if (rdbSpecialty.isSelected()) {
             specialty = Specialty.valueOf(
                     cmbSpecialtiesDocOption.getSelectedItem().toString()
@@ -971,17 +986,26 @@ public class PatientView extends javax.swing.JFrame {
             doctorId = Long.parseLong(
                     cmbSpecialtiesDocOption.getSelectedItem().toString()
             );
-            specialty = Specialty.values()[0];
+            Response docResp = this.userController.getDoctors();
+            if (docResp.getStatus() == Status.OK) {
+                ArrayList<HashMap<String, Object>> docs
+                        = (ArrayList<HashMap<String, Object>>) docResp.getData().get("list");
+                for (HashMap<String, Object> doc : docs) {
+                    if (Long.parseLong(doc.get("id").toString()) == doctorId) {
+                        specialty = Specialty.valueOf(doc.get("specialty").toString());
+                        break;
+                    }
+                }
+            }
         }
-
         Response r = this.appointmentController.requestAppointment(
                 this.patientId, doctorId, specialty, reason, date, hour
         );
-
         if (r.getStatus() == Status.CREATED) {
             JOptionPane.showMessageDialog(this, r.getMessage(), "Success",
                     JOptionPane.INFORMATION_MESSAGE);
             loadPatientAppointments();
+            loadAppointmentCombo();
         } else {
             JOptionPane.showMessageDialog(this, r.getMessage(), "Error",
                     JOptionPane.ERROR_MESSAGE);
@@ -995,36 +1019,36 @@ public class PatientView extends javax.swing.JFrame {
 
     private void btnCreateHospActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateHospActionPerformed
         if (cmbSelectDoc.getSelectedIndex() == 0) {
-        JOptionPane.showMessageDialog(this, "Please select a doctor.",
-                                      "Warning", JOptionPane.WARNING_MESSAGE);
-        return;
-    }
-    if (cmbRoomType.getSelectedIndex() == 0) {
-        JOptionPane.showMessageDialog(this, "Please select a room type.",
-                                      "Warning", JOptionPane.WARNING_MESSAGE);
-        return;
-    }
+            JOptionPane.showMessageDialog(this, "Please select a doctor.",
+                    "Warning", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        if (cmbRoomType.getSelectedIndex() == 0) {
+            JOptionPane.showMessageDialog(this, "Please select a room type.",
+                    "Warning", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
 
-    long idDoctor = Long.parseLong(cmbSelectDoc.getSelectedItem().toString());
-    String reason = txtaHospReason.getText();
-    String date = txtAdmissionDate.getText();
-    String observations = txtaObservations.getText();
-    RoomType roomType = RoomType.valueOf(
-        cmbRoomType.getSelectedItem().toString().toUpperCase()
-    );
+        long idDoctor = Long.parseLong(cmbSelectDoc.getSelectedItem().toString());
+        String reason = txtaHospReason.getText();
+        String date = txtAdmissionDate.getText();
+        String observations = txtaObservations.getText();
+        RoomType roomType = RoomType.valueOf(
+                cmbRoomType.getSelectedItem().toString().toUpperCase()
+        );
 
-    Response r = this.hospitalizationController.requestHospitalization(
-        this.patientId, idDoctor, date, reason, roomType, observations
-    );
+        Response r = this.hospitalizationController.requestHospitalization(
+                this.patientId, idDoctor, date, reason, roomType, observations
+        );
 
-    if (r.getStatus() == Status.CREATED) {
-        JOptionPane.showMessageDialog(this, r.getMessage(), "Success",
-                                      JOptionPane.INFORMATION_MESSAGE);
-        clearHospFields();
-    } else {
-        JOptionPane.showMessageDialog(this, r.getMessage(), "Error",
-                                      JOptionPane.ERROR_MESSAGE);
-    }
+        if (r.getStatus() == Status.CREATED) {
+            JOptionPane.showMessageDialog(this, r.getMessage(), "Success",
+                    JOptionPane.INFORMATION_MESSAGE);
+            clearHospFields();
+        } else {
+            JOptionPane.showMessageDialog(this, r.getMessage(), "Error",
+                    JOptionPane.ERROR_MESSAGE);
+        }
 
     }//GEN-LAST:event_btnCreateHospActionPerformed
 
