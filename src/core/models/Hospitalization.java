@@ -66,6 +66,11 @@ public class Hospitalization implements ISerializable {
         return status;
     }
 
+    public Doctor getDoctor() {
+        return doctor;
+    }
+    
+
     public LocalDate getDate() {
         return date;
     }

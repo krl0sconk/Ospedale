@@ -141,4 +141,22 @@ public class HospitalizationController implements IHospitalizationController {
             return new Response("Unexpected Error.", Status.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @Override
+    public Response getDoctorHospitalizations(long doctorId) {
+        try {
+            ArrayList<Hospitalization> result = new ArrayList<>();
+            for (Hospitalization h : this.hospitalizationService.getHospitalizations()) {
+                if (h.getDoctor().getId() == doctorId) {
+                    result.add(h);
+                }
+            }
+            HashMap<String, Object> data = new HashMap<>();
+            data.put("list", Serializer.serializeList(result));
+            return new Response("Returned doctor hospitalizations.", Status.OK, data);
+        } catch (Exception e) {
+            return new Response("Unexpected Error.", Status.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 }
