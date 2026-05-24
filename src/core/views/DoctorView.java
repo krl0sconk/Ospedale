@@ -59,6 +59,8 @@ public class DoctorView extends javax.swing.JFrame {
         loadDoctorAppointments(false);
         loadAppointmentCombos();
         loadPatientCombos();
+        pack();
+        btnGoBack.setVisible(isAdmin);
     }
     //aux methods
 
@@ -1408,11 +1410,20 @@ public class DoctorView extends javax.swing.JFrame {
 
     private void btnAcceptReschActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAcceptReschActionPerformed
         String appointmentId = cmbAppoResch.getItemAt(cmbAppoResch.getSelectedIndex());
-        Appointment appointment = null;
-        //aca era buscar la cita segun el id 
-        appointment.getDatetime().with(LocalTime.of(Integer.parseInt(txtnewTime.getText().substring(0, 2)), Integer.parseInt(txtnewTime.getText().substring(3))));
-        String reasonChangeTime = txtAppoReason.getText();
-        appointment.setReason(reasonChangeTime);
+        if (appointmentId == null || appointmentId.equals("Select one")) {
+            return;
+        }
+        String newTime = txtnewTime.getText();
+        String reason = txtAppoReason.getText();
+        Response r = this.appointmentController.rescheduleAppointment(appointmentId, newTime, reason);
+        JOptionPane.showMessageDialog(this, r.getMessage(),
+                r.getStatus() == Status.OK ? "Success" : "Error",
+                r.getStatus() == Status.OK ? JOptionPane.INFORMATION_MESSAGE : JOptionPane.ERROR_MESSAGE);
+        if (r.getStatus() == Status.OK) {
+            loadDoctorAppointments(false);
+            loadAppointmentCombos();
+        }
+
     }//GEN-LAST:event_btnAcceptReschActionPerformed
 
 
