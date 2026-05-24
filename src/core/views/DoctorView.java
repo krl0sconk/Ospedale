@@ -110,7 +110,7 @@ public class DoctorView extends javax.swing.JFrame {
         cmbPatientId.removeAllItems();
         cmbPatientId.addItem("Select one");
         for (HashMap<String, Object> p : list) {
-            String entry = p.get("id") + " - " + p.get("firstname") + " " + p.get("lastname");
+            String entry = p.get("id").toString();
             cmbSelectPatient.addItem(entry);
             cmbPatientId.addItem(entry);
         }
@@ -1265,7 +1265,6 @@ public class DoctorView extends javax.swing.JFrame {
 
     private void btnGoBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGoBackActionPerformed
         if (!isAdmin) {
-            btnGoBack.setVisible(false);
             return;
         }
         AdminView admin = new AdminView(this.userController, this.appointmentController, this.hospitalizationController, this.loginController);
