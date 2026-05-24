@@ -3,25 +3,13 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/migue/Documentos/UNN/GitHub/Ospedale/src/main/Main.java</file>
-            <file>file:/C:/Users/migue/Documentos/UNN/GitHub/Ospedale/src/core/models/enums/AppointmentStatus.java</file>
-            <file>file:/C:/Users/migue/Documentos/UNN/GitHub/Ospedale/src/core/models/enums/HospitalizationStatus.java</file>
-            <file>file:/C:/Users/migue/Documentos/UNN/GitHub/Ospedale/src/core/models/enums/RoomType.java</file>
-            <file>file:/C:/Users/migue/Documentos/UNN/GitHub/Ospedale/src/core/models/enums/Specialty.java</file>
-            <file>file:/C:/Users/migue/Documentos/UNN/GitHub/Ospedale/src/core/models/storage/IStorage.java</file>
-            <file>file:/C:/Users/migue/Documentos/UNN/GitHub/Ospedale/src/core/models/Appointment.java</file>
-            <file>file:/C:/Users/migue/Documentos/UNN/GitHub/Ospedale/src/core/models/Hospitalization.java</file>
-            <file>file:/C:/Users/migue/Documentos/UNN/GitHub/Ospedale/src/core/models/Prescription.java</file>
-            <file>file:/C:/Users/migue/Documentos/UNN/GitHub/Ospedale/src/core/models/storage/Storage.java</file>
-            <file>file:/C:/Users/migue/Documentos/UNN/GitHub/Ospedale/src/core/controllers/utils/Serializer.java</file>
-            <file>file:/C:/Users/migue/Documentos/UNN/GitHub/Ospedale/src/core/controllers/utils/Status.java</file>
-            <file>file:/C:/Users/migue/Documentos/UNN/GitHub/Ospedale/src/core/models/user/User.java</file>
-            <file>file:/C:/Users/migue/Documentos/UNN/GitHub/Ospedale/src/core/models/user/patient.java</file>
-            <file>file:/C:/Users/migue/Documentos/UNN/GitHub/Ospedale/src/core/models/user/doctor.java</file>
-            <file>file:/C:/Users/migue/Documentos/UNN/GitHub/Ospedale/src/core/models/user/Administrator.java</file>
-            <file>file:/C:/Users/migue/Documentos/UNN/GitHub/Ospedale/src/core/controllers/hospitalization/HospitalizationController.java</file>
-            <file>file:/C:/Users/migue/Documentos/UNN/GitHub/Ospedale/src/core/models/ISerializable.java</file>
-            <file>file:/C:/Users/migue/Documentos/UNN/GitHub/Ospedale/src/core/models/storage/StorageListener.java</file>
+            <file>file:/C:/Users/Gabriela%20Campo/Desktop/POO%20FINAL/Ospedale/src/core/controllers/hospitalization/IHospitalizationController.java</file>
+            <file>file:/C:/Users/Gabriela%20Campo/Desktop/POO%20FINAL/Ospedale/src/core/views/AdminView.java</file>
+            <file>file:/C:/Users/Gabriela%20Campo/Desktop/POO%20FINAL/Ospedale/src/core/controllers/utils/Validator.java</file>
+            <file>file:/C:/Users/Gabriela%20Campo/Desktop/POO%20FINAL/Ospedale/src/main/Main.java</file>
+            <file>file:/C:/Users/Gabriela%20Campo/Desktop/POO%20FINAL/Ospedale/src/core/models/enums/Specialty.java</file>
+            <file>file:/C:/Users/Gabriela%20Campo/Desktop/POO%20FINAL/Ospedale/src/core/models/Hospitalization.java</file>
+            <file>file:/C:/Users/Gabriela%20Campo/Desktop/POO%20FINAL/Ospedale/src/core/models/storage/Storage.java</file>
         </group>
     </open-files>
 </project-private>

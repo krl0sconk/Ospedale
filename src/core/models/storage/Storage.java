@@ -47,7 +47,10 @@ public class Storage implements IStorage, IUserRepository, IAppointmentRepositor
     private Storage(EventBus eventBus) {
         this.users = new ArrayList<>();
         this.apps = new ArrayList<>();
-        this.hosps = new ArrayList<>();
+        this.hosps = new ArrayList<>();        
+        //esto era del view, se inicializa acá
+        this.users.add(new Administrator(0, "admin", "admin", "adnim", "admin123"));
+
         this.eventBus = eventBus;
     }
 
@@ -100,8 +103,8 @@ public class Storage implements IStorage, IUserRepository, IAppointmentRepositor
     public ArrayList<Patient> getPatients() {
         ArrayList<Patient> patients = new ArrayList<>();
         for (User user : users) {
-            if (user instanceof Patient patient) {
-                patients.add(patient);
+            if (user instanceof Patient) {
+                patients.add((Patient) user); // cast manual
             }
         }
         return patients;
@@ -111,8 +114,8 @@ public class Storage implements IStorage, IUserRepository, IAppointmentRepositor
     public ArrayList<Doctor> getDoctors() {
         ArrayList<Doctor> doctors = new ArrayList<>();
         for (User user : users) {
-            if (user instanceof Doctor doctor) {
-                doctors.add(doctor);
+            if (user instanceof Doctor ) {
+                doctors.add((Doctor)user);
             }
         }
         return doctors;
@@ -122,8 +125,8 @@ public class Storage implements IStorage, IUserRepository, IAppointmentRepositor
     public ArrayList<Administrator> getAdministrators() {
         ArrayList<Administrator> admins = new ArrayList<>();
         for (User user : users) {
-            if (user instanceof Administrator admin) {
-                admins.add(admin);
+            if (user instanceof Administrator ) {
+                admins.add((Administrator)user);
             }
         }
         return admins;

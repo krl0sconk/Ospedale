@@ -24,4 +24,7 @@ public interface IHospitalizationController {
     Response cancelHospitalization(String hospitalizationId);
 
     Response getPatientHospitalizations(long patientId);
+    
+    Response getDoctorHospitalizations(long doctorId);
+
 }

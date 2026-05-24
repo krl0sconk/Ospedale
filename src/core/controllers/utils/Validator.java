@@ -28,25 +28,24 @@ public class Validator {
     public static boolean isValidHour(String hour) {
         return hour.matches("([01]\\d|2[0-3]):(00|15|30|45)");
     }
-
     public static boolean isValidId(long id) {
-        return id <= 0 || String.valueOf(id).length() != 12;
+        return id > 0 && String.valueOf(id).length() == 12;
     }
 
     public static boolean isValidEmail(String email) {
-        return !email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.com$");
+        return email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.com$");
     }
 
     public static boolean isValidPhone(long phone) {
-        return phone <= 0 || String.valueOf(Math.abs(phone)).length() != 10;
+        return phone > 0 && String.valueOf(phone).length() == 10;
     }
 
     public static boolean isValidLicence(String licence) {
-        return !licence.matches("L-\\d{10} MTL");
+        return licence.matches("L-\\d{10} MTL");
     }
 
     public static boolean isValidOffice(String office) {
-        return !office.matches("O-\\d{3}");
+        return office.matches("O-\\d{3}");
     }
 
 }
