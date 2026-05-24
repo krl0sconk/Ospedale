@@ -41,12 +41,13 @@ public class DoctorView extends javax.swing.JFrame {
     private final long doctorId; // Conservamos el ID para saber qué doctor está logueado
 
     // Controladores inyectados (Desacoplamiento total del Storage)
+    private boolean isAdmin;
     private final IAppointmentController appointmentController;
     private final IHospitalizationController hospitalizationController;
     private final IUserController userController;
     private final ILoginController loginController;
 
-    public DoctorView(long doctorId, IAppointmentController appointmentController, IHospitalizationController hospitalizationController, IUserController userController, core.controllers.login.ILoginController loginController) {
+    public DoctorView(boolean isAdmin, long doctorId, IAppointmentController appointmentController, IHospitalizationController hospitalizationController, IUserController userController, core.controllers.login.ILoginController loginController) {
         initComponents();
         this.setBackground(new Color(0, 0, 0, 0));
         this.setLocationRelativeTo(null);
@@ -55,7 +56,7 @@ public class DoctorView extends javax.swing.JFrame {
         this.doctorId = doctorId;
         this.appointmentController = appointmentController;
         this.hospitalizationController = hospitalizationController;
-
+        this.isAdmin = isAdmin;
         loadDoctorAppointments(false);
     }
 
@@ -1207,15 +1208,15 @@ public class DoctorView extends javax.swing.JFrame {
     }//GEN-LAST:event_btnSaveDocActionPerformed
 
     private void btnLogoutDocActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogoutDocActionPerformed
-        LogRegView login = new LogRegView(this.loginController, this.userController);
-        this.dispose();
+        LogRegView login = new LogRegView(this.loginController, this.userController, this.appointmentController, this.hospitalizationController);
         login.setVisible(true);
-
+        this.setVisible(false);
     }//GEN-LAST:event_btnLogoutDocActionPerformed
 
     private void btnGoBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGoBackActionPerformed
-        AdminView admin = new AdminView();
-        this.dispose();
+        if (!isAdmin) { btnGoBack.setVisible(false); return;}
+        AdminView admin = new AdminView(this.userController, this.appointmentController, this.hospitalizationController, this.loginController);
+        this.setVisible(false);
         admin.setVisible(true);
     }//GEN-LAST:event_btnGoBackActionPerformed
 

@@ -441,27 +441,28 @@ public class LogRegView extends javax.swing.JFrame {
 
         if (response.getStatus() == Status.OK) {
             HashMap<String, Object> userMap = response.getData();
-            String role = (String) userMap.get("role");
+            String role = (String) userMap.get("userType");
             long id = (long) userMap.get("id");
 
             this.dispose();
 
-            if ("ADMIN".equals(role)) {
+            if ("admin".equals(role)) {
                 new AdminView(
                         this.userController,
                         this.appointmentController,
                         this.hospitalizationController,
                         this.loginController
                 ).setVisible(true);
-            } else if ("DOCTOR".equals(role)) {
+            } else if ("doctor".equals(role)) {
                 new DoctorView(
+                        false,
                         id,
                         this.appointmentController,
                         this.hospitalizationController,
                         this.userController,
                         this.loginController
                 ).setVisible(true);
-            } else if ("PATIENT".equals(role)) {
+            } else if ("patient".equals(role)) {
                 new PatientView(
                         id,
                         this.appointmentController,

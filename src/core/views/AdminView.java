@@ -462,6 +462,7 @@ public class AdminView extends javax.swing.JFrame {
     private void btnDocViewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDocViewActionPerformed
         long idDoctor = Long.parseLong(cmbSelectDoc.getSelectedItem().toString());
         DoctorView doctor = new DoctorView(
+                true,
                 idDoctor,
                 this.appointmentController,
                 this.hospitalizationController,
