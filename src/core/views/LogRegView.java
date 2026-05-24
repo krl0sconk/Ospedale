@@ -4,13 +4,13 @@
  */
 package core.views;
 
-import core.controllers.login.LoginController;
-import core.controllers.user.UserController;
+import core.controllers.appointment.IAppointmentController;
+import core.controllers.hospitalization.IHospitalizationController;
+import core.controllers.login.ILoginController;
+import core.controllers.user.IUserController;
 import core.controllers.utils.Response;
 import core.controllers.utils.Status;
 import java.awt.Color;
-import java.time.LocalDate;
-import core.models.storage.IStorage;
 import java.util.HashMap;
 import javax.swing.JOptionPane;
 
@@ -22,20 +22,37 @@ import javax.swing.JOptionPane;
 public class LogRegView extends javax.swing.JFrame {
 
     private int x, y;
-    private final LoginController loginController;
-    private final IStorage storage;
-    private final UserController userController;
+    private final ILoginController loginController;
+    private final IUserController userController;
+    private final IAppointmentController appointmentController;
+    private final IHospitalizationController hospitalizationController;
 
-    public LogRegView(IStorage storage) {
+    public LogRegView(ILoginController loginController,
+            IUserController userController,
+            IAppointmentController appointmentController,
+            IHospitalizationController hospitalizationController) {
         initComponents();
         this.setBackground(new Color(0, 0, 0, 0));
         this.setLocationRelativeTo(null);
-        this.storage = storage;
-        this.loginController = new LoginController(this.storage);
-        this.userController = new UserController(this.storage);
-
+        this.loginController = loginController;
+        this.userController = userController;
+        this.appointmentController = appointmentController;
+        this.hospitalizationController = hospitalizationController;
     }
-
+    // auxiliar methods
+    private void clearRegisterFields() {
+    txtFirstNameReg.setText("");
+    txtLastNameReg.setText("");
+    txtIdReg.setText("");
+    txtBDateReg.setText("");
+    txtAddressReg.setText("");
+    txtPhoneReg.setText("");
+    txtEmailReg.setText("");
+    txtUserReg.setText("");
+    txtPasswordReg.setText("");
+    txtPassConfReg.setText("");
+    cmbGenderReg.setSelectedIndex(0);
+}
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -420,27 +437,46 @@ public class LogRegView extends javax.swing.JFrame {
     private void btnEnterLogActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEnterLogActionPerformed
         String username = txtUsernameLog.getText();
         String password = txtPasswordLog.getText();
-
-        Response response = loginController.loginUser(username, password);
+        Response response = this.loginController.loginUser(username, password);
 
         if (response.getStatus() == Status.OK) {
-            HashMap<String, Object> userData = response.getData();
-            String role = (String) userData.get("role");
-            long id = (long) userData.get("id");
+            HashMap<String, Object> userMap = response.getData();
+            String role = (String) userMap.get("role");
+            long id = (long) userMap.get("id");
+
             this.dispose();
 
-            if (role.equals("ADMIN")) {
-                new AdminView(storage).setVisible(true);
-            } else if (role.equals("DOCTOR")) {
-                new DoctorView(storage, id).setVisible(true);
-            } else {
-                new PatientView(storage, id).setVisible(true);
+            if ("ADMIN".equals(role)) {
+                new AdminView(
+                        this.userController,
+                        this.appointmentController,
+                        this.hospitalizationController,
+                        this.loginController
+                ).setVisible(true);
+            } else if ("DOCTOR".equals(role)) {
+                new DoctorView(
+                        id,
+                        this.appointmentController,
+                        this.hospitalizationController,
+                        this.userController,
+                        this.loginController
+                ).setVisible(true);
+            } else if ("PATIENT".equals(role)) {
+                new PatientView(
+                        id,
+                        this.appointmentController,
+                        this.hospitalizationController,
+                        this.userController,
+                        this.loginController,
+                        false
+                ).setVisible(true);
             }
         } else {
-            JOptionPane.showMessageDialog(this, response.getMessage(), "Error de autenticación", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, response.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
+            txtUsernameLog.setText("");
+            txtPasswordLog.setText("");
         }
-        txtUsernameLog.setText("");
-        txtPasswordLog.setText("");
 
     }//GEN-LAST:event_btnEnterLogActionPerformed
 
@@ -448,32 +484,25 @@ public class LogRegView extends javax.swing.JFrame {
         String firstname = txtFirstNameReg.getText();
         String lastname = txtLastNameReg.getText();
         long id = Long.parseLong(txtIdReg.getText());
-        Boolean gender = null;
-        if (cmbGenderReg.getSelectedIndex() == 1) {
-            gender = true;
-        } else if (cmbGenderReg.getSelectedIndex() == 2) {
-            gender = false;
-        }
-
-        String birth = txtBDateReg.getText();
+        String selectedGender = cmbGenderReg.getSelectedItem().toString();
+        boolean gender = selectedGender.equalsIgnoreCase("Male");
+        String birthdate = txtBDateReg.getText();
         String address = txtAddressReg.getText();
         long phone = Long.parseLong(txtPhoneReg.getText());
         String email = txtEmailReg.getText();
-        String user = txtUserReg.getText();
+        String username = txtUserReg.getText();
         String password = txtPasswordReg.getText();
-        String comPassword = txtPassConfReg.getText();
-        if (gender == null) {
-            JOptionPane.showMessageDialog(this, "Seleccione el género");
-            return;
-        }
-        UserController userController = new UserController(storage); // Necesitas pasarle el storage adecuado
-        Response response = userController.registerPatient(
-                firstname, lastname, id, gender, birth, address, phone, email, user, password, comPassword
+        String confPassword = txtPassConfReg.getText();
+
+        Response response = this.userController.registerPatient(
+                firstname, lastname, id, gender, birthdate, address, phone, email, username, password, confPassword
         );
+
         if (response.getStatus() == Status.OK) {
-            JOptionPane.showMessageDialog(this, "Registrado");
+            JOptionPane.showMessageDialog(this, "Paciente registrado con éxito.");
+            // Limpiar campos o pasar al panel de login
         } else {
-            JOptionPane.showMessageDialog(this, response.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, response.getMessage(), "Error de Registro", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnSaveRegActionPerformed
 

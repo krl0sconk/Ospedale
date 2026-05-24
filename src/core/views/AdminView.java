@@ -4,6 +4,12 @@
  */
 package core.views;
 
+import core.controllers.appointment.IAppointmentController;
+import core.controllers.hospitalization.IHospitalizationController;
+import core.controllers.login.ILoginController;
+import core.controllers.user.IUserController;
+import core.controllers.utils.Response;
+import core.controllers.utils.Status;
 import core.models.Hospitalization;
 import core.models.Appointment;
 import core.models.user.User;
@@ -13,6 +19,8 @@ import java.awt.Color;
 import java.util.ArrayList;
 import core.models.enums.Specialty;
 import core.models.storage.IStorage;
+import java.util.HashMap;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -21,14 +29,26 @@ import core.models.storage.IStorage;
  */
 public class AdminView extends javax.swing.JFrame {
 
-    IStorage storage;
     private int x, y;
+    private final IUserController userController;
+    private final IAppointmentController appointmentController;
+    private final IHospitalizationController hospitalizationController;
+    private final ILoginController loginController;
 
-    public AdminView(IStorage storage) {
+// Constructor ya corregido 
+    public AdminView(IUserController userController,
+            IAppointmentController appointmentController,
+            IHospitalizationController hospitalizationController,
+            ILoginController loginController) {
         initComponents();
-        this.storage = storage;
+        this.userController = userController;
+        this.appointmentController = appointmentController;
+        this.hospitalizationController = hospitalizationController;
+        this.loginController = loginController;
         this.setBackground(new Color(0, 0, 0, 0));
         this.setLocationRelativeTo(null);
+        loadDoctors();    // poblar cmbSelectDoc al abrir
+        loadPatients();   // poblar cmbSelectPatient al abrir
     }
 
     /**
@@ -64,7 +84,7 @@ public class AdminView extends javax.swing.JFrame {
         txtDocPass = new javax.swing.JTextField();
         lblDocPassConf = new javax.swing.JLabel();
         txtDocPassConf = new javax.swing.JTextField();
-        jComboBox1 = new javax.swing.JComboBox<>();
+        cmbSpecialty = new javax.swing.JComboBox<>();
         btnSaveDoc = new javax.swing.JButton();
         jSeparator1 = new javax.swing.JSeparator();
         cmbSelectDoc = new javax.swing.JComboBox<>();
@@ -184,8 +204,8 @@ public class AdminView extends javax.swing.JFrame {
 
         txtDocPassConf.setFont(new java.awt.Font("Yu Gothic UI", 0, 18)); // NOI18N
 
-        jComboBox1.setFont(new java.awt.Font("Yu Gothic UI", 0, 18)); // NOI18N
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select one", "General Medicine", "Cardiology", "Pediatrics", "Neurology", "Traumatology & Orthopedics", "Gynecology & Obstetrics", "Dermatology", "Psychiatry", "Oncology", "Ophthalmology", "Internal Medicine" }));
+        cmbSpecialty.setFont(new java.awt.Font("Yu Gothic UI", 0, 18)); // NOI18N
+        cmbSpecialty.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select one", "General Medicine", "Cardiology", "Pediatrics", "Neurology", "Traumatology & Orthopedics", "Gynecology & Obstetrics", "Dermatology", "Psychiatry", "Oncology", "Ophthalmology", "Internal Medicine" }));
 
         btnSaveDoc.setFont(new java.awt.Font("Yu Gothic UI", 0, 18)); // NOI18N
         btnSaveDoc.setText("Save");
@@ -244,7 +264,7 @@ public class AdminView extends javax.swing.JFrame {
                                 .addGap(18, 18, 18)
                                 .addGroup(panelRound3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(panelRound3Layout.createSequentialGroup()
-                                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(cmbSpecialty, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addGap(18, 18, 18)
                                         .addComponent(lblDocLicenseNum)
                                         .addGap(18, 18, 18)
@@ -326,7 +346,7 @@ public class AdminView extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(panelRound3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblDocSpecialty)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cmbSpecialty, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lblDocLicenseNum)
                     .addComponent(txtDocLicenseNum, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
@@ -420,50 +440,105 @@ public class AdminView extends javax.swing.JFrame {
         String firstname = txtDocFirstName.getText();
         String lastname = txtDocLastName.getText();
         long id = Long.parseLong(txtDocId.getText());
-        String spec = jComboBox1.getItemAt(jComboBox1.getSelectedIndex());
-        String licenseNumber = txtDocLicenseNum.getText();
-        String assignedOffice = txtAssignedOffice.getText();
         String username = txtDocUser.getText();
         String password = txtDocPass.getText();
-        String comPassword = txtDocPassConf.getText();
-        Specialty specialty = Specialty.valueOf(spec.replaceAll(" &", "").replaceAll(" ", "_"));
-         
+        String passwordConf = txtDocPassConf.getText();
+        String license = txtDocLicenseNum.getText();
+        String office = txtAssignedOffice.getText();
+        Specialty specialty = Specialty.valueOf(cmbSpecialty.getSelectedItem().toString());
+
+        Response response = this.userController.registerDoctor(
+                firstname, lastname, id, username, password, passwordConf, license, specialty, office
+        );
+        if (response.getStatus() == Status.OK) {
+            JOptionPane.showMessageDialog(this, response.getMessage(), "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            clearDocFields(); // Método interno de la vista para limpiar la UI luego de un guardado exitoso
+        } else {
+            JOptionPane.showMessageDialog(this, response.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+
     }//GEN-LAST:event_btnSaveDocActionPerformed
 
     private void btnDocViewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDocViewActionPerformed
-        long idDoctor = Long.parseLong(cmbSelectDoc.getItemAt(cmbSelectDoc.getSelectedIndex()));
-        DoctorView doctor = new DoctorView(storage, idDoctor);
+        long idDoctor = Long.parseLong(cmbSelectDoc.getSelectedItem().toString());
+        DoctorView doctor = new DoctorView(
+                idDoctor,
+                this.appointmentController,
+                this.hospitalizationController,
+                this.userController,
+                this.loginController
+        );
         this.dispose();
         doctor.setVisible(true);
     }//GEN-LAST:event_btnDocViewActionPerformed
 
-    
-
-/*
+    /*
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
     }//GEN-LAST:event_jButton2ActionPerformed
     this came as an error with a merge, i dont even know why 
-*/
-    
+     */
+
     private void btnLogoutAdminActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogoutAdminActionPerformed
 
-        LogRegView login = new LogRegView(this.storage);
-        this.dispose();
+        LogRegView login = new LogRegView(this.loginController, this.userController, this.appointmentController,this.hospitalizationController);
+    this.dispose();
         login.setVisible(true);
     }//GEN-LAST:event_btnLogoutAdminActionPerformed
 
     private void btnPatViewActionPerformed(java.awt.event.ActionEvent evt) {
-        long idPatient = Long.parseLong(cmbSelectDoc.getItemAt(cmbSelectDoc.getSelectedIndex()));
-        PatientView patient = new PatientView(this.storage, idPatient);
+        long idPatient = Long.parseLong(cmbSelectPatient.getSelectedItem().toString());
+        PatientView patient = new PatientView(
+                idPatient,
+                this.appointmentController,
+                this.hospitalizationController,
+                this.userController,
+                this.loginController,
+                true
+        );
         this.dispose();
         patient.setVisible(true);
+
     }
 
     private void cmbSelectDocActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbSelectDocActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_cmbSelectDocActionPerformed
 
+    private void loadDoctors() {
+        Response r = this.userController.getDoctors();
+        if (r.getStatus() == Status.OK) {
+            cmbSelectDoc.removeAllItems();
+            ArrayList<HashMap<String, Object>> list
+                    = (ArrayList<HashMap<String, Object>>) r.getData().get("list");
+            for (HashMap<String, Object> doc : list) {
+                cmbSelectDoc.addItem(doc.get("id").toString());
+            }
+        }
+    }
 
+    private void loadPatients() {
+        Response r = this.userController.getPatients();
+        if (r.getStatus() == Status.OK) {
+            cmbSelectPatient.removeAllItems();
+            ArrayList<HashMap<String, Object>> list
+                    = (ArrayList<HashMap<String, Object>>) r.getData().get("list");
+            for (HashMap<String, Object> p : list) {
+                cmbSelectPatient.addItem(p.get("id").toString());
+            }
+        }
+    }
+
+    private void clearDocFields() {
+        txtDocFirstName.setText("");
+        txtDocLastName.setText("");
+        txtDocId.setText("");
+        txtDocLicenseNum.setText("");
+        txtAssignedOffice.setText("");
+        txtDocUser.setText("");
+        txtDocPass.setText("");
+        txtDocPassConf.setText("");
+        cmbSpecialty.setSelectedIndex(0);
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnDocView;
     private javax.swing.JButton btnLogoutAdmin;
@@ -471,8 +546,8 @@ public class AdminView extends javax.swing.JFrame {
     private javax.swing.JButton btnSaveDoc;
     private javax.swing.JComboBox<String> cmbSelectDoc;
     private javax.swing.JComboBox<String> cmbSelectPatient;
+    private javax.swing.JComboBox<String> cmbSpecialty;
     private javax.swing.JButton jButton1;
-    private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;

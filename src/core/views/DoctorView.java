@@ -4,7 +4,11 @@
  */
 package core.views;
 
-import core.controllers.AppointmentController;
+import core.controllers.appointment.IAppointmentController;
+import core.controllers.hospitalization.IHospitalizationController;
+import core.controllers.login.ILoginController;
+import core.controllers.user.IUserController;
+import core.controllers.user.UserController;
 import core.controllers.utils.Response;
 import core.controllers.utils.Status;
 import java.awt.Color;
@@ -34,38 +38,57 @@ import java.util.HashMap;
 public class DoctorView extends javax.swing.JFrame {
 
     private int x, y;
-    private long doctorId;
+    private final long doctorId; // Conservamos el ID para saber qué doctor está logueado
 
-    public DoctorView(IStorage storage, long doctorId) {
+    // Controladores inyectados (Desacoplamiento total del Storage)
+    private final IAppointmentController appointmentController;
+    private final IHospitalizationController hospitalizationController;
+    private final IUserController userController;
+    private final ILoginController loginController;
+
+    public DoctorView(long doctorId, IAppointmentController appointmentController, IHospitalizationController hospitalizationController, IUserController userController, core.controllers.login.ILoginController loginController) {
         initComponents();
-        this.doctorId = doctorId;
         this.setBackground(new Color(0, 0, 0, 0));
         this.setLocationRelativeTo(null);
+       this.loginController = loginController;
+        this.userController = userController;
+        this.doctorId = doctorId;
+        this.appointmentController = appointmentController;
+        this.hospitalizationController = hospitalizationController;
+
+        loadDoctorAppointments(false);
     }
 
     private void loadDoctorAppointments(boolean pendingOnly) {
-        core.controllers.utils.Response response = core.controllers.AppointmentController.getDoctorAppointments(this.doctorId, pendingOnly);
-
+        DefaultTableModel model = (DefaultTableModel) tblAppoint.getModel();
+        model.setRowCount(0);
+        Response response = this.appointmentController.getDoctorAppointments(this.doctorId, pendingOnly);
         if (response.getStatus() == core.controllers.utils.Status.OK) {
-            DefaultTableModel model = (DefaultTableModel) jTable2.getModel();
-            model.setRowCount(0); // Limpiar tabla
+            ArrayList<HashMap<String, Object>> appointmentsList
+                    = (ArrayList<HashMap<String, Object>>) response.getData().get("list");
 
-            // Obtenemos la lista de mapas deserializados del controlador
-            java.util.ArrayList<java.util.HashMap<String, Object>> appointmentsList
-                    = (java.util.ArrayList<java.util.HashMap<String, Object>>) response.getData().get("list");
+            if (appointmentsList != null) {
+                for (HashMap<String, Object> appMap : appointmentsList) {
+                    String id = (String) appMap.get("id");
+                    String patientName = (String) appMap.get("patientName");
+                    String datetime = (String) appMap.get("datetime");
+                    String reason = (String) appMap.get("reason");
+                    String status = (String) appMap.get("status");
 
-            for (java.util.HashMap<String, Object> appo : appointmentsList) {
-                model.addRow(new Object[]{
-                    appo.get("id"),
-                    appo.get("datetime"),
-                    appo.get("patientName"), // Asegúrate de mapear las claves devuelvas por ISerializable
-                    appo.get("specialty"),
-                    appo.get("type"),
-                    appo.get("status")
-                });
+                    model.addRow(new Object[]{
+                        id,
+                        patientName,
+                        datetime,
+                        reason,
+                        status
+                    });
+                }
             }
         } else {
-            javax.swing.JOptionPane.showMessageDialog(this, response.getMessage(), "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+            javax.swing.JOptionPane.showMessageDialog(this,
+                    "No se pudieron cargar las citas: " + response.getMessage(),
+                    "Error",
+                    javax.swing.JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -87,7 +110,7 @@ public class DoctorView extends javax.swing.JFrame {
         pnlAppoVisualization = new javax.swing.JPanel();
         rdbTotAppoint = new javax.swing.JRadioButton();
         jScrollPane3 = new javax.swing.JScrollPane();
-        jTable2 = new javax.swing.JTable();
+        tblAppoint = new javax.swing.JTable();
         rdbPendAppoint = new javax.swing.JRadioButton();
         btnLogoutDoc = new javax.swing.JButton();
         pnlPatientAppoHistory = new javax.swing.JPanel();
@@ -253,7 +276,7 @@ public class DoctorView extends javax.swing.JFrame {
             }
         });
 
-        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+        tblAppoint.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null, null},
                 {null, null, null, null, null, null},
@@ -264,7 +287,7 @@ public class DoctorView extends javax.swing.JFrame {
                 "ID", "Date", "Patient", "Specialty", "Type", "Status"
             }
         ));
-        jScrollPane3.setViewportView(jTable2);
+        jScrollPane3.setViewportView(tblAppoint);
 
         rdbPendAppoint.setFont(new java.awt.Font("Yu Gothic UI", 0, 18)); // NOI18N
         rdbPendAppoint.setText("Pending appointments");
@@ -1152,33 +1175,42 @@ public class DoctorView extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_rdbPendAppointActionPerformed
 
+    private void rdbTotAppointActionPerformed(java.awt.event.ActionEvent evt) {
+        if (rdbTotAppoint.isSelected()) {
+            rdbPendAppoint.setSelected(false);
+            loadDoctorAppointments(false); // Solo muestra las citas pendientes
+        }
+    }
+
     private void btnSaveDocActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveDocActionPerformed
         String firstname = txtFirstName.getText();
-    String lastname = txtLastName.getText();
-    long id = this.doctorId;
-    String username = txtUser.getText();
-    String password = txtPassword.getText();
-    String passwordConfirmation = jTextField10.getText(); 
-    String licenseNumber = txtLicenseNumber.getText();
-    String assignedOffice = txtAssignedOff.getText();
-    
-    String selectedSpecStr = cmbSpecialties.getSelectedItem().toString().toUpperCase().replace(" & ", "_").replace(" ", "_");
-    core.models.enums.Specialty specialty = core.models.enums.Specialty.valueOf(selectedSpecStr);
+        String lastname = txtLastName.getText();
+        long id = this.doctorId;
+        String username = txtUser.getText();
+        String password = txtPassword.getText();
+        String passwordConfirmation = jTextField10.getText();
+        String licenseNumber = txtLicenseNumber.getText();
+        String assignedOffice = txtAssignedOff.getText();
 
-    core.controllers.utils.Response response = core.controllers.UserController.updateDoctor(
-        firstname, lastname, id, username, password, passwordConfirmation, licenseNumber, specialty, assignedOffice
-    );
-    if (response.getStatus() == core.controllers.utils.Status.OK) {
-        javax.swing.JOptionPane.showMessageDialog(this, response.getMessage(), "Success", javax.swing.JOptionPane.INFORMATION_MESSAGE);
-    } else {
-        javax.swing.JOptionPane.showMessageDialog(this, response.getMessage(), "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
-    }
+        String selectedSpecStr = cmbSpecialties.getSelectedItem().toString().toUpperCase().replace(" & ", "_").replace(" ", "_");
+        Specialty specialty = Specialty.valueOf(selectedSpecStr);
+
+        Response response = this.userController.updateDoctor(
+                firstname, lastname, id, username, password, passwordConfirmation, licenseNumber, specialty, assignedOffice
+        );
+
+        if (response.getStatus() == Status.OK) {
+            javax.swing.JOptionPane.showMessageDialog(this, response.getMessage(), "Success", javax.swing.JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            javax.swing.JOptionPane.showMessageDialog(this, response.getMessage(), "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_btnSaveDocActionPerformed
 
     private void btnLogoutDocActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogoutDocActionPerformed
-        LogRegView login = new LogRegView();
-        this.setVisible(false);
+        LogRegView login = new LogRegView(this.loginController, this.userController);
+        this.dispose();
         login.setVisible(true);
+
     }//GEN-LAST:event_btnLogoutDocActionPerformed
 
     private void btnGoBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGoBackActionPerformed
@@ -1341,7 +1373,6 @@ public class DoctorView extends javax.swing.JFrame {
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JSeparator jSeparator4;
     private javax.swing.JTable jTable1;
-    private javax.swing.JTable jTable2;
     private javax.swing.JTextField jTextField10;
     private javax.swing.JTextField jTextField24;
     private javax.swing.JTextField jTextField25;
@@ -1387,6 +1418,7 @@ public class DoctorView extends javax.swing.JFrame {
     private javax.swing.JRadioButton rdbRequest;
     private javax.swing.JRadioButton rdbTotAppoint;
     private javax.swing.JTabbedPane tabOptions;
+    private javax.swing.JTable tblAppoint;
     private javax.swing.JTable tblPatientHistory;
     private javax.swing.JTextField txtAppoReason;
     private javax.swing.JTextField txtAssignedOff;

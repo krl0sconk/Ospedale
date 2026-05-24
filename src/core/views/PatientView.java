@@ -4,6 +4,12 @@
  */
 package core.views;
 
+import core.controllers.appointment.IAppointmentController;
+import core.controllers.hospitalization.IHospitalizationController;
+import core.controllers.login.ILoginController;
+import core.controllers.user.IUserController;
+import core.controllers.utils.Response;
+import core.controllers.utils.Status;
 import core.models.Hospitalization;
 import core.models.Appointment;
 import core.models.user.User;
@@ -20,6 +26,8 @@ import core.models.enums.AppointmentStatus;
 import core.models.enums.RoomType;
 import core.models.enums.Specialty;
 import core.models.storage.IStorage;
+import java.util.HashMap;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -29,13 +37,81 @@ import core.models.storage.IStorage;
 public class PatientView extends javax.swing.JFrame {
 
     private int x, y;
-    private long patientId;
+    private final long patientId;
+    private final boolean isAdmin;
+    private final IAppointmentController appointmentController;
+    private final IHospitalizationController hospitalizationController;
+    private final IUserController userController;
+    private final ILoginController loginController;
 
-    public PatientView(IStorage storage, long patientId) {
+    public PatientView(long patientId,
+            IAppointmentController appointmentController,
+            IHospitalizationController hospitalizationController,
+            IUserController userController,
+            ILoginController loginController, boolean isAdmin) {
         initComponents();
         this.patientId = patientId;
+        this.appointmentController = appointmentController;
+        this.hospitalizationController = hospitalizationController;
+        this.userController = userController;
+        this.loginController = loginController;
         this.setBackground(new Color(0, 0, 0, 0));
         this.setLocationRelativeTo(null);
+        loadPatientAppointments();  // cargar tabla al abrir
+        loadDoctors();              // poblar cmbSelectDoc
+        this.isAdmin = isAdmin;
+        btnBack.setVisible(isAdmin);
+    }
+    // auxiliar methods
+
+    private void loadDoctors() {
+        Response r = this.userController.getDoctors();
+        if (r.getStatus() == Status.OK) {
+            cmbSelectDoc.removeAllItems();
+            cmbSelectDoc.addItem("Select one");
+            ArrayList<HashMap<String, Object>> list
+                    = (ArrayList<HashMap<String, Object>>) r.getData().get("list");
+            for (HashMap<String, Object> doc : list) {
+                cmbSelectDoc.addItem(doc.get("id").toString());
+            }
+        }
+    }
+
+    private void loadPatientAppointments() {
+        DefaultTableModel model = (DefaultTableModel) tblAppointInfo.getModel();
+        model.setRowCount(0);
+        Response r = this.appointmentController.getPatientAppointments(this.patientId);
+        if (r.getStatus() == core.controllers.utils.Status.OK) {
+            ArrayList<HashMap<String, Object>> list
+                    = (ArrayList<HashMap<String, Object>>) r.getData().get("list");
+            for (HashMap<String, Object> a : list) {
+                model.addRow(new Object[]{
+                    a.get("id"),
+                    a.get("datetime"),
+                    a.get("doctorName"),
+                    a.get("specialty"),
+                    a.get("type"),
+                    a.get("status")
+                });
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, r.getMessage(), "Error",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    void clearPatientFields() {
+        txtFirstName.setText("");
+        txtLastName.setText("");
+        cmbGender.setSelectedIndex(0);
+        txtBirthDate.setText("");
+        txtAddress.setText("");
+        txtPhone.setText("");
+        txtEmail.setText("");
+        txtUser.setText("");
+        txtPassword.setText("");
+        txtPasswordConf.setText("");
+
     }
 
     /**
@@ -771,53 +847,60 @@ public class PatientView extends javax.swing.JFrame {
     }//GEN-LAST:event_btnExitActionPerformed
 
     private void btnCancelAppoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelAppoActionPerformed
-        String idAppointment = cmbAppoId.getItemAt(cmbAppoId.getSelectedIndex());
-        for(Appointment ap: this.appointments){
-            if (ap.getId().equals(idAppointment)) {
-                ap.setStatus(AppointmentStatus.CANCELED);
-            }
+        if (cmbAppoId.getSelectedIndex() == 0) {
+            JOptionPane.showMessageDialog(this, "Please select an appointment.",
+                    "Warning", JOptionPane.WARNING_MESSAGE);
+            return;
         }
+        String idAppointment = cmbAppoId.getSelectedItem().toString();
+        Response r = this.appointmentController.cancelAppointment(idAppointment);
+        if (r.getStatus() == Status.OK) {
+            JOptionPane.showMessageDialog(this, r.getMessage(), "Success",
+                    JOptionPane.INFORMATION_MESSAGE);
+            loadPatientAppointments();
+        } else {
+            JOptionPane.showMessageDialog(this, r.getMessage(), "Error",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+
     }//GEN-LAST:event_btnCancelAppoActionPerformed
 
     private void btnSaveNewInfoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveNewInfoActionPerformed
         String firstname = txtFirstName.getText();
         String lastname = txtLastName.getText();
-        boolean gender = (cmbGender.getSelectedIndex() == 0 ? null : (cmbGender.getSelectedIndex() == 1));
+        boolean gender = (cmbGender.getSelectedIndex() == 1); // 1=Female, 2=Male
         String birth = txtBirthDate.getText();
         String address = txtAddress.getText();
-        long phone = Long.parseLong(txtPhone.getText());
+        String phone = txtPhone.getText();
         String email = txtEmail.getText();
         String username = txtUser.getText();
         String password = txtPassword.getText();
         String comPassword = txtPasswordConf.getText();
-        LocalDate birthdate = LocalDate.of(Integer.parseInt(birth.substring(0, 4)), Integer.parseInt(birth.substring(5, 7)), Integer.parseInt(birth.substring(8)));
-        if (comPassword.equals(password)) {
-            for (User user : this.users) {
-                if (user.getId() == this.user.getId() && user instanceof Patient) {
-                    Patient userTemp = (Patient) user;
-                    userTemp.setAddress(address);
-                    userTemp.setBirthdate(birthdate);
-                    userTemp.setEmail(email);
-                    userTemp.setFirstname(firstname);
-                    userTemp.setGender(gender);
-                    userTemp.setLastname(lastname);
-                    userTemp.setPassword(password);
-                    userTemp.setPhone(phone);
-                    userTemp.setUsername(username);
-                }
-            }
+
+        Response r = this.userController.updatePatient(
+                firstname, lastname, this.patientId, gender, birth,
+                address, Long.parseLong(phone), email, username, password, comPassword
+        );
+
+        if (r.getStatus() == Status.OK) {
+            JOptionPane.showMessageDialog(this, r.getMessage(), "Success",
+                    JOptionPane.INFORMATION_MESSAGE);
+            clearPatientFields();
+        } else {
+            JOptionPane.showMessageDialog(this, r.getMessage(), "Error",
+                    JOptionPane.ERROR_MESSAGE);
         }
 
     }//GEN-LAST:event_btnSaveNewInfoActionPerformed
 
     private void btnLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogoutActionPerformed
-        LogRegView login = new LogRegView();
-        this.setVisible(false);
+        LogRegView login = new LogRegView(this.loginController, this.userController);
+        this.dispose();
         login.setVisible(true);
     }//GEN-LAST:event_btnLogoutActionPerformed
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
-        AdminView admin = new AdminView(user, users,hospitalizations, appointments);
+        AdminView admin = new AdminView(user, users, hospitalizations, appointments);
         this.setVisible(false);
         admin.setVisible(true);
     }//GEN-LAST:event_btnBackActionPerformed
@@ -857,12 +940,12 @@ public class PatientView extends javax.swing.JFrame {
         String appointmentReason = txtaAppoReason.getText();
         long docId = Long.parseLong(cmbSpecialtiesDocOption.getItemAt(cmbSpecialtiesDocOption.getSelectedIndex()));
         Doctor doctor = null;
-        for(User use:this.users){
+        for (User use : this.users) {
             if (use.getId() == docId) {
                 doctor = (Doctor) use;
             }
         }
-        boolean appointmentType = (cmbAppoType.getSelectedIndex() == 0 ? null : (cmbAppoType.getSelectedIndex() == 2 ));
+        boolean appointmentType = (cmbAppoType.getSelectedIndex() == 0 ? null : (cmbAppoType.getSelectedIndex() == 2));
         this.appointments.add(new Appointment(appointDate, patient, doctor, doctor.getSpecialty(), Finally, appointDate, appointmentType));
     }//GEN-LAST:event_btnCreateAppoActionPerformed
 
@@ -881,18 +964,17 @@ public class PatientView extends javax.swing.JFrame {
         String hospitalizationReason = txtaHospReason.getText();
         long idDoctor = Long.parseLong(cmbSelectDoc.getItemAt(cmbSelectDoc.getSelectedIndex()));
         Doctor doc = null;
-        for(User use: this.users){
-            if (use.getId()  == idDoctor ){
+        for (User use : this.users) {
+            if (use.getId() == idDoctor) {
                 doc = (Doctor) use;
             }
         }
-        LocalDate stimateDate = LocalDate.of(Integer.parseInt(txtAdmissionDate.getText().substring(0, 4)),Integer.parseInt(txtAdmissionDate.getText().substring(5, 7)), Integer.parseInt(txtAdmissionDate.getText().substring(8)));
-        
+        LocalDate stimateDate = LocalDate.of(Integer.parseInt(txtAdmissionDate.getText().substring(0, 4)), Integer.parseInt(txtAdmissionDate.getText().substring(5, 7)), Integer.parseInt(txtAdmissionDate.getText().substring(8)));
+
         RoomType desireRoom = RoomType.valueOf(cmbRoomType.getItemAt(cmbRoomType.getSelectedIndex()).toUpperCase());
         String observations = txtaObservations.getText();
         this.hospitalizations.add(new Hospitalization(observations, this.patient, doc, stimateDate, observations, desireRoom, observations));
     }//GEN-LAST:event_btnCreateHospActionPerformed
-
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
