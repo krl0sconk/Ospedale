@@ -52,9 +52,9 @@ public class Main {
         System.setProperty("flatlaf.useNativeLibrary", "false");
         try {
             core.models.storage.JsonUserLoader.loadUsersInto(storage, "C:\\Users\\Gabriela Campo\\Desktop\\POO FINAL\\Ospedale\\json\\users.json");
-            System.out.println("si cargó");
+            
         } catch (Exception ex) {
-            System.out.println("error lol");
+            System.out.println("Failed to load Json");
         }
         try {
             UIManager.setLookAndFeel(new FlatDarkLaf());
