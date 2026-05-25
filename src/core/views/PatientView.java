@@ -661,6 +661,11 @@ public class PatientView extends javax.swing.JFrame {
 
         cmbSpecialtiesDocOption.setFont(new java.awt.Font("Yu Gothic UI", 0, 18)); // NOI18N
         cmbSpecialtiesDocOption.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select one" }));
+        cmbSpecialtiesDocOption.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmbSpecialtiesDocOptionActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout pnlRequestCancelAppoLayout = new javax.swing.GroupLayout(pnlRequestCancelAppo);
         pnlRequestCancelAppo.setLayout(pnlRequestCancelAppoLayout);
@@ -992,7 +997,7 @@ public class PatientView extends javax.swing.JFrame {
                         = (ArrayList<HashMap<String, Object>>) docResp.getData().get("list");
                 for (HashMap<String, Object> doc : docs) {
                     if (Long.parseLong(doc.get("id").toString()) == doctorId) {
-                        specialty = Specialty.valueOf(doc.get("specialty").toString());
+                        specialty = Specialty.valueOf(doc.get("specialty").toString().toUpperCase().replaceAll("&", "_").replaceAll(" ", "_").replace("___", "_"));
                         break;
                     }
                 }
@@ -1051,6 +1056,10 @@ public class PatientView extends javax.swing.JFrame {
         }
 
     }//GEN-LAST:event_btnCreateHospActionPerformed
+
+    private void cmbSpecialtiesDocOptionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbSpecialtiesDocOptionActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cmbSpecialtiesDocOptionActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
